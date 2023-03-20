@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/top_corner_white_border"
+    android:padding="20dp">
+
+    <TextView
+        android:id="@+id/header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="Filter"
+        android:textColor="@color/tool_bar_color"
+        android:fontFamily="@font/poppins_medium_new"
+        android:textSize="18dp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/price_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="Price"
+        android:textColor="@color/privacy_bg_colour"
+        android:textSize="14dp"
+        android:fontFamily="@font/roboto_medium_new"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/header" />
+
+    <CheckBox
+        android:id="@+id/free"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="Free"
+        android:textSize="14dp"
+        android:fontFamily="@font/roboto_medium_new"
+        app:layout_constraintEnd_toStartOf="@id/paid"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/price_title" />
+
+    <CheckBox
+        android:id="@+id/paid"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="Paid"
+        android:textSize="14dp"
+        android:fontFamily="@font/roboto_medium_new"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/free"
+        app:layout_constraintTop_toBottomOf="@id/price_title" />
+
+    <TextView
+        android:id="@+id/course_provider"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="Course Provider"
+        android:fontFamily="@font/roboto_medium_new"
+        android:textColor="@color/privacy_bg_colour"
+        android:textSize="14dp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/long_duration" />
+
+    <CheckBox
+        android:id="@+id/udemy"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="Udemy"
+        android:fontFamily="@font/roboto_medium_new"
+        android:textSize="14dp"
+        app:layout_constraintEnd_toStartOf="@id/paid"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/course_provider" />
+
+    <CheckBox
+        android:id="@+id/youtube"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="Youtube"
+        android:fontFamily="@font/roboto_medium_new"
+        android:textSize="14dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/free"
+        app:layout_constraintTop_toBottomOf="@id/course_provider" />
+
+    <TextView
+        android:id="@+id/duration_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="Duration(Hr)"
+        android:textColor="@color/privacy_bg_colour"
+        android:textSize="14dp"
+        android:textStyle="bold"
+        android:fontFamily="@font/roboto_medium_new"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/free" />
+
+    <CheckBox
+        android:id="@+id/long_duration"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="Long"
+        android:fontFamily="@font/roboto_medium_new"
+        android:textSize="14dp"
+        app:layout_constraintEnd_toStartOf="@id/medium_duration"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/duration_title" />
+
+    <CheckBox
+        android:id="@+id/medium_duration"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="Medium"
+        android:fontFamily="@font/roboto_medium_new"
+        android:textSize="14dp"
+        app:layout_constraintEnd_toStartOf="@id/short_duration"
+        app:layout_constraintStart_toEndOf="@id/long_duration"
+        app:layout_constraintTop_toBottomOf="@id/duration_title" />
+
+    <CheckBox
+        android:id="@+id/short_duration"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="Short"
+        android:textSize="14dp"
+        android:fontFamily="@font/roboto_medium_new"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/medium_duration"
+        app:layout_constraintTop_toBottomOf="@id/duration_title" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="45dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/udemy">
+
+        <TextView
+            android:id="@+id/cancel_filter"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.6"
+            android:gravity="start|center_vertical"
+            android:text="Cancel"
+            android:fontFamily="@font/roboto"
+            android:textColor="@color/black"
+            android:textSize="12dp" />
+
+        <TextView
+            android:id="@+id/apply_filter"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.4"
+            android:background="@drawable/done_bg"
+            android:gravity="center"
+            android:text="Apply"
+            android:fontFamily="@font/roboto_medium_new"
+            android:textColor="@color/white"
+            android:textSize="12dp" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

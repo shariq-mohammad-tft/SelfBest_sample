@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:drawable="@drawable/my_gradient"/>
+    <item
+        android:drawable="@drawable/gradient1"/>
+
+    <item
+        android:drawable="@drawable/ic_path_305__1_"/>
+
+    <item
+        android:drawable="@drawable/my_gradient"/>
+    <item
+        android:drawable="@drawable/gradient1"/>
+
+    <item
+        android:drawable="@drawable/ic_path_305__1_"/>
+
+</layer-list>

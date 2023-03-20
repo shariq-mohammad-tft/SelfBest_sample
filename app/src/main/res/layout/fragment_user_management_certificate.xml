@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.fragments.userManagement.UserManagementCertificate">
+
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tablayoutCertificate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="-6dp"
+        app:tabGravity="start"
+        app:layout_constraintBottom_toTopOf="@+id/tabss"
+        app:layout_constraintStart_toStartOf="parent"
+        android:minWidth="90dp"
+        app:tabIconTint="@color/black"
+        app:tabIndicatorColor="@color/tool_bar_color"
+        app:tabSelectedTextColor="@color/tool_bar_color"
+        app:tabTextAppearance="@style/TabLayoutStyle"
+        app:tabTextColor="@color/black" />
+
+    <CheckBox
+        android:id="@+id/checkBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="7dp"
+        android:buttonTint="@color/tool_bar_color"
+        android:fontFamily="@font/roboto"
+        android:text="Select all"
+        android:textSize="10sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/tabss"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_marginTop="100dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tablayoutCertificate">
+
+
+        <!--        <LinearLayout-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:orientation="horizontal"-->
+        <!--          >-->
+
+        <!--            <com.google.android.material.tabs.TabLayout-->
+        <!--                android:id="@+id/tablayoutCertificate2"-->
+        <!--                android:layout_width="wrap_content"-->
+        <!--                android:layout_height="wrap_content"-->
+
+        <!--                app:tabSelectedTextColor="@color/tool_bar_color"-->
+        <!--                app:tabIconTint="@color/black"-->
+        <!--                android:layout_weight="1"-->
+        <!--                app:tabIndicatorColor="@color/tool_bar_color"-->
+        <!--                app:tabTextAppearance="@style/TabLayoutStyle"-->
+        <!--                app:tabTextColor="@color/black" />-->
+
+        <!--            <CheckBox-->
+
+        <!--                android:id="@+id/checkBox2"-->
+        <!--                android:layout_gravity="center"-->
+        <!--                android:layout_width="match_parent"-->
+        <!--                android:layout_height="wrap_content"-->
+        <!--                android:layout_weight="3.4"-->
+        <!--                android:textSize="10sp"-->
+        <!--                android:buttonTint="@color/tool_bar_color"-->
+        <!--                android:fontFamily="@font/roboto"-->
+        <!--                android:text="Select all"-->
+        <!--                />-->
+
+        <!--        </LinearLayout>-->
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/viewpagerCertificate"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="5dp"
+            />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

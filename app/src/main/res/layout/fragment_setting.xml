@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_marginHorizontal="20dp"
+    android:layout_marginVertical="10dp"
+    tools:context=".ui.fragments.settings.SettingFragment">
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Settings"
+        android:fontFamily="@font/poppins_medium_new"
+        android:textSize="16dp"
+        android:layout_marginBottom="10dp"
+        android:textColor="@color/tool_bar_color"
+        android:padding="5dp"/>
+
+    <TextView
+        android:id="@+id/edit_profile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/circle"
+        android:paddingStart="10dp"
+        android:paddingTop="14dp"
+        android:fontFamily="@font/roboto_medium_new"
+        android:paddingBottom="14dp"
+        android:text="Edit Profile"
+        android:textColor="@color/black"
+        android:textSize="12dp" />
+
+    <TextView
+        android:id="@+id/distraction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Distraction"
+        android:textSize="12dp"
+        android:paddingStart="10dp"
+        android:paddingBottom="14dp"
+        android:fontFamily="@font/roboto_medium_new"
+        android:paddingTop="14dp"
+        android:textColor="@color/black"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/circle" >
+    </TextView>
+
+    <TextView
+        android:id="@+id/usermanagement"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="User Management"
+        android:textSize="12sp"
+        android:paddingStart="10dp"
+        android:paddingBottom="14dp"
+        android:fontFamily="@font/roboto_medium_new"
+        android:paddingTop="14dp"
+        android:textColor="@color/black"
+        android:layout_marginBottom="10dp"
+
+        android:background="@drawable/circle" >
+    </TextView>
+
+<!--    <TextView-->
+<!--        android:id="@+id/calendar"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="Calendar"-->
+<!--        android:textColor="@color/black"-->
+<!--        android:textSize="12dp"-->
+<!--        android:paddingStart="10dp"-->
+<!--        android:fontFamily="@font/roboto_medium"-->
+<!--        android:paddingBottom="14dp"-->
+<!--        android:paddingTop="14dp"-->
+<!--        android:layout_marginBottom="10dp"-->
+<!--        android:background="@drawable/circle" >-->
+<!--    </TextView>-->
+
+    <Button
+        android:id="@+id/logout"
+        android:layout_width="170dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="75dp"
+        android:layout_marginEnd="80dp"
+        android:background="@drawable/logout_bg"
+        android:fontFamily="@font/roboto_medium_new"
+        android:padding="14dp"
+        android:text="Logout"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="14dp"/>
+
+</LinearLayout>
+</FrameLayout>

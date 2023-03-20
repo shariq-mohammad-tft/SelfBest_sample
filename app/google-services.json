@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "446007361957",
+    "project_id": "selfbest",
+    "storage_bucket": "selfbest.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:446007361957:android:18377d4d58e06acfbce84c",
+        "android_client_info": {
+          "package_name": "com.tft.selfbest"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "446007361957-jfqmj5nu0hs5ed2p91ik41hjvgo9eap5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tft.selfbest",
+            "certificate_hash": "9296fe6c0daea69b272ff4f859b270142e4d419c"
+          }
+        },
+        {
+          "client_id": "446007361957-ml80obi46ep9ulquiov4cujljk49c1u8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCBm8FuvKP16cKXX7qZhblO0rWUb7UN6OA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "446007361957-com1pgs8mbtq1v91vlt9qs8n9okapmod.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "446007361957-2arn9lu36uh0faq83it8pa4ep55fc9ot.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.selfbest.ios"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

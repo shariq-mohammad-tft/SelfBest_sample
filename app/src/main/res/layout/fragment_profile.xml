@@ -1,0 +1,886 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/detail_page_header_color"
+        tools:context=".ui.fragments.profile.ProfileFragment">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/user_icon"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="5dp"
+            android:src="@drawable/user_icon"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/user_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:fontFamily="@font/roboto_medium_new"
+            android:text="Abdul Moheet"
+            android:textColor="@color/white"
+            android:textSize="14dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/user_icon" />
+
+        <TextView
+            android:id="@+id/user_profession"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:fontFamily="@font/roboto_medium_new"
+            android:text="Software Engineer"
+            android:textColor="@color/white"
+            android:textSize="12dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/user_name" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:background="@color/white"
+            android:paddingHorizontal="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/user_profession">
+
+            <LinearLayout
+                android:id="@+id/personal_integration_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:background="@drawable/organisation_border"
+                android:gravity="center"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/personal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@drawable/left_organisation_round"
+                    android:fontFamily="@font/roboto_medium_new"
+                    android:gravity="center"
+                    android:paddingHorizontal="30dp"
+                    android:paddingVertical="10dp"
+                    android:text="Personal"
+                    android:textColor="@color/white" />
+
+                <TextView
+                    android:id="@+id/integrations"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/roboto_medium_new"
+                    android:gravity="center"
+                    android:paddingHorizontal="20dp"
+                    android:paddingVertical="10dp"
+                    android:text="Integrations"
+                    android:textColor="#707070" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/personal_detail_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:fontFamily="@font/poppins_medium_new"
+                android:text="Edit your Personal Details"
+                android:textColor="@color/tool_bar_color"
+                android:textSize="14dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/personal_integration_container" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/personal_detail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/personal_detail_text">
+
+                <LinearLayout
+                    android:id="@+id/profile_detail_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="2dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/profile_bg_card"
+                    android:elevation="5dp"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="10dp"
+                    android:paddingVertical="15dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto_medium_new"
+                        android:text="First name"
+                        android:textColor="@color/privacy_bg_colour"
+                        android:textSize="12dp" />
+
+                    <EditText
+                        android:id="@+id/first_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="32dp"
+                        android:layout_marginTop="3dp"
+                        android:background="@drawable/upcoming_event_bg"
+                        android:letterSpacing="0.08"
+                        android:paddingLeft="10dp"
+                        android:textColor="#3e3e3e"
+                        android:textSize="12dp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:fontFamily="@font/roboto_medium_new"
+                        android:text="Last name"
+                        android:textColor="@color/privacy_bg_colour"
+                        android:textSize="12dp" />
+
+                    <EditText
+                        android:id="@+id/last_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="32dp"
+                        android:layout_marginTop="3dp"
+                        android:background="@drawable/upcoming_event_bg"
+                        android:letterSpacing="0.08"
+                        android:paddingLeft="10dp"
+                        android:textSize="12dp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:fontFamily="@font/roboto_medium_new"
+                        android:text="Experience"
+                        android:textColor="@color/privacy_bg_colour"
+                        android:textSize="12dp" />
+
+                    <EditText
+                        android:id="@+id/experience"
+                        android:layout_width="match_parent"
+                        android:layout_height="32dp"
+                        android:layout_marginTop="3dp"
+                        android:background="@drawable/upcoming_event_bg"
+                        android:letterSpacing="0.08"
+                        android:paddingLeft="10dp"
+                        android:textSize="12dp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:fontFamily="@font/roboto_medium_new"
+                        android:text="Organisation"
+                        android:textColor="@color/privacy_bg_colour"
+                        android:textSize="12dp" />
+
+                    <TextView
+                        android:id="@+id/organisation"
+                        android:layout_width="match_parent"
+                        android:layout_height="32dp"
+                        android:layout_marginTop="3dp"
+                        android:background="@drawable/upcoming_event_bg"
+                        android:gravity="center_vertical"
+                        android:letterSpacing="0.08"
+                        android:paddingLeft="10dp"
+                        android:textSize="12dp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:fontFamily="@font/roboto_medium_new"
+                        android:text="Gender"
+                        android:textColor="@color/privacy_bg_colour"
+                        android:textSize="12dp" />
+
+                    <FrameLayout
+                        android:id="@+id/gender_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="32dp"
+                        android:layout_marginTop="3dp"
+                        android:background="@drawable/upcoming_event_bg"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/event_type_text">
+
+                        <Spinner
+                            android:id="@+id/gender_spinner"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:padding="5dp" />
+                    </FrameLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:fontFamily="@font/roboto_medium_new"
+                        android:text="Job Position"
+                        android:textColor="@color/privacy_bg_colour"
+                        android:textSize="12dp" />
+
+                    <EditText
+                        android:id="@+id/job_position"
+                        android:layout_width="match_parent"
+                        android:layout_height="32dp"
+                        android:layout_marginTop="3dp"
+                        android:background="@drawable/upcoming_event_bg"
+                        android:letterSpacing="0.08"
+                        android:paddingLeft="10dp"
+                        android:textSize="12dp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/personality_type_heading"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:fontFamily="@font/roboto_medium_new"
+                        android:text="Personality Type"
+                        android:textColor="@color/privacy_bg_colour"
+                        android:textSize="12dp"
+                        android:visibility="gone" />
+
+                    <FrameLayout
+                        android:id="@+id/personality_spinner_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="36dp"
+                        android:layout_marginTop="3dp"
+                        android:background="@drawable/upcoming_event_bg"
+
+                        android:visibility="gone"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/event_type_text">
+
+                        <Spinner
+                            android:id="@+id/personality_type_spinner"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:padding="5dp" />
+                    </FrameLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:fontFamily="@font/roboto_medium_new"
+                        android:text="Don't know your personality Type?"
+                        android:textColor="@color/privacy_bg_colour"
+                        android:textSize="12dp"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/test_link"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="3dp"
+                        android:background="@drawable/done_bg"
+                        android:paddingHorizontal="10dp"
+                        android:paddingVertical="5dp"
+                        android:text="Take the test"
+                        android:textColor="@color/white"
+                        android:textSize="12dp"
+                        android:visibility="gone" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/work_detail_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="30dp"
+                    android:fontFamily="@font/poppins_medium_new"
+                    android:text="Edit your Work Details"
+                    android:textColor="@color/tool_bar_color"
+                    android:textSize="14dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/profile_detail_container" />
+
+                <LinearLayout
+                    android:id="@+id/work_time_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="2dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/profile_bg_card"
+                    android:elevation="5dp"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="10dp"
+                    android:paddingVertical="15dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/work_detail_text">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto_medium_new"
+                        android:text="Work Days"
+                        android:textColor="@color/privacy_bg_colour"
+                        android:textSize="12dp" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/work_days"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:padding="3dp" />
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:fontFamily="@font/roboto_medium_new"
+                        android:text="Work Time"
+                        android:textColor="@color/privacy_bg_colour"
+                        android:textSize="12dp" />
+
+                    <LinearLayout
+                        android:id="@+id/time_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="45dp"
+                        android:layout_marginTop="5dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/event_time">
+
+                        <LinearLayout
+                            android:id="@+id/start_time_container"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginRight="10dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/upcoming_event_bg"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:paddingHorizontal="12dp"
+                            android:paddingVertical="8dp">
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/time_clock_icon" />
+
+
+                            <TextView
+                                android:id="@+id/start_time"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_marginStart="15dp"
+                                android:layout_weight="1"
+                                android:gravity="center_vertical"
+                                android:letterSpacing="0.08"
+                                android:text="Start Time"
+                                android:textColor="@color/privacy_bg_colour"
+                                android:textSize="12dp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/end_time_container"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginRight="10dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/upcoming_event_bg"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:paddingHorizontal="12dp"
+                            android:paddingVertical="8dp">
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/time_clock_icon" />
+
+
+                            <TextView
+                                android:id="@+id/end_time"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_marginStart="15dp"
+                                android:layout_weight="1"
+                                android:gravity="center_vertical"
+                                android:letterSpacing="0.08"
+                                android:text="End Time"
+                                android:textColor="@color/privacy_bg_colour"
+                                android:textSize="12dp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/skills_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="2dp"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/profile_bg_card"
+                    android:elevation="5dp"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="10dp"
+                    android:paddingTop="15dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/work_time_container">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:fontFamily="@font/roboto_medium_new"
+                            android:text="Add Skills"
+                            android:textColor="@color/privacy_bg_colour"
+                            android:textSize="12dp" />
+
+                        <!--                        <TextView-->
+                        <!--                            android:layout_width="0dp"-->
+                        <!--                            android:layout_height="wrap_content"-->
+                        <!--                            android:layout_marginLeft="10dp"-->
+                        <!--                            android:layout_weight="1"-->
+                        <!--                            android:fontFamily="@font/roboto_medium"-->
+                        <!--                            android:text="Skill Level"-->
+                        <!--                            android:textColor="@color/privacy_bg_colour"-->
+                        <!--                            android:textSize="10dp"-->
+                        <!--                            android:textStyle="bold" />-->
+                    </LinearLayout>
+
+                    <AutoCompleteTextView
+                        android:id="@+id/skill_search"
+                        android:layout_width="match_parent"
+                        android:layout_height="36dp"
+                        android:layout_marginTop="3dp"
+                        android:background="@drawable/upcoming_event_bg"
+                        android:drawableRight="@drawable/ic_search"
+                        android:hint="Search Your Skill Here"
+                        android:inputType="text"
+                        android:padding="10dp"
+                        android:textColor="@color/privacy_bg_colour"
+                        android:textColorHint="#7d7d7d"
+                        android:textSize="12dp" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recommended_skills"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="5dp"
+                        android:scrollbarSize="10dp"
+                        android:scrollbars="horizontal" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/skill_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="185dp"
+                        android:layout_marginTop="10dp"
+                        android:paddingBottom="10dp"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/pending_skill_heading"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto_medium_new"
+                        android:text="Pending Skills"
+                        android:textColor="@color/privacy_bg_colour"
+                        android:textSize="12dp"
+                        android:visibility="gone" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/pending_skill_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="185dp"
+                        android:layout_marginTop="10dp"
+                        android:paddingBottom="10dp"
+                        android:visibility="gone" />
+                    <!--                        android:scrollbars="vertical"-->
+                    <!--                        android:scrollbarSize="5dp"/>-->
+
+
+                    <!--                    <androidx.recyclerview.widget.RecyclerView-->
+                    <!--                        android:id="@+id/skill_list"-->
+                    <!--                        android:layout_width="match_parent"-->
+                    <!--                        android:layout_height="wrap_content" />-->
+
+                    <!--                    <androidx.constraintlayout.widget.ConstraintLayout-->
+                    <!--                        android:id="@+id/add_skill_container"-->
+                    <!--                        android:layout_width="match_parent"-->
+                    <!--                        android:layout_height="wrap_content"-->
+                    <!--                        android:layout_marginTop="10dp"-->
+                    <!--                        android:visibility="gone">-->
+
+                    <!--                        <AutoCompleteTextView-->
+                    <!--                            android:id="@+id/skill"-->
+                    <!--                            android:layout_width="0dp"-->
+                    <!--                            android:layout_height="35dp"-->
+                    <!--                            android:layout_marginRight="10dp"-->
+                    <!--                            android:background="@drawable/upcoming_event_bg"-->
+                    <!--                            android:gravity="center_vertical"-->
+                    <!--                            android:inputType="text"-->
+                    <!--                            android:paddingLeft="10dp"-->
+                    <!--                            android:textColor="@color/privacy_bg_colour"-->
+                    <!--                            android:textSize="12dp"-->
+                    <!--                            app:layout_constraintEnd_toStartOf="@id/skill_level_container"-->
+                    <!--                            app:layout_constraintStart_toStartOf="parent"-->
+                    <!--                            app:layout_constraintTop_toTopOf="parent" />-->
+
+                    <!--                        <FrameLayout-->
+                    <!--                            android:id="@+id/skill_level_container"-->
+                    <!--                            android:layout_width="0dp"-->
+                    <!--                            android:layout_height="35dp"-->
+                    <!--                            android:layout_marginLeft="10dp"-->
+                    <!--                            android:background="@drawable/upcoming_event_bg"-->
+                    <!--                            app:layout_constraintEnd_toStartOf="@id/delete_skill"-->
+                    <!--                            app:layout_constraintStart_toEndOf="@id/skill"-->
+                    <!--                            app:layout_constraintTop_toTopOf="parent">-->
+
+                    <!--                            <Spinner-->
+                    <!--                                android:id="@+id/skill_level_spinner"-->
+                    <!--                                android:layout_width="match_parent"-->
+                    <!--                                android:layout_height="match_parent"-->
+                    <!--                                android:padding="5dp" />-->
+                    <!--                        </FrameLayout>-->
+
+                    <!--                        <ImageView-->
+                    <!--                            android:id="@+id/delete_skill"-->
+                    <!--                            android:layout_width="wrap_content"-->
+                    <!--                            android:layout_height="wrap_content"-->
+                    <!--                            android:padding="5dp"-->
+                    <!--                            android:src="@drawable/delete_icon"-->
+                    <!--                            app:layout_constraintEnd_toEndOf="parent"-->
+                    <!--                            app:layout_constraintStart_toEndOf="@id/skill_level_container"-->
+                    <!--                            app:layout_constraintTop_toTopOf="parent" />-->
+
+                    <!--                          </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+
+                    <!--                    <LinearLayout-->
+                    <!--                        android:id="@+id/add_skill_btn"-->
+                    <!--                        android:layout_width="78dp"-->
+                    <!--                        android:layout_height="28dp"-->
+                    <!--                        android:layout_gravity="end"-->
+                    <!--                        android:layout_marginTop="20dp"-->
+                    <!--                        android:background="@drawable/done_bg"-->
+                    <!--                        android:gravity="center"-->
+                    <!--                        android:padding="5dp">-->
+
+                    <!--                        <ImageView-->
+                    <!--                            android:layout_width="wrap_content"-->
+                    <!--                            android:layout_height="wrap_content"-->
+                    <!--                            android:src="@drawable/circular_plus_icon" />-->
+
+                    <!--                        <TextView-->
+                    <!--                            android:id="@+id/skill_save_btn"-->
+                    <!--                            android:layout_width="wrap_content"-->
+                    <!--                            android:layout_height="wrap_content"-->
+                    <!--                            android:layout_marginLeft="8dp"-->
+                    <!--                            android:text="Add new"-->
+                    <!--                            android:fontFamily="@font/roboto_medium"-->
+                    <!--                            android:textColor="@color/white"-->
+                    <!--                            android:textSize="12dp" />-->
+                    <!--                    </LinearLayout>-->
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/account_setting_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="2dp"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/profile_bg_card"
+                    android:elevation="5dp"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="10dp"
+                    android:paddingVertical="15dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/skills_container">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto_medium_new"
+                        android:text="Account Setting"
+                        android:textColor="@color/privacy_bg_colour"
+                        android:textSize="14dp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="start"
+                            android:layout_gravity="center"
+                            android:fontFamily="@font/roboto_medium_new"
+                            android:text="Deactivate account temporarily" />
+
+                        <!--                        <TextView-->
+                        <!--                            android:id="@+id/datn"-->
+                        <!--                            android:layout_width="wrap_content"-->
+                        <!--                            android:layout_height="wrap_content"-->
+                        <!--                            android:gravity="start|center_vertical"-->
+                        <!--                            android:text="No"-->
+                        <!--                            android:background="@drawable/upcoming_event_bg"-->
+                        <!--                            android:paddingVertical="10dp"-->
+                        <!--                            android:paddingHorizontal="34dp"-->
+                        <!--                            android:textColor="@color/black"-->
+                        <!--                            android:textSize="12dp" />-->
+
+                        <TextView
+                            android:id="@+id/daty"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/profile_action_btn_bg"
+                            android:gravity="end"
+                            android:text="Yes"
+                            android:textColor="@color/white"
+                            android:textSize="12dp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="start"
+                            android:layout_gravity="center"
+                            android:fontFamily="@font/roboto_medium_new"
+                            android:text="Delete account permanently" />
+
+                        <!--                        <TextView-->
+                        <!--                            android:id="@+id/datn"-->
+                        <!--                            android:layout_width="wrap_content"-->
+                        <!--                            android:layout_height="wrap_content"-->
+                        <!--                            android:gravity="start|center_vertical"-->
+                        <!--                            android:text="No"-->
+                        <!--                            android:background="@drawable/upcoming_event_bg"-->
+                        <!--                            android:paddingVertical="10dp"-->
+                        <!--                            android:paddingHorizontal="34dp"-->
+                        <!--                            android:textColor="@color/black"-->
+                        <!--                            android:textSize="12dp" />-->
+
+                        <TextView
+                            android:id="@+id/dapy"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/profile_action_btn_bg"
+                            android:gravity="end"
+                            android:text="Yes"
+                            android:textColor="@color/white"
+                            android:textSize="12dp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="start"
+                            android:layout_gravity="center"
+                            android:fontFamily="@font/roboto_medium_new"
+                            android:text="Delete data" />
+
+                        <!--                        <TextView-->
+                        <!--                            android:id="@+id/datn"-->
+                        <!--                            android:layout_width="wrap_content"-->
+                        <!--                            android:layout_height="wrap_content"-->
+                        <!--                            android:gravity="start|center_vertical"-->
+                        <!--                            android:text="No"-->
+                        <!--                            android:background="@drawable/upcoming_event_bg"-->
+                        <!--                            android:paddingVertical="10dp"-->
+                        <!--                            android:paddingHorizontal="34dp"-->
+                        <!--                            android:textColor="@color/black"-->
+                        <!--                            android:textSize="12dp" />-->
+
+                        <TextView
+                            android:id="@+id/ddy"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/profile_action_btn_bg"
+                            android:gravity="end"
+                            android:text="Yes"
+                            android:textColor="@color/white"
+                            android:textSize="12dp" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="30dp"
+                    android:paddingBottom="20dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/account_setting_container">
+
+                    <TextView
+                        android:id="@+id/cancel_profile"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.7"
+                        android:gravity="start|center_vertical"
+                        android:text="Cancel"
+                        android:textColor="@color/black"
+                        android:textSize="12dp" />
+
+                    <TextView
+                        android:id="@+id/save_profile"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.3"
+                        android:background="@drawable/done_bg"
+                        android:gravity="center"
+                        android:text="Save"
+                        android:textColor="@color/white"
+                        android:textSize="12dp" />
+                </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <LinearLayout
+                android:id="@+id/integrations_detail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="1dp"
+                android:layout_marginVertical="10dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/profile_bg_card"
+                android:elevation="5dp"
+                android:orientation="vertical"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="15dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/personal_detail_text">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:src="@drawable/google_cal_icon" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="9dp"
+                        android:layout_weight="1"
+                        android:text="Google Calendar"
+                        android:textColor="@color/privacy_bg_colour"
+                        android:textSize="12dp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/google_cal_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="35dp"
+                        android:background="@drawable/done_bg"
+                        android:text="Connect"
+                        android:textColor="@color/white"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="30dp"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:src="@drawable/microsoft_cal_icon" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="9dp"
+                        android:layout_weight="1"
+                        android:text="Microsoft Calendar"
+                        android:textColor="@color/privacy_bg_colour"
+                        android:textSize="12dp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/microsoft_cal_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="35dp"
+                        android:background="@drawable/done_bg"
+                        android:text="Connect"
+                        android:textColor="@color/white"
+                        android:textSize="12sp" />
+                </LinearLayout>
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <ProgressBar
+            android:id="@+id/progress"
+            style="?android:progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:background="@drawable/myrect">
+
+        <TextView
+            android:id="@+id/start_get_hour_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Start Get-go hours"
+            android:textColor="@color/tool_bar_color"
+            android:textSize="14dp"
+            android:layout_marginTop="5dp"
+            android:fontFamily="@font/poppins_medium_new"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/glass"
+            android:layout_width="220dp"
+            android:layout_height="220dp"
+            android:layout_marginTop="15dp"
+            app:lottie_autoPlay="true"
+            app:lottie_rawRes="@raw/hydration"
+            app:lottie_loop="true"
+            app:layout_constraintTop_toBottomOf="@+id/start_get_hour_title"
+            app:layout_constraintEnd_toEndOf="@+id/start_get_hour_title"
+            app:layout_constraintStart_toStartOf="@+id/start_get_hour_title"/>
+
+        <TextView
+            android:id="@+id/hydration_alert_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:text="Hydration Alert"
+            android:fontFamily="@font/poppins_medium_new"
+            android:textColor="@color/tool_bar_color"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/glass" />
+
+        <TextView
+            android:id="@+id/hydration_alert_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:textColor="#3e3e3e"
+            android:text="Maintaining healthy level of hydration helps in increasing attention and concentration and decreases fatigue. Drinking water can increase productivity by 14 percent, according to a research. Before you begin working, have a glass of water."
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/hydration_alert_title" />
+
+
+        <TextView
+            android:id="@+id/sip_Water"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:text="Do you want to take a sip of water ?"
+            android:textColor="@color/tool_bar_color"
+            android:textSize="14dp"
+            android:fontFamily="@font/poppins_medium_new"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/hydration_alert_text" />
+
+        <TextView
+            android:id="@+id/No"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="36dp"
+            android:paddingVertical="8dp"
+            android:layout_marginTop="15dp"
+            android:text="No"
+            android:textSize="14dp"
+            android:background="@drawable/upcoming_event_bg"
+            android:textAllCaps="false"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/sip_Water" />
+
+        <TextView
+            android:id="@+id/yes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="15dp"
+            android:paddingHorizontal="36dp"
+            android:paddingVertical="8dp"
+            android:text="Yes"
+            android:textSize="14dp"
+            android:background="@drawable/get_started_btn_bg"
+            android:textColor="@color/white"
+            app:layout_constraintStart_toEndOf="@id/No"
+            app:layout_constraintTop_toBottomOf="@id/sip_Water"
+            />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
+
+    <!--            app:lottie_rawRes="@raw/glass"-->
