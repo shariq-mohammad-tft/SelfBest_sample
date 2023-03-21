@@ -124,7 +124,7 @@ fun ChatScreen(
                     // automatically scroll down when new message arrives but,
                     // when user manually scroll up then prevent scroll down (so detect scroll up)
                     if (messages.size > 6 && !listState.isScrollInProgress) {
-                        listState.animateScrollToItem(index = messages.lastIndex)
+                        listState.scrollToItem(index = messages.lastIndex)
                     }
                 }
                 items(messages) { message ->
@@ -152,9 +152,9 @@ fun ChatScreen(
                             // scroll rules
                             // automatically scroll down when new message arrives but,
                             // when user manually scroll up then prevent scroll down (so detect scroll up)
-                            LaunchedEffect(messages.size > 6 && !listState.isScrollInProgress) {
-                                listState.scrollToItem(index = messages.lastIndex)
-                            }
+                            /* LaunchedEffect(messages.size > 6 && !listState.isScrollInProgress) {
+                                 listState.scrollToItem(index = messages.lastIndex)
+                             }*/
 
                             if (!message.value.channelId.isNullOrEmpty()) {
                                 LaunchedEffect(Unit) {
@@ -195,13 +195,13 @@ fun ChatScreen(
                 }
             }
 
-            ChatBoxEditText(
+            ChatBoxEditTextForBot(
                 message = viewModel.message,
                 onChange = { viewModel.updateMessage(it) },
                 onSend = {
                     if (it.normalText().isEmpty()) {
                         context.toast("Please Enter Message!")
-                        return@ChatBoxEditText
+                        return@ChatBoxEditTextForBot
                     }
 
                     val messageObj = buildPlainMessage(message = it, userId)
@@ -209,7 +209,7 @@ fun ChatScreen(
                     viewModel.updateMessage("")
 
                     scope.launch {
-                        if (messages.isNotEmpty()) listState.animateScrollToItem(index = messages.lastIndex)
+                        if (messages.isNotEmpty()) listState.scrollToItem(index = messages.lastIndex)
                     }
 
                 },
@@ -260,18 +260,22 @@ fun MessageCard(
         if (!message.links.isNullOrEmpty()) {
             CardlinksMessage(message = message.links!!)
         }
+
         if (message.senderId == senderId) {
-            if (message.message == null) {
-                CardSelfMessage(message = message.eventMessage!!)
+            if (message.eventMessage != null) {
+                CardSelfMessage(message = message.eventMessage)
             } else {
-                CardSelfMessage(message = message.message!!)
+                CardSelfMessage(message = message.message)
             }
 
         } else {
-            CardReceiverMessage(message = message.message)
+            if (message.message != "") {
+                CardReceiverMessage(message = message.message)
+            } else {
+                CardReceiverMessage(message = "Here is something I found")
+            }
+
         }
-
-
 
         if (!message.buttons.isNullOrEmpty()) {
 

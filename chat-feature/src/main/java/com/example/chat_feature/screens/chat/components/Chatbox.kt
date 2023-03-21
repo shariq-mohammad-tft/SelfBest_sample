@@ -34,7 +34,7 @@ fun ChatBoxEditText(
 
         Row {
             // Show button to select image
-            Box(modifier = Modifier.padding(8.dp)) {
+            Box(modifier = Modifier.padding(10.dp)) {
                 Button(
                     onClick = {
                         // launcher.launch("image/*")
@@ -60,7 +60,81 @@ fun ChatBoxEditText(
                 onValueChange = { onChange(it) },
                 modifier = Modifier
                     .weight(1f)
-                    .padding(0.dp, 0.dp, 15.dp, 5.dp),
+                    .padding(0.dp, 5.dp, 15.dp, 5.dp),
+                placeholder = { Text(text = "Type your message...", color = Color(0XFF707070)) },
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                keyboardActions = KeyboardActions { onSend(message) },
+                colors = TextFieldDefaults.textFieldColors(
+                    textColor = Color(0XFF3E3E3E),
+                    backgroundColor = Color(0XFFFFFFFF),
+                    unfocusedIndicatorColor = Color(0xFFC8C8C8),
+                    focusedIndicatorColor = Color(0xFFC8C8C8),
+                ),
+                trailingIcon = {
+                    IconButton(onClick = {
+                        // Pass the selected image Uri along with the message
+                        onSend(message)
+
+                    }) {
+                        Icon(
+                            imageVector = Icons.Default.Send,
+                            contentDescription = "Send",
+                            tint = Color(0XFF1D71D4)
+                        )
+                    }
+                },
+                shape = RoundedCornerShape(8.dp),
+                singleLine = false
+            )
+
+
+        }
+
+    }
+}
+
+@Composable
+fun ChatBoxEditTextForBot(
+    message: String,
+    onChange: (message: String) -> Unit,
+    onSend: (message: String) -> Unit,
+    onImageIconClicked: () -> Unit = {},
+) {
+
+
+    Column() {
+
+
+        Row() {
+            // Show button to select image
+            Box(modifier = Modifier.padding(10.dp)) {
+                Button(
+                    onClick = {
+                        // launcher.launch("image/*")
+                        onImageIconClicked.invoke()
+                    },
+                    modifier = Modifier.size(40.dp),
+                    shape = CircleShape,
+                    contentPadding = PaddingValues(0.dp),
+                    colors = buttonColors(Color(0XFFC8C8C8)),
+
+                ) {
+                    Icon(
+                        Icons.Filled.AttachFile,
+                        contentDescription = "content description",
+                        tint = Color(0XFFFFFFFF)
+                    )
+                }
+            }
+
+
+
+            OutlinedTextField(
+                value = message,
+                onValueChange = { onChange(it) },
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(0.dp, 5.dp, 15.dp, 5.dp),
                 placeholder = { Text(text = "Type your message...", color = Color(0XFF707070)) },
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                 keyboardActions = KeyboardActions { onSend(message) },

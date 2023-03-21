@@ -94,7 +94,6 @@ class ChatViewModel @Inject constructor(
         viewModelScope.launch {
             val response = safeApiCall {
                 api.loadChatBetweenUserAndBot(
-                   // senderId = senderId,
                     senderId = userId,
                 )
             }

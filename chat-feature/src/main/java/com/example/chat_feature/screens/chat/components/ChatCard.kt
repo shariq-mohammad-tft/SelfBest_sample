@@ -44,8 +44,8 @@ fun CardSelfMessage(message: String) {
                 modifier = Modifier
                     .padding(end = 2.dp)
                     .align(Alignment.Bottom),
-                text = "01:33 AM",
-                fontSize=10.sp,
+                text = "12:52 AM",
+                fontSize = 10.sp,
                 style = MaterialTheme.typography.caption,
                 color = Color(0xFF707070)
             )
@@ -61,16 +61,7 @@ fun CardSelfMessage(message: String) {
                     color = Color(0xFFFFFFFF)
                 )
             }
-
         }
-
-        /*Text(
-            modifier = Modifier.padding(8.dp),
-            fontSize = 12.sp,
-            color = MaterialTheme.colors.onSurface,
-            text = "You"
-        )*/
-
     }
 }
 
@@ -116,7 +107,7 @@ fun CardReceiverMessage(message: String) {
                     .padding(start = 2.dp)
                     .align(Alignment.Bottom),
                 text = "01:33 AM",
-                fontSize=10.sp,
+                fontSize = 10.sp,
                 style = MaterialTheme.typography.caption,
                 color = Color(0xFF707070)
             )
@@ -161,7 +152,7 @@ fun CardlinksMessage(message: ArrayList<String>) {
                     .padding(start = 2.dp)
                     .align(Alignment.Bottom),
                 text = "01:33 AM",
-                fontSize=10.sp,
+                fontSize = 10.sp,
                 style = MaterialTheme.typography.caption,
                 color = Color(0xFF707070)
             )
@@ -175,8 +166,9 @@ fun CardlinksMessage(message: ArrayList<String>) {
 fun CardReceiverMessagePreview() {
     CardReceiverMessage("Cool")
 }
+
 @Composable
-fun CardErrorMessage(message: String, ) {
+fun CardErrorMessage(message: String) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -259,13 +251,14 @@ fun PhotoSenderCard(imageLink: String, message: String, progress:Float) {
 
 }*/
 @Composable
-fun PhotoSenderCard(imageLink: String, message: String, progress: Float, navController:NavController) {
+fun PhotoSenderCard(
+    imageLink: String, message: String, progress: Float, navController: NavController
+) {
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp),
-        horizontalAlignment = Alignment.End
+            .padding(8.dp), horizontalAlignment = Alignment.End
     ) {
         Card(
             modifier = Modifier.widthIn(max = 220.dp),
@@ -273,8 +266,7 @@ fun PhotoSenderCard(imageLink: String, message: String, progress: Float, navCont
             backgroundColor = Color(0xFFF8F8F8)
         ) {
             Column {
-                AsyncImage(
-                    model = imageLink,
+                AsyncImage(model = imageLink,
                     contentDescription = "Image from photo picker",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
@@ -285,8 +277,7 @@ fun PhotoSenderCard(imageLink: String, message: String, progress: Float, navCont
                                     imageUri = imageLink
                                 )
                             )
-                        }
-                )
+                        })
                 if (message.isNotEmpty()) {
                     Text(
                         text = message,
@@ -295,7 +286,9 @@ fun PhotoSenderCard(imageLink: String, message: String, progress: Float, navCont
                         modifier = Modifier
                             .width(200.dp)
                             .background(Color(0xFF1D71D4))
-                            .padding(8.dp)
+                            .padding(8.dp),
+                        fontSize = 10.sp,
+                        style = MaterialTheme.typography.caption,
                     )
                 }
 
@@ -320,8 +313,9 @@ fun PhotoSenderCardPreview() {
     PhotoSenderCard(
         imageLink = "https://selfbest-chatbot-image.s3.amazonaws.com/images/edcf733e-b100-4f12-8b83-471358e4a980",
         "Cool Caption",
-        100.0f
-        , rememberNavController())
+        100.0f,
+        rememberNavController()
+    )
 }
 
 
@@ -335,16 +329,13 @@ fun PhotoReceiverCard(imageLink: String, message: String, navController: NavCont
     ) {
 
         Card(
-            modifier = Modifier.widthIn(max = 220.dp),
-            shape = RoundedCornerShape(12.dp).copy(
+            modifier = Modifier.widthIn(max = 220.dp), shape = RoundedCornerShape(12.dp).copy(
                 bottomStart = CornerSize(0)
-            ),
-            backgroundColor = Color(0xFFF8F8F8)
+            ), backgroundColor = Color(0xFFF8F8F8)
         ) {
 
             Column {
-                AsyncImage(
-                    model = imageLink,
+                AsyncImage(model = imageLink,
                     contentDescription = "Image from photo picker",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
@@ -355,8 +346,7 @@ fun PhotoReceiverCard(imageLink: String, message: String, navController: NavCont
                                     imageUri = imageLink
                                 )
                             )
-                        }
-                )
+                        })
                 if (message.isNotEmpty()) {
                     Text(
                         text = message,
@@ -366,6 +356,8 @@ fun PhotoReceiverCard(imageLink: String, message: String, navController: NavCont
                             .width(200.dp)
                             .background(MaterialTheme.colors.onBackground.copy(alpha = 0.7f))
                             .padding(8.dp),
+                        fontSize = 10.sp,
+                        style = MaterialTheme.typography.caption,
                     )
                 }
             }
@@ -381,8 +373,9 @@ fun PhotoReceiverCard(imageLink: String, message: String, navController: NavCont
 fun PhotoReceiverCardPreview() {
     PhotoReceiverCard(
         imageLink = "https://selfbest-chatbot-image.s3.amazonaws.com/images/edcf733e-b100-4f12-8b83-471358e4a980",
-        "Cool Caption"
-        , rememberNavController())
+        "Cool Caption",
+        rememberNavController()
+    )
 }
 
 @Composable

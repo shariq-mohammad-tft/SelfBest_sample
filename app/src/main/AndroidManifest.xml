@@ -21,7 +21,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_self_best_2"
         android:supportsRtl="true"
-        android:theme="@style/Theme.SelfBest">
+        android:theme="@style/Theme.SelfBest"
+        >
 
         <activity
             android:name=".ui.activites.ChatActivity2"

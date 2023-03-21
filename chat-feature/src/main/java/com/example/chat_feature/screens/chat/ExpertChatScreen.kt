@@ -182,7 +182,7 @@ fun ExpertChatScreen(
                     // automatically scroll down when new message arrives but,
                     // when user manually scroll up then prevent scroll down (so detect scroll up)
                     if (messages.size > 6 && !listState.isScrollInProgress) {
-                        listState.animateScrollToItem(index = messages.lastIndex)
+                        listState.scrollToItem(index = messages.lastIndex)
                     }
                 }
 
@@ -230,6 +230,7 @@ fun ExpertChatScreen(
                                 } else {
                                     CardSelfMessage(
                                         message = data.message ?: "",
+
                                     )
                                 }
                             } else {
@@ -302,7 +303,7 @@ fun ExpertChatScreen(
 
                         scope.launch {
                             if (messages.isNotEmpty())
-                                listState.animateScrollToItem(index = messages.lastIndex)
+                                listState.scrollToItem(index = messages.lastIndex)
                         }
 
                     },
@@ -354,7 +355,7 @@ fun ExpertChatScreen(
                         scope.launch {
 
                             if (messages.isNotEmpty())
-                                listState.animateScrollToItem(index = messages.lastIndex)
+                                listState.scrollToItem(index = messages.lastIndex)
                         }
 
                     },

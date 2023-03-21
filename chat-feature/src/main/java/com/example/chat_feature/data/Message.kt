@@ -28,5 +28,6 @@ data class Message(
     val isButtonEnabled: Boolean = false,
     val queryName: String? = null,
     val name: String? = null,
-    var links:ArrayList<String>?= arrayListOf()
+    var links:ArrayList<String>?= arrayListOf(),
+    val timeStamp:String?=null
 )

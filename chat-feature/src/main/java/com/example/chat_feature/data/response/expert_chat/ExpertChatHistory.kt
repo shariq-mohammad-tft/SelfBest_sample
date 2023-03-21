@@ -2,6 +2,7 @@ package com.example.chat_feature.data.response.expert_chat
 
 import com.google.gson.annotations.SerializedName
 
+//this  model class is responsible for getting history between user and expert
 data class ExpertChatHistory(
     val chat_messages: List<ChatMessage>,
 )

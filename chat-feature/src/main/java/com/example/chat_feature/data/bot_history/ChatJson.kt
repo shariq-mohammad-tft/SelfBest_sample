@@ -19,7 +19,7 @@ data class ChatJson(
 
     @SerializedName("full_name") val full_name: String?=null,
 
-    @SerializedName("links") val links: List<Any>?=null,
+    @SerializedName("links") val links: ArrayList<String>?=null,
 
     @SerializedName("message") val message: String?=null,
 

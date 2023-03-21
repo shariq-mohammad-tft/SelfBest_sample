@@ -20,7 +20,9 @@ data class ChatMessage(
                 receiverId = chatMap.sentTo.toString(),
                 message = chatMap.message.toString(),
                 buttons = chatMap.buttons,
-                eventMessage = chatMap.event_message.toString()
+                eventMessage = chatMap.event_message.toString(),
+                timeStamp = chatMap.timestamp,
+                links = chatMap.links
             )
         }
 
