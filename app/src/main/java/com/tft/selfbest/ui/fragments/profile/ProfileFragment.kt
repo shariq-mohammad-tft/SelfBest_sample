@@ -405,7 +405,7 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
                 pendingSkills
             )
         binding.workDays.layoutManager =
-            LinearLayoutManager(binding.root.context, LinearLayoutManager.HORIZONTAL, false)
+            SpanningLinearLayoutManager(binding.root.context, LinearLayoutManager.HORIZONTAL, false)
         workingDaysTemp = setWorkingDays(profileData.working)
         binding.workDays.adapter =
             RecursiveDaysAdapter(binding.root.context, workingDaysTemp)

@@ -16,6 +16,7 @@ import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
+import com.github.mikephil.charting.utils.ColorTemplate
 import com.github.mikephil.charting.utils.EntryXComparator
 import com.tft.selfbest.R
 import com.tft.selfbest.data.SelfBestPreference
@@ -28,7 +29,6 @@ import com.tft.selfbest.ui.fragments.inputProgress.InputProgress
 import com.tft.selfbest.ui.fragments.inputProgress.InputProgressViewModel
 import com.tft.selfbest.ui.fragments.overview.OverviewFragment
 import com.tft.selfbest.ui.fragments.overview.OverviewViewModel
-import com.tft.selfbest.ui.fragments.overview.RoundedBarChart
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.DecimalFormat
 import java.text.NumberFormat
@@ -61,6 +61,7 @@ class GetGoHour : Fragment(), View.OnClickListener {
     var timeLeft: Long = 0
     var resetLeft = 4
     var yVals: ArrayList<Entry> = arrayListOf()
+    var labels = mutableListOf<String>()
 
     //    lateinit var swipeListener: SwipeListener
     lateinit var getGoHourResponse: GetGoHourResponse
@@ -109,6 +110,7 @@ class GetGoHour : Fragment(), View.OnClickListener {
         setListeners()
         //val mainHandler = Handler(Looper.getMainLooper())
         setChart()
+        setBarChart(activities)
         //binding.lChart.setViewPortOffsets(4f, 4f, 4f, 4f)
 
         //dummydata
@@ -120,8 +122,17 @@ class GetGoHour : Fragment(), View.OnClickListener {
 
         viewModel.activityLogObserver.observe(viewLifecycleOwner) {
             if (it is NetworkResponse.Success) {
-                if(it.data!!.activities != null)
+                if(it.data!!.categoryList != null) {
+                    labels.clear()
+                    for (entry in (it.data.categoryList as Map<String, String>)) {
+                        if(entry.value != "")
+                            labels.add(entry.value)
+                    }
+                }
+                if(it.data!!.activities != null) {
                     activities = it.data.activities
+                    setBarChart(activities)
+                }
                 Log.e("ActivityLog: ", " Success")
                 if (it.data.progress != null) {
                     progress = it.data.progress!!
@@ -317,7 +328,6 @@ class GetGoHour : Fragment(), View.OnClickListener {
         binding.exPg.xAxis.position = XAxis.XAxisPosition.BOTTOM
         binding.exPg.axisRight.isEnabled = false
         binding.exPg.description.isEnabled = false
-        binding.bar.description.isEnabled = false
         //binding.lChart.animateX(1800, Easing.EaseInExpo)
         binding.lChart.data = data
         binding.lChart.xAxis.setDrawGridLines(false)
@@ -437,6 +447,7 @@ class GetGoHour : Fragment(), View.OnClickListener {
             R.id.bargraphLoad -> {
                 binding.bar.visibility = View.VISIBLE
                 binding.listdatalinear.visibility = View.INVISIBLE
+                setBarChart(activities)
 //                viewModelChart.observationsObserver.observe(viewLifecycleOwner) {
 //                    if (it is NetworkResponse.Success) {
 //                        observationsData = it.data!!
@@ -456,40 +467,40 @@ class GetGoHour : Fragment(), View.OnClickListener {
 //                }
 
                 //viewModelChart.getChart("Asia/Calcutta")
-                viewModelChart.chartLogObserver.observe(viewLifecycleOwner) {
-                    if (it is NetworkResponse.Success)
-                        chartlogDa = it.data!!
-                    progressDetail = chartlogDa.Progress
-                    acvityDetails = chartlogDa.Activity
-                    if (acvityDetails.toString() != null) {
+//                viewModelChart.chartLogObserver.observe(viewLifecycleOwner) {
+//                    if (it is NetworkResponse.Success)
+//                        chartlogDa = it.data!!
+//                    progressDetail = chartlogDa.Progress
+//                    acvityDetails = chartlogDa.Activity
+//                    if (acvityDetails.toString() != null) {
 
                         //  val categoryMap= acvityDetails as LinkedTreeMap<>
                     }
 
-                }
+//                }
                 // var list:ArrayList<ProgressDetailsSubPart> = arrayListOf()
 
-                val listCat: ArrayList<ActivitiesDetailsSubPart> = arrayListOf()
-                if (acvityDetails != null) {
-                    for (actDet in acvityDetails!!) {
-                        listCat.add(ActivitiesDetailsSubPart(actDet.Cate, actDet.duration))
-                        if (actDet.Cate == "Neutral") {
-                            neu = getTimeInFormat(actDet.duration)
-                            Log.d("kkk", actDet.Cate)
-                        } else if (actDet.Cate == "Distraction") {
-                            dist = getTimeInFormat(actDet.duration)
-                        } else if (actDet.Cate == "Code") {
-                            code = getTimeInFormat(actDet.duration)
-                        } else if (actDet.Cate == "Learning") {
-                            learn = getTimeInFormat(actDet.duration)
-                        } else if (actDet.Cate == "Documentation") {
-                            doc = getTimeInFormat(actDet.duration)
-                        }
-                        Log.d("yyy", actDet.Cate)
+//                val listCat: ArrayList<ActivitiesDetailsSubPart> = arrayListOf()
+//                if (acvityDetails != null) {
+//                    for (actDet in acvityDetails!!) {
+//                        listCat.add(ActivitiesDetailsSubPart(actDet.Cate, actDet.duration))
+//                        if (actDet.Cate == "Neutral") {
+//                            neu = getTimeInFormat(actDet.duration)
+//                            Log.d("kkk", actDet.Cate)
+//                        } else if (actDet.Cate == "Distraction") {
+//                            dist = getTimeInFormat(actDet.duration)
+//                        } else if (actDet.Cate == "Code") {
+//                            code = getTimeInFormat(actDet.duration)
+//                        } else if (actDet.Cate == "Learning") {
+//                            learn = getTimeInFormat(actDet.duration)
+//                        } else if (actDet.Cate == "Documentation") {
+//                            doc = getTimeInFormat(actDet.duration)
+//                        }
+//                        Log.d("yyy", actDet.Cate)
                         //Log.d("zzz","time : "+actDet.duration.toString())
 
-                    }
-                }
+                    //}
+                //}
 //                if (acvityDetails != null) {
 //                    for (actDet in acvityDetails!!) {
 //                        listDur.add(ActivitiesDetailsDuration(actDet.duration))
@@ -509,35 +520,7 @@ class GetGoHour : Fragment(), View.OnClickListener {
 //
 //                    }
 //                }
-                val labels =
-                    arrayOf<String>("", "Code", "Course", "Docs", "others", "Break", "Distraction")
-                getBarChartData()
-                barDataSet = BarDataSet(barEntriesList, "")
-                barData = BarData(barDataSet)
-                barData.barWidth = .5f
-                barDataSet.highLightColor = Color.TRANSPARENT
-                binding.bar.data = barData
-                binding.bar.description.isEnabled = false
-                binding.bar.elevation = 30f
-//                binding.bar.renderer=
-//                    RoundedBarChart(binding.bar,binding.bar.animator,binding.bar.viewPortHandler)
-                binding.bar.xAxis.position = XAxis.XAxisPosition.BOTTOM
-                binding.bar.setScaleEnabled(false)
-                binding.bar.setDrawValueAboveBar(true)
-                binding.bar.xAxis.setDrawGridLines(false)
-                binding.bar.setGridBackgroundColor(Color.parseColor("#FCFCFC"))
-                binding.bar.axisLeft.setDrawGridLines(true)
-                binding.bar.setDrawGridBackground(true)
-                binding.bar.legend.isEnabled = false
-                binding.bar.xAxis.valueFormatter = IndexAxisValueFormatter(labels)
-                barDataSet.setColors(
-                    Color.parseColor("#C8C8C8"), Color.parseColor("#C8C8C8"),
-                    Color.parseColor("#C8C8C8"), Color.parseColor("#3E3E3E"),
-                    Color.parseColor("#7630F2"), Color.parseColor("#E20404"),
-                )
-                val rightAxis = binding.bar.axisRight
-                rightAxis.isEnabled = false
-            }
+            //}
 
             R.id.list -> {
                 binding.bar.visibility = View.INVISIBLE
@@ -747,6 +730,7 @@ class GetGoHour : Fragment(), View.OnClickListener {
         }
         Collections.sort(yVals, EntryXComparator())
         val sety = LineDataSet(yVals, "Points")
+        sety.color = Color.parseColor("#1D71D4")
         val data = LineData(sety)
         sety.mode = LineDataSet.Mode.CUBIC_BEZIER
         sety.setDrawCircles(false)
@@ -798,6 +782,72 @@ class GetGoHour : Fragment(), View.OnClickListener {
 
             printCHart(yVals)
         }
+    }
+
+    private fun setBarChart(activities: List<ActivitySingleResponse>) {
+        binding.bar.description.isEnabled = false
+
+        barEntriesList = ArrayList()
+        val barEntries = mutableMapOf<String, Double>()
+        var x = 1f
+        labels.remove("")
+
+        for(entry in labels){
+            barEntries[entry] = 0.0
+        }
+
+        for(activity in activities) {
+            if (activity.category in barEntries.keys) {
+                barEntries[activity.category] = barEntries[activity.category]!! + activity.duration
+            } else {
+                barEntries[activity.category] = activity.duration
+            }
+        }
+
+        labels.add(0, "")
+
+        Log.e("BarChart", barEntries.toString())
+        for(entry in barEntries.keys){
+            barEntriesList.add(BarEntry(x, getTimeForBarChart(barEntries[entry]!!)))
+            Log.e("BarChart X = ", "$x")
+            x += 1f
+        }
+        Log.e("BarChart", labels.toString())
+        //getBarChartData()
+
+        barDataSet = BarDataSet(barEntriesList, "")
+        barData = BarData(barDataSet)
+        barData.barWidth = .5f
+        barDataSet.highLightColor = Color.TRANSPARENT
+        binding.bar.data = barData
+        binding.bar.description.isEnabled = false
+        binding.bar.elevation = 30f
+//                binding.bar.renderer=
+//                    RoundedBarChart(binding.bar,binding.bar.animator,binding.bar.viewPortHandler)
+        binding.bar.xAxis.position = XAxis.XAxisPosition.BOTTOM
+        binding.bar.xAxis.labelRotationAngle = -45F
+        binding.bar.setScaleEnabled(false)
+        binding.bar.setDrawValueAboveBar(true)
+        binding.bar.xAxis.setDrawGridLines(false)
+        binding.bar.xAxis.labelCount = labels.size - 1
+        binding.bar.setGridBackgroundColor(Color.parseColor("#FCFCFC"))
+        binding.bar.axisLeft.setDrawGridLines(true)
+        binding.bar.setDrawGridBackground(true)
+        binding.bar.legend.isEnabled = false
+        binding.bar.xAxis.valueFormatter = IndexAxisValueFormatter(labels)
+        binding.bar.axisLeft.axisMinimum = 0f
+        binding.bar.axisLeft.axisMaximum = (binding.timeHour.text.toString().toInt()*60F)
+        barDataSet.setColors(
+            Color.parseColor("#C8C8C8"), Color.parseColor("#C8C8C8"),
+            Color.parseColor("#C8C8C8"), Color.parseColor("#3E3E3E"),
+            Color.parseColor("#E20404"), Color.parseColor("#7630F2"),
+        )
+        val rightAxis = binding.bar.axisRight
+        rightAxis.isEnabled = false
+    }
+
+    private fun getTimeForBarChart(time: Double): Float {
+        return time.toFloat() / 60
     }
     
 }

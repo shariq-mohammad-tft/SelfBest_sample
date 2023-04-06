@@ -4,10 +4,12 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.tft.selfbest.R
 import com.tft.selfbest.models.NotificationDetail
-import com.tft.selfbest.models.mycourse.EnrolledCourse
+import java.text.SimpleDateFormat
+import java.util.*
 
 class NotificationAdapter(val list: List<NotificationDetail>,
                           val context: Context) :
@@ -20,7 +22,15 @@ class NotificationAdapter(val list: List<NotificationDetail>,
     }
 
     override fun onBindViewHolder(holder: NotificationViewHolder, position: Int) {
-        val number = position
+        val item = list[position]
+        holder.title.text = getTitle(item.type, item.time)
+        holder.content.text = item.content
+    }
+
+    private fun getTitle(type: String, time: String): String? {
+        val date =
+            SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'", Locale.getDefault()).parse(time)
+        return date?.let { SimpleDateFormat("dd-MM-yyyy' | 'HH:mm", Locale.getDefault()).format(it) }
     }
 
     override fun getItemCount(): Int {
@@ -28,6 +38,7 @@ class NotificationAdapter(val list: List<NotificationDetail>,
     }
 
     inner class NotificationViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-
+        val title = view.findViewById<TextView>(R.id.notification_header)
+        val content = view.findViewById<TextView>(R.id.notification_detail)
     }
 }

@@ -49,7 +49,7 @@ class NotificationFragment : Fragment() {
         // Inflate the layout for this fragment
         binding =
             FragmentNotificationBinding.inflate(inflater, container, false)
-        //viewModel.getNotifications()
+        viewModel.getNotifications()
         viewModel.notifyObserver.observe(viewLifecycleOwner){
             if(it is NetworkResponse.Success){
                 list=it.data!!.notificationList

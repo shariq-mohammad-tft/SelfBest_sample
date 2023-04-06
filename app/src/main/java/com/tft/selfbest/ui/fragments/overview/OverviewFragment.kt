@@ -10,6 +10,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -124,6 +125,9 @@ class OverviewFragment : Fragment(), View.OnClickListener {
                 binding.progressValue.text = "${it.data.currentProgress.roundToInt()}%"
                 val currentLevel = it.data.level
                 binding.level.text = "Level $currentLevel"
+            }else if(it is NetworkResponse.Error){
+                binding.progress.visibility = View.GONE
+                Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show()
             }
         }
         overviewViewModel.getCourses()

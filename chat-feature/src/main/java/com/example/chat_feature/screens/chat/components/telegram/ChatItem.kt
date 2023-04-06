@@ -1,5 +1,7 @@
 package com.example.chat_feature.screens.chat.components.telegram
 
+import androidx.annotation.ColorInt
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -10,10 +12,13 @@ import androidx.compose.material.R
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Circle
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.capitalize
@@ -27,8 +32,10 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.graphics.ColorUtils
 import coil.compose.AsyncImage
 import com.example.chat_feature.data.experts.Expert
+import kotlin.math.absoluteValue
 
 @OptIn(ExperimentalUnitApi::class)
 @Composable
@@ -43,21 +50,47 @@ fun ChatItem(user: Expert? = null, onClick: (user: Expert) -> Unit = {}) {
     ) {
 
         Box {
-            AsyncImage(
-                //model = "https://st2.depositphotos.com/1036149/10097/i/600/depositphotos_100972090-stock-photo-fun-cartoon-superhero.jpg",
+            val color = remember(user.receiverName) {
+                Color(user.receiverName.toHslColor())
+            }
+            var initials = (user.receiverName.split("\\s".toRegex())[0].take(1)).uppercase()
+            if (user.receiverName.split("\\s".toRegex()).size > 1)
+                initials += (user.receiverName.split("\\s".toRegex())[1].take(1)).uppercase()
+//            Canvas(modifier = Modifier
+//                    .clip(CircleShape)
+//                    .size(50.dp)) {
+//                drawCircle(SolidColor(color))
+//            }
 
-                model="https://selfbest-chatbot-image.s3.amazonaws.com/images/e5f0247e-1a14-4d64-9efc-295789e2868e",
+            Text(
                 modifier = Modifier
-                    .clip(CircleShape)
-                    .size(50.dp),
-                //contentScale = ContentScale.Crop,
-                contentDescription = "Image from photo picker",
+                    .padding(16.dp)
+                    .drawBehind {
+                        drawCircle(
+                            color = color,
+                            radius = this.size.maxDimension
+                        )
+                    },
+                textAlign = TextAlign.Center,
+                text = initials,
+                color = Color.White,
+                fontSize = TextUnit(16f, TextUnitType.Sp)
             )
-            if(user.status){
+//            AsyncImage(
+//                //model = "https://st2.depositphotos.com/1036149/10097/i/600/depositphotos_100972090-stock-photo-fun-cartoon-superhero.jpg",
+//
+//                model="https://selfbest-chatbot-image.s3.amazonaws.com/images/e5f0247e-1a14-4d64-9efc-295789e2868e",
+//                modifier = Modifier
+//                    .clip(CircleShape)
+//                    .size(50.dp),
+//                //contentScale = ContentScale.Crop,
+//                contentDescription = "Image from photo picker",
+//            )
+            if (user.status) {
                 Icon(
                     imageVector = Icons.Default.Circle,
                     contentDescription = "",
-                    tint=Color(0xFF2FD765),
+                    tint = Color(0xFF2FD765),
                     modifier = Modifier
                         .offset {
                             IntOffset(x = +offsetInPx - 10, y = -offsetInPx + 10)
@@ -86,7 +119,7 @@ fun ChatItem(user: Expert? = null, onClick: (user: Expert) -> Unit = {}) {
                 text = user.queryText.capitalize(),
                 fontStyle = FontStyle.Normal,
                 fontSize = TextUnit(12f, TextUnitType.Sp),
-                color=Color.Gray,
+                color = Color.Gray,
                 style = MaterialTheme.typography.caption
             )
         }
@@ -133,7 +166,7 @@ fun ChatItem(user: Expert? = null, onClick: (user: Expert) -> Unit = {}) {
             modifier = Modifier
                 .padding(5.dp, 0.dp, 0.dp, 0.dp)
         ) {
-            if(user.unSeenCount==0){
+            if (user.unSeenCount == 0) {
                 Text(
                     text = "08/02/2023",
                     fontWeight = FontWeight.Normal,
@@ -142,20 +175,19 @@ fun ChatItem(user: Expert? = null, onClick: (user: Expert) -> Unit = {}) {
                     style = MaterialTheme.typography.body2
 
                 )
-            }
-            else{
+            } else {
                 Text(
                     text = "+{${user.unSeenCount}}",
                     fontWeight = FontWeight.Normal,
-                    modifier=Modifier.background(Color(0xFF2FD765)),
-                    color=Color.White,
-                    textAlign= TextAlign.Justify,
+                    modifier = Modifier.background(Color(0xFF2FD765)),
+                    color = Color.White,
+                    textAlign = TextAlign.Justify,
                     // color = selfBestDefaultColor,
                     fontSize = TextUnit(12f, TextUnitType.Sp)
                 )
             }
             Spacer(modifier = Modifier.size(10.dp))
-            if(user.queryStatus){
+            if (user.queryStatus) {
                 Text(
                     text = "Done",
                     fontWeight = FontWeight.Normal,
@@ -164,12 +196,11 @@ fun ChatItem(user: Expert? = null, onClick: (user: Expert) -> Unit = {}) {
                     fontStyle = FontStyle.Italic,
 
                     )
-            }
-            else{
+            } else {
                 Text(
                     text = "Inprogress",
                     fontWeight = FontWeight.Normal,
-                    textAlign= TextAlign.Justify,
+                    textAlign = TextAlign.Justify,
                     // color = selfBestDefaultColor,
                     fontSize = TextUnit(12f, TextUnitType.Sp),
                     fontStyle = FontStyle.Italic,
@@ -180,8 +211,15 @@ fun ChatItem(user: Expert? = null, onClick: (user: Expert) -> Unit = {}) {
     }
 }
 
+
 @Preview
 @Composable
 fun ChatItemPreview() {
     ChatItem()
+}
+
+@ColorInt
+fun String.toHslColor(saturation: Float = 0.5f, lightness: Float = 0.4f): Int {
+    val hue = fold(0) { acc, char -> char.code + acc * 37 } % 360
+    return ColorUtils.HSLToColor(floatArrayOf(hue.absoluteValue.toFloat(), saturation, lightness))
 }

@@ -1,6 +1,7 @@
 package com.tft.selfbest
 
 import android.annotation.SuppressLint
+import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -85,6 +86,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             }
 
             val notification = builder.build()
+            notification.flags = Notification.FLAG_AUTO_CANCEL
             Log.e("Notification", it.body.toString())
             notificationManger.notify(100, notification)
         }

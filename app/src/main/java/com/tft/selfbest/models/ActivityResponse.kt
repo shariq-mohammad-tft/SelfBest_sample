@@ -12,7 +12,9 @@ data class ActivityResponse(
     @SerializedName("Progress")
     val progress: List<SubProgressResponse>?,
     @SerializedName("IsPaused")
-    val isPaused:Boolean
+    val isPaused:Boolean,
+    @SerializedName("CategoryList")
+    val categoryList: Any
 )
 
 data class SubProgressResponse(

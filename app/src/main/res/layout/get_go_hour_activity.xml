@@ -15,10 +15,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <TextView
                 android:id="@+id/heading_start_get_go_hours"
@@ -85,85 +85,84 @@
                 app:layout_constraintTop_toBottomOf="@id/progressBar" />
 
 
-                <LinearLayout
-                    android:id="@+id/linear11"
-                    android:layout_width="match_parent"
+            <LinearLayout
+                android:id="@+id/linear11"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="1dp"
+                android:background="@drawable/timer_bg"
+                android:orientation="horizontal"
+                android:weightSum="10"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/heading_time_interval">
+
+
+                <ImageButton
+                    android:id="@+id/timeDec"
+                    style="@style/Widget.App.Button.OutlinedButton.IconOnly"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="1dp"
-                    android:orientation="horizontal"
-                    android:weightSum="10"
-                    android:background="@drawable/timer_bg"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/heading_time_interval">
+                    android:layout_marginStart="20dp"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_minus" />
 
-
-                    <ImageButton
-                        android:id="@+id/timeDec"
-                        style="@style/Widget.App.Button.OutlinedButton.IconOnly"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="20dp"
-                        android:layout_weight="1"
-                        android:src="@drawable/ic_minus" />
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="8"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:weightSum="100">
 
                     <LinearLayout
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="8"
-                        android:gravity="center"
-                        android:orientation="vertical"
-                        android:weightSum="100">
+                        android:gravity="center">
 
-                        <LinearLayout
+                        <TextView
+                            android:id="@+id/time_hour"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:gravity="center">
-
-                            <TextView
-                                android:id="@+id/time_hour"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/roboto_medium_new"
-                                android:text="02"
-                                android:textColor="#3e3e3e"
-                                android:textSize="16dp"
-                                android:textStyle="bold"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
+                            android:fontFamily="@font/roboto_medium_new"
+                            android:text="02"
+                            android:textColor="#3e3e3e"
+                            android:textSize="16dp"
+                            android:textStyle="bold"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
 
 
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="center">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="hrs"
-                                android:textColor="#c8c8c8"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
-                        </LinearLayout>
                     </LinearLayout>
 
-                    <ImageButton
-                        android:id="@+id/timeInc"
-                        style="@style/Widget.App.Button.OutlinedButton.IconOnly"
-                        android:layout_width="0dp"
+                    <LinearLayout
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="20dp"
-                        android:layout_weight="1"
-                        android:src="@drawable/ic_plus" />
+                        android:gravity="center">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="hrs"
+                            android:textColor="#c8c8c8"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+                    </LinearLayout>
                 </LinearLayout>
 
+                <ImageButton
+                    android:id="@+id/timeInc"
+                    style="@style/Widget.App.Button.OutlinedButton.IconOnly"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="20dp"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_plus" />
+            </LinearLayout>
 
 
             <!--        <LinearLayout-->
@@ -326,8 +325,8 @@
                 android:layout_marginEnd="5dp"
                 android:background="@drawable/upcoming_event_bg"
                 android:padding="6dp"
-                android:visibility="gone"
                 android:src="@drawable/ic_expand"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/end_section" />
 
@@ -384,131 +383,139 @@
 
             </LinearLayout>
 
-
-            <com.github.mikephil.charting.charts.BarChart
-                android:id="@+id/bar"
-                android:layout_width="match_parent"
-                android:layout_height="340dp"
-                android:layout_marginTop="15dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/recent" />
-
-            <LinearLayout
-                android:id="@+id/listdatalinear"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/bar_graph_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:orientation="vertical"
-                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/recent">
+                app:layout_constraintTop_toBottomOf="@id/recent"
+                android:orientation="vertical">
 
-                <!--            <TextView-->
-                <!--                android:id="@+id/curr"-->
-                <!--                android:layout_width="wrap_content"-->
-                <!--                android:layout_height="wrap_content"-->
-                <!--                android:drawableLeft="@drawable/bullet_for_pie_chart"-->
-                <!--                android:text="@string/app_name"-->
-                <!--                android:drawablePadding="5dp"-->
-                <!--                />-->
-
-                <!--            <TextView-->
-                <!--                android:id="@+id/brek"-->
-                <!--                android:layout_width="wrap_content"-->
-                <!--                android:layout_height="wrap_content"-->
-                <!--                android:drawableLeft="@drawable/bullet_for_pie_chart"-->
-                <!--                android:text="@string/app_name"-->
-                <!--                android:drawablePadding="5dp"-->
-                <!--                />-->
-
-                <LinearLayout android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginEnd="10dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Current Task"
-                        android:textSize="10dp"
-                        android:textColor="@color/black"
-                        android:layout_marginEnd="10dp"
-                        app:drawableStartCompat="@drawable/ic_circle"
-                        android:drawablePadding="5dp"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="10dp"
-                        android:text="Break"
-                        android:layout_marginEnd="10dp"
-                        android:textColor="@color/black"
-                        android:drawablePadding="5dp"
-                        app:drawableStartCompat="@drawable/ic_circle"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Distraction"
-                        android:textSize="10dp"
-                        android:gravity="center"
-                        android:textColor="@color/black"
-                        android:drawablePadding="5dp"
-                        app:drawableStartCompat="@drawable/ic_circle"/>
-
-                </LinearLayout>
-
-                <LinearLayout android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="20dp">
-
-                    <TextView
-                        android:id="@+id/al_bullet"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Title"
-                        android:textSize="14dp"
-                        android:textColor="@color/black"
-                        android:src="@drawable/bullet_for_pie_chart"
-                        android:layout_marginTop="2dp"
-                        android:layout_marginStart="5dp"/>
-
-                    <TextView
-                        android:id="@+id/al_name"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:textSize="14dp"
-                        android:gravity="center"
-                        android:text="Category"
-                        android:textColor="@color/black"/>
-
-                    <TextView
-                        android:layout_weight="1"
-                        android:id="@+id/al_duration"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:text="Durations"
-                        android:textSize="14dp"
-                        android:gravity="center"
-                        android:textColor="@color/black"/>
-
-                </LinearLayout>
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/listdata"
+                <com.github.mikephil.charting.charts.BarChart
+                    android:id="@+id/bar"
                     android:layout_width="match_parent"
-                    android:layout_height="340dp"
-                    android:layout_marginTop="10dp"
-                    app:layout_constraintBottom_toTopOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_height="350dp"
+                    android:layout_marginTop="15dp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/recent" />
-            </LinearLayout>
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+                <LinearLayout
+                    android:id="@+id/listdatalinear"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <!--            <TextView-->
+                    <!--                android:id="@+id/curr"-->
+                    <!--                android:layout_width="wrap_content"-->
+                    <!--                android:layout_height="wrap_content"-->
+                    <!--                android:drawableLeft="@drawable/bullet_for_pie_chart"-->
+                    <!--                android:text="@string/app_name"-->
+                    <!--                android:drawablePadding="5dp"-->
+                    <!--                />-->
+
+                    <!--            <TextView-->
+                    <!--                android:id="@+id/brek"-->
+                    <!--                android:layout_width="wrap_content"-->
+                    <!--                android:layout_height="wrap_content"-->
+                    <!--                android:drawableLeft="@drawable/bullet_for_pie_chart"-->
+                    <!--                android:text="@string/app_name"-->
+                    <!--                android:drawablePadding="5dp"-->
+                    <!--                />-->
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="10dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="10dp"
+                            android:drawablePadding="5dp"
+                            android:text="Current Task"
+                            android:textColor="@color/black"
+                            android:textSize="10dp"
+                            app:drawableStartCompat="@drawable/ic_circle" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="10dp"
+                            android:drawablePadding="5dp"
+                            android:text="Break"
+                            android:textColor="@color/black"
+                            android:textSize="10dp"
+                            app:drawableStartCompat="@drawable/ic_circle" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:drawablePadding="5dp"
+                            android:gravity="center"
+                            android:text="Distraction"
+                            android:textColor="@color/black"
+                            android:textSize="10dp"
+                            app:drawableStartCompat="@drawable/ic_circle" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/al_bullet"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="5dp"
+                            android:layout_marginTop="2dp"
+                            android:layout_weight="1"
+                            android:src="@drawable/bullet_for_pie_chart"
+                            android:text="Title"
+                            android:textColor="@color/black"
+                            android:textSize="14dp" />
+
+                        <TextView
+                            android:id="@+id/al_name"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="Category"
+                            android:textColor="@color/black"
+                            android:textSize="14dp" />
+
+                        <TextView
+                            android:id="@+id/al_duration"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="Durations"
+                            android:textColor="@color/black"
+                            android:textSize="14dp" />
+
+                    </LinearLayout>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/listdata"
+                        android:layout_width="match_parent"
+                        android:layout_height="340dp"
+                        android:layout_marginTop="10dp" />
+                </LinearLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
                 android:id="@+id/Daily_recent_text"
@@ -521,7 +528,7 @@
                 android:textSize="14dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/bar" />
+                app:layout_constraintTop_toBottomOf="@id/bar_graph_container" />
 
 
             <TextView
@@ -561,11 +568,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="gone"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            >
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
                 android:id="@+id/collapse_pg"
@@ -580,17 +586,16 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
 
-
             <com.github.mikephil.charting.charts.LineChart
                 android:id="@+id/ex_pg"
                 android:layout_width="350dp"
                 android:layout_height="330dp"
                 android:layout_marginTop="15dp"
                 android:background="@drawable/upcoming_event_bg"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/collapse_pg"
-                app:layout_constraintBottom_toBottomOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/collapse_pg" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
