@@ -230,7 +230,6 @@ fun ExpertChatScreen(
                                 } else {
                                     CardSelfMessage(
                                         message = data.message ?: "",
-
                                     )
                                 }
                             } else {

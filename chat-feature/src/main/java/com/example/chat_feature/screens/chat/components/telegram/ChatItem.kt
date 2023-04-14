@@ -1,6 +1,8 @@
 package com.example.chat_feature.screens.chat.components.telegram
 
+import android.os.Build
 import androidx.annotation.ColorInt
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -25,6 +27,7 @@ import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.substring
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.ExperimentalUnitApi
 import androidx.compose.ui.unit.IntOffset
@@ -35,8 +38,12 @@ import androidx.compose.ui.unit.sp
 import androidx.core.graphics.ColorUtils
 import coil.compose.AsyncImage
 import com.example.chat_feature.data.experts.Expert
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import kotlin.math.absoluteValue
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalUnitApi::class)
 @Composable
 fun ChatItem(user: Expert? = null, onClick: (user: Expert) -> Unit = {}) {
@@ -166,9 +173,13 @@ fun ChatItem(user: Expert? = null, onClick: (user: Expert) -> Unit = {}) {
             modifier = Modifier
                 .padding(5.dp, 0.dp, 0.dp, 0.dp)
         ) {
+            val formatter=DateTimeFormatter.ofPattern("yyyy-MM-dd")
+            val updateAt= LocalDate.parse(user.updatedAt.substring(0,10),formatter)
+            val displayFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+            val displayDate = updateAt.format(displayFormat)
             if (user.unSeenCount == 0) {
                 Text(
-                    text = "08/02/2023",
+                    text = displayDate.toString(),
                     fontWeight = FontWeight.Normal,
                     // color = selfBestDefaultColor,
                     fontSize = TextUnit(12f, TextUnitType.Sp),
@@ -177,7 +188,7 @@ fun ChatItem(user: Expert? = null, onClick: (user: Expert) -> Unit = {}) {
                 )
             } else {
                 Text(
-                    text = "+{${user.unSeenCount}}",
+                    text = "${user.unSeenCount}",
                     fontWeight = FontWeight.Normal,
                     modifier = Modifier.background(Color(0xFF2FD765)),
                     color = Color.White,
@@ -212,6 +223,7 @@ fun ChatItem(user: Expert? = null, onClick: (user: Expert) -> Unit = {}) {
 }
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview
 @Composable
 fun ChatItemPreview() {

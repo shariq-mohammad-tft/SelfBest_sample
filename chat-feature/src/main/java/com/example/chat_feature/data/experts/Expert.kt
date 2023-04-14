@@ -7,7 +7,7 @@ data class Expert(
     val fullName: String,
     @SerializedName("last_message")
     val lastMessage: LastMessage?,
-    @SerializedName("query_text")
+    @SerializedName("query_name")
     val queryText: String,
     @SerializedName("status")
     val status: Boolean,
@@ -22,7 +22,9 @@ data class Expert(
     @SerializedName("expert_name")
     val expertName: String,
     @SerializedName("receiver_name")
-    val receiverName: String
+    val receiverName: String,
+    @SerializedName("updated_at")
+    val updatedAt:String
 
 )
 
