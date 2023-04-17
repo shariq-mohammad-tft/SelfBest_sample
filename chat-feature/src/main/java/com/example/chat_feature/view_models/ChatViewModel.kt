@@ -28,6 +28,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
+import org.json.JSONObject
 import javax.inject.Inject
 
 @HiltViewModel
@@ -107,9 +108,12 @@ class ChatViewModel @Inject constructor(
 
                 is Resource.Success -> {
                     val chatList = response.value.chatMessages
+                    Log.d("chatlist",chatList.toString())
                     chatList.forEach {
+                        Log.d("chatlist_internal",it.convertToMessage().toString())
                         messageList.add(Resource.Success(it.convertToMessage()))
                     }
+
                 }
 
             }
@@ -150,12 +154,20 @@ class ChatViewModel @Inject constructor(
 
                     val text = it.text
                     Log.d(TAG, "onMessage: $text")
+                    val jsonObject = JSONObject(text)
+                    //var responseObj = text!!
+
+                    if (jsonObject.has("chat_messages")) return@consumeEach
 
                     val response = gson.fromJson(text, SocketResponseByBot::class.java)
+                    if(response.data.type=="query"){
 
-                    Log.d(TAG, "onMessage: $response")
+                        Log.d(TAG, "onMessage: $response")
 
-                    messageList.add(Resource.Success(response.data.convertToMessage()))
+                        messageList.add(Resource.Success(response.data.convertToMessage()))
+                    }
+
+
 
                 }
             }

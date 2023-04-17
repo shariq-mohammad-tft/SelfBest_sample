@@ -52,11 +52,11 @@ sealed class AppScreen(
 
     object ExpertChathistoryViaLoadRoom : AppScreen(
         title = R.string.expert_chat,
-        route = "$ROUTE_ROOM/{$SENDER_ID_ARGUMENT}/{$QUERY_ID_ARGUMENT}"
+        route = "$ROUTE_ROOM/{$SENDER_ID_ARGUMENT}/{$QUERY_ID_ARGUMENT}/{$RECEIVER_ID_ARGUMENT}"
     ) {
-        fun buildRoute(senderId: String, queryId: String) =
+        fun buildRoute(senderId: String, queryId: String,receiverId: String) =
             route.replace(oldValue = "{$SENDER_ID_ARGUMENT}", newValue = senderId)
-                //.replace(oldValue = "{$RECEIVER_ID_ARGUMENT}", newValue = receiverId)
+                .replace(oldValue = "{$RECEIVER_ID_ARGUMENT}", newValue = receiverId)
                 .replace(oldValue = "{$QUERY_ID_ARGUMENT}", newValue = queryId)
 
 

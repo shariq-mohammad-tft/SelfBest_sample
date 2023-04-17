@@ -271,6 +271,7 @@ fun MessageCard(
         } else {
             if (message.message != "") {
                 CardReceiverMessage(message = message.message)
+
             } else {
                 CardReceiverMessage(message = "Here is something I found")
             }
@@ -282,9 +283,7 @@ fun MessageCard(
             ButtonGridLayout(
                 buttons = message.buttons, isEnabled = isEnabled
             ) { button ->
-
                 isEnabled = false
-
                 val messageObj = buildInteractiveMessage(
                     eventName = button.id, message = button.value, userId = senderId
                 )

@@ -29,5 +29,5 @@ data class Message(
     val queryName: String? = null,
     val name: String? = null,
     var links:ArrayList<String>?= arrayListOf(),
-    val timeStamp:String?=null
+    val timeStamp:String?=null,
 )

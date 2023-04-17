@@ -369,7 +369,7 @@ fun ExpertChatScreen(
 }
 
 
-private fun buildMessage(
+fun buildMessage(
     message: String,
     senderId: String,
     receiverId: String,

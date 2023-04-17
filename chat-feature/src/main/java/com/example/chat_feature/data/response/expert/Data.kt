@@ -53,7 +53,7 @@ data class Data(
             buttons = buttons,
             isButtonEnabled = true,
             senderId = sentBy,
-            receiverId = sentTo ?: Constants.EXPERT_ID,
+            receiverId = channelId ?: Constants.EXPERT_ID,
             queryId = queryId,
             name = fullName,
             queryName = queryName

@@ -16,6 +16,7 @@ import com.example.chat_feature.screens.chat.components.PhotoPreview
 
 private const val TAG = "AppNavHost"
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AppNavHost(
     modifier: Modifier = Modifier,
@@ -103,17 +104,23 @@ fun AppNavHost(
             }, navArgument("query_id") {
                 type = NavType.StringType
                 defaultValue = ""
-            }
+            },
+                navArgument("receiverId") {
+                    type = NavType.StringType
+                    defaultValue = ""
+                }
 
             )) {
             val senderId = it.arguments?.getString("senderId")
             val queryId = it.arguments?.getString("query_id")
+            val receiverId = it.arguments?.getString("receiverId")
+            Log.d("RecssId", "${queryId}+ ${receiverId}")
 
             ExpertChatScreen(
                 navController = navController,
                 senderId = senderId!!,
                 queryId = queryId!!,
-                receiverId = ""
+                receiverId = receiverId!!
             )
         }
 

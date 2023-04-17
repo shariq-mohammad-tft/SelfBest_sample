@@ -521,8 +521,10 @@ fun DefaultPreview() {
 package com.example.chat_feature.screens.chat
 
 import android.app.Activity
+import android.os.Build
 import android.util.Log
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -534,20 +536,18 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Circle
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.twotone.Search
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -559,9 +559,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
@@ -569,23 +569,30 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.chat_feature.R
+import com.example.chat_feature.data.experts.BotUnseenCountRequest
 import com.example.chat_feature.data.experts.Expert
 import com.example.chat_feature.data.experts.ExpertListRequest
 import com.example.chat_feature.navigation.AppScreen
 import com.example.chat_feature.screens.chat.components.telegram.ChatItem
 import com.example.chat_feature.utils.Constants
 import com.example.chat_feature.utils.Resource
+import com.example.chat_feature.utils.createSocketUrl
+import com.example.chat_feature.utils.toast
 import com.example.chat_feature.view_models.ExpertListViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
 private const val TAG = "ExpertList"
 
-@OptIn(ExperimentalMaterial3Api::class)
+@RequiresApi(Build.VERSION_CODES.O)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalCoroutinesApi::class)
 @Composable
 fun RoomsList(
     navController: NavController,
     viewModel: ExpertListViewModel = hiltViewModel(),
+
 ) {
     val experts = viewModel.experts
     val listState = rememberLazyListState()
@@ -593,6 +600,9 @@ fun RoomsList(
     val context = LocalContext.current as? Activity
     val userId = viewModel.userId
     val searchState = viewModel.stateSearch
+
+    val unseenObj = buildMessages(senderId = userId)
+
 
 
     //TODO call init function
@@ -602,7 +612,18 @@ fun RoomsList(
                 senderId = userId,
             )
         )
+        viewModel.connectSocket(socketUrl = Constants.SELF_BEST_SOCKET_URL.createSocketUrl(userId))
+
     }
+    LaunchedEffect(Unit ){
+       // viewModel.getBotUnseenCount(unseenObj)
+        //delay(5000)
+        Log.d("lunch",viewModel.unseenMessageCount.toString())
+    }
+
+
+
+
 
 
     Scaffold(topBar = {
@@ -617,7 +638,6 @@ fun RoomsList(
                 containerColor = Color(0xFFF8F8F8)),
                 navigationIcon = {
                 IconButton(onClick = {
-
                     context?.finish()
                 }) {
                     Icon(
@@ -648,7 +668,7 @@ fun RoomsList(
             } else {
                 BotCard(navController, onSearchIconClicked = {
                     viewModel.onAction(ExpertListViewModel.UserAction.SearchIconClicked)
-                })
+                }, viewModel.unseenMessageCount.toString())
             }
 
 
@@ -725,10 +745,13 @@ fun RoomsList(
                         } else {
                             UserList(data) { user ->
                                 scope.launch {
+                                    if (context != null) {
+                                        context.toast(user.sentTo)
+                                    }
                                     navController.navigate(
                                         AppScreen.ExpertChathistoryViaLoadRoom.buildRoute(
                                             senderId = userId,
-                                            // receiverId = user.sentTo,
+                                            receiverId = user.sentTo,
                                             queryId = user.queryId
                                         )
                                     )
@@ -743,6 +766,7 @@ fun RoomsList(
 }
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun UserList(users: List<Expert>, onClick: (user: Expert) -> Unit) {
     Column(modifier = Modifier.fillMaxWidth()) {
@@ -787,13 +811,13 @@ fun SearchAppBar(
         {
             TextField(modifier = Modifier.fillMaxWidth(), value = text, onValueChange = {
                 onInputValueChange(it)
-            }, textStyle = TextStyle(
+            },  textStyle = TextStyle(
                 color = Color.Black, fontSize = 18.sp
-            ), placeholder = {
+            ),  placeholder = {
                 Text(
                     text = "Search...", color = Color.Black.copy(alpha = ContentAlpha.medium)
                 )
-            }, leadingIcon = {
+            },  leadingIcon = {
                 Icon(
                     imageVector = Icons.Filled.Search,
                     contentDescription = "Search Icon",
@@ -801,7 +825,7 @@ fun SearchAppBar(
                         alpha = ContentAlpha.medium
                     )
                 )
-            }, trailingIcon = {
+            },  trailingIcon = {
                 Box(modifier = Modifier.padding(10.dp, 0.dp, 0.dp, 0.dp)) {
                     Card(
                         shape = CircleShape,
@@ -822,56 +846,27 @@ fun SearchAppBar(
                             )
                         }
                     }
-
                 }
-            }, colors = TextFieldDefaults.outlinedTextFieldColors(
+            },  colors = TextFieldDefaults.outlinedTextFieldColors(
                 unfocusedBorderColor = Color(0xFFC8C8C8),
                 focusedBorderColor = Color.Black,
                 cursorColor = Color.Black,
             ),
-
-                keyboardActions = KeyboardActions(onSearch = { onSearchClicked() })
+                keyboardActions = KeyboardActions(onSearch = { onSearchClicked() }),
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                singleLine = true
             )
         }
     }
 }
 
-@Composable
-fun TopsBar(
-    onSearchIconClicked: () -> Unit,
-
-    ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 7.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text = "Famous Actors",
-            fontSize = 40.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color.Blue,
-            fontFamily = FontFamily.Cursive
-        )
-        Spacer(modifier = Modifier.weight(1f))
-
-        IconButton(onClick = onSearchIconClicked) {
-            Icon(
-                imageVector = Icons.Rounded.Search,
-                contentDescription = "Search Icon",
-                tint = Color.Blue,
-                modifier = Modifier.size(30.dp)
-            )
-        }
-    }
-}
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalUnitApi::class)
 @Composable
 fun BotCard(
     navController: NavController,
     onSearchIconClicked: () -> Unit,
+    botunseen:String
 ) {
     val context = LocalContext.current
     Row(modifier = Modifier.padding(15.dp)) {
@@ -917,7 +912,7 @@ fun BotCard(
                 verticalArrangement = Arrangement.aligned(Alignment.CenterVertically)
             ) {
                 Text(
-                    text = "Selfbest Bot",
+                    text = "Selfbest Bot +{$botunseen}}",
                     fontWeight = FontWeight.Bold,
                     color = Color(0xFFFFFFFF),
                     fontSize = TextUnit(16f, TextUnitType.Sp)
@@ -1132,11 +1127,19 @@ fun DefaultPreview() {
     Surface(Modifier.fillMaxSize()) {
         BotCard(rememberNavController(), onSearchIconClicked = {
             "viewModel"
-        })
+        },"")
         //UserList()
 
 
     }
+}
+
+private fun buildMessages(
+    senderId: String,
+    ): BotUnseenCountRequest {
+    return BotUnseenCountRequest(
+        sentBy = senderId
+    )
 }
 
 
