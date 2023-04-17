@@ -53,6 +53,7 @@ class UserManagementRequestPending : Fragment(), RequestAdapter.ChangeRequestLis
                 requests = it.data!!
                 if(requests.isNotEmpty()){
                     binding.cbContainer.visibility = View.VISIBLE
+                    Log.e("Entered", "Pending Requests")
                     isData = true
                 }
 //                for(req in requests){

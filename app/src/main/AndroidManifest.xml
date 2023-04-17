@@ -58,6 +58,10 @@
             android:exported="false"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name=".ui.dialog.ActivityLogFiltersDialog"
+            tools:ignore="Instantiatable" />
+
         <service
             android:name=".SelfBestAccessibilityService"
             android:exported="false"

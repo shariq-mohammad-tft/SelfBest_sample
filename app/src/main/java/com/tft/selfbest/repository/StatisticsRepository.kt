@@ -34,10 +34,17 @@ class StatisticsRepository @Inject constructor(
         })
     }
 
-    suspend fun getAnsweredQuery(email: String, team_id: String, start_date: String, type: String) = flow{
+    suspend fun getQuery(id: Int, startDate: String, endDate: String, type: String) = flow{
         emit(NetworkResponse.Loading())
         emit(NetworkRequest.process {
-            client.apis.getAnsweredQuery(email, team_id, start_date, type)
+            client.apis.getQuery(id, startDate, endDate, type)
+        })
+    }
+
+    suspend fun getAnsweredQuery(email: String, team_id: String, start_date: String, end_Date: String, type: String) = flow{
+        emit(NetworkResponse.Loading())
+        emit(NetworkRequest.process {
+            client.apis.getAnsweredQuery(email, team_id, start_date, end_Date, type)
         })
     }
 
@@ -45,6 +52,13 @@ class StatisticsRepository @Inject constructor(
         emit(NetworkResponse.Loading())
         emit(NetworkRequest.process {
             client.apis.updateStatus(id, status)
+        })
+    }
+
+    suspend fun updateRelevance(id: Int, relevance: Int, db_detail: String) = flow{
+        emit(NetworkResponse.Loading())
+        emit(NetworkRequest.process {
+            client.apis.updateRelevance(id, relevance, db_detail)
         })
     }
 

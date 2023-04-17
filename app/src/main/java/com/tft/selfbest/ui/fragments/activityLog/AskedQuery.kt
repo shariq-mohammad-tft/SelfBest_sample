@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tft.selfbest.R
 import com.tft.selfbest.databinding.FragmentAnsweredQueryBinding
 import com.tft.selfbest.databinding.FragmentAskedQueryBinding
@@ -18,7 +19,11 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 @AndroidEntryPoint
-class AskedQuery : Fragment(), QueryResponseAdapter.ChangeStatusListener {
+class AskedQuery(
+    val startDate1: String,
+    val endDate: String,
+    val type: String
+) : Fragment(), QueryResponseAdapter.ChangeStatusListener {
 
     lateinit var binding: FragmentAskedQueryBinding
     val viewModel by viewModels<StatisticsViewModel>()
@@ -39,7 +44,8 @@ class AskedQuery : Fragment(), QueryResponseAdapter.ChangeStatusListener {
         // Inflate the layout for this fragment
         binding = FragmentAskedQueryBinding.inflate(layoutInflater)
         startDate = dateFormat.format(startDateCal.time)
-        viewModel.getQuery(startDate, "daily")
+//        viewModel.getQuery(startDate, "daily")
+        viewModel.getQuery(startDate1, endDate, type)
         viewModel.queryObserver.observe(viewLifecycleOwner) {
             if (it is NetworkResponse.Success) {
                 queries = it.data!!.query_data
@@ -60,6 +66,7 @@ class AskedQuery : Fragment(), QueryResponseAdapter.ChangeStatusListener {
 //                    else {
 //                        binding.loadMoreBtn.visibility = View.GONE
 //                        binding.query.layoutManager = LinearLayoutManager(binding.root.context)
+                binding.askedQueries.layoutManager = LinearLayoutManager(binding.root.context)
                 binding.askedQueries.adapter = QueryResponseAdapter(
                     binding.root.context,
                     queries1,

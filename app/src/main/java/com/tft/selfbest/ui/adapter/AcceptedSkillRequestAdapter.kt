@@ -28,7 +28,7 @@ class AcceptedSkillRequestAdapter(
 
     override fun onBindViewHolder(holder: SKillRequestViewHolder, position: Int) {
         val request = fileteredList[position]
-        holder.id.text = request.name
+        holder.id.text = request.email
         holder.skill.text = request.skill
         holder.select.isChecked = selectAll
         holder.rejectButton.setOnClickListener {

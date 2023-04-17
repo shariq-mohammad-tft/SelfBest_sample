@@ -34,9 +34,11 @@ class AnsweredQueryAdapter(
         holder.descriptiveText.text = query.question
         //Log.e("TimeStamp", query.timestamp)
         val df = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
+        df.timeZone = TimeZone.getTimeZone("UTC")
         val date = df.parse(query.timestamp)
         val formatter =
-            SimpleDateFormat("dd-MM-yyyy '|' HH:mm:ss", Locale.getDefault())
+            SimpleDateFormat("dd-MM-yyyy '|' hh:mm a", Locale.getDefault())
+        formatter.timeZone = TimeZone.getDefault()
         val dateStr = formatter.format(date!!)
         holder.time.text = dateStr
 //        holder.spinner.onItemSelectedListener =
@@ -78,8 +80,7 @@ class AnsweredQueryAdapter(
                 ) {
                     val selectedItem = holder.rSpinner.selectedItem as String
                     if(checkr) {
-                        val status = if (selectedItem == "Done") 1 else 0
-                        changeStatusListener.changeStatus(query.id, status)
+                        changeStatusListener.changeRelevance(query.id, pos+1)
                     }
                     checkr = true
                 }
@@ -116,7 +117,7 @@ class AnsweredQueryAdapter(
     }
 
     interface ChangeStatusListener {
-        fun changeStatus(id: Int, status: Int)
+        fun changeRelevance(id: Int, relevance: Int)
     }
 
     inner class AnsweredQueryViewHolder(val view: View) : RecyclerView.ViewHolder(view) {

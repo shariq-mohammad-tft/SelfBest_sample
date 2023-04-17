@@ -24,12 +24,11 @@
         <ImageView
             android:layout_width="18dp"
             android:layout_height="18dp"
-            android:src="@drawable/edit_profile_icon"
-            android:padding="3dp"
             android:background="@drawable/circular_event_bg"
-            app:layout_constraintEnd_toEndOf="@id/user_icon"
+            android:padding="3dp"
+            android:src="@drawable/edit_profile_icon"
             app:layout_constraintBottom_toBottomOf="@id/user_icon"
-            />
+            app:layout_constraintEnd_toEndOf="@id/user_icon" />
 
         <TextView
             android:id="@+id/user_name"
@@ -361,8 +360,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
-                        android:padding="3dp"
-                        android:layout_marginEnd="2dp"/>
+                        android:layout_marginEnd="2dp"
+                        android:padding="3dp" />
 
 
                     <TextView
@@ -515,13 +514,24 @@
                         android:scrollbarSize="10dp"
                         android:scrollbars="horizontal" />
 
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/skill_list"
+                    <androidx.core.widget.NestedScrollView
+                        android:id="@+id/skill_list_scroll"
                         android:layout_width="match_parent"
                         android:layout_height="185dp"
                         android:layout_marginTop="10dp"
-                        android:paddingBottom="10dp"
-                        android:visibility="gone" />
+                        android:layout_marginBottom="10dp"
+                        android:scrollbars="vertical"
+                        android:fadeScrollbars="false"
+                        android:scrollbarAlwaysDrawVerticalTrack="true"
+                        android:visibility="gone">
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/skill_list"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scrollbarSize="10dp"
+                            android:scrollbars="vertical"/>
+                    </androidx.core.widget.NestedScrollView>
 
                     <TextView
                         android:id="@+id/pending_skill_heading"
@@ -533,13 +543,26 @@
                         android:textSize="12dp"
                         android:visibility="gone" />
 
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/pending_skill_list"
+                    <androidx.core.widget.NestedScrollView
+                        android:id="@+id/pending_skill_list_scroll"
                         android:layout_width="match_parent"
                         android:layout_height="185dp"
                         android:layout_marginTop="10dp"
-                        android:paddingBottom="10dp"
-                        android:visibility="gone" />
+                        android:layout_marginBottom="10dp"
+                        android:scrollbars="vertical"
+                        android:fadeScrollbars="false"
+                        android:scrollbarAlwaysDrawVerticalTrack="true"
+                        android:visibility="gone">
+
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/pending_skill_list"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scrollbarAlwaysDrawVerticalTrack="true"
+                            android:scrollbarSize="10dp"
+                            android:scrollbars="vertical"/>
+                    </androidx.core.widget.NestedScrollView>
                     <!--                        android:scrollbars="vertical"-->
                     <!--                        android:scrollbarSize="5dp"/>-->
 
@@ -661,10 +684,10 @@
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:gravity="start"
                             android:layout_gravity="center"
+                            android:layout_weight="1"
                             android:fontFamily="@font/roboto_medium_new"
+                            android:gravity="start"
                             android:text="Deactivate account temporarily" />
 
                         <!--                        <TextView-->
@@ -699,10 +722,10 @@
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:gravity="start"
                             android:layout_gravity="center"
+                            android:layout_weight="1"
                             android:fontFamily="@font/roboto_medium_new"
+                            android:gravity="start"
                             android:text="Delete account permanently" />
 
                         <!--                        <TextView-->
@@ -737,10 +760,10 @@
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:gravity="start"
                             android:layout_gravity="center"
+                            android:layout_weight="1"
                             android:fontFamily="@font/roboto_medium_new"
+                            android:gravity="start"
                             android:text="Delete data" />
 
                         <!--                        <TextView-->

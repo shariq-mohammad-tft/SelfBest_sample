@@ -1,5 +1,6 @@
 package com.tft.selfbest.ui.fragments.activityLog
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
@@ -9,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
@@ -24,6 +26,7 @@ import com.tft.selfbest.R
 import com.tft.selfbest.databinding.FragmentActivityLogBinding
 import com.tft.selfbest.models.SelectedCategory
 import com.tft.selfbest.network.NetworkResponse
+import com.tft.selfbest.ui.activites.DetailActivity
 import com.tft.selfbest.ui.adapter.*
 import com.tft.selfbest.ui.dialog.ActivityLogFiltersDialog
 import com.tft.selfbest.ui.fragments.statistics.StatisticsViewModel
@@ -86,7 +89,16 @@ class ActivityLogFragment(
                 binding.hoursSavedSp.text = it.data!!.hours_saved
             }
         }
-        val adapter = activity?.let { ViewPagerQueryAdapter(it.supportFragmentManager, lifecycle) }
+
+        val adapter = activity?.let {
+            ViewPagerQueryAdapter(
+                it.supportFragmentManager,
+                lifecycle,
+                startDate,
+                endDate1,
+                selectedDuration
+            )
+        }
         binding.viewpager.adapter = adapter
         binding.tabLayout.tabMode = TabLayout.MODE_FIXED
 
@@ -106,13 +118,10 @@ class ActivityLogFragment(
         }.attach()
 
 
-        if(selectedDuration.equals("custom"))
-            viewModel.getLogs(selectedPlatform, selectedDuration, startDate1, endDate1)
-        else
-            viewModel.getLogs(selectedPlatform, selectedDuration)
+        viewModel.getLogs(selectedPlatform, selectedDuration, startDate1, endDate1)
         viewModel.activityLogsObserver.observe(viewLifecycleOwner) {
             if (it is NetworkResponse.Success) {
-                //binding.progress.visibility = View.GONE
+                binding.progress.visibility = View.GONE
                 val list: ArrayList<RadarEntry> = ArrayList()
                 val labels: MutableList<String> = mutableListOf()
                 binding.hoursSaved.text = getTimeInFormat(it.data!!.focusTime)
@@ -139,7 +148,7 @@ class ActivityLogFragment(
                             .take(3) as MutableList<SelectedCategory>)
                         Log.e("Default Categories 0.1", a.toString())
                     }
-                }else{
+                } else {
                     if (getSelectedCategories().isEmpty() && firstTime) {
                         setSelectedCategories(mutableListOf())
                     }
@@ -161,8 +170,8 @@ class ActivityLogFragment(
                     getSelectedCategories().sortedByDescending { it -> it.duration }
                 )
 
-            }else if(it is NetworkResponse.Error){
-               // binding.progress.visibility = View.GONE
+            } else if (it is NetworkResponse.Error) {
+                // binding.progress.visibility = View.GONE
                 Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show()
             }
         }
@@ -240,8 +249,7 @@ class ActivityLogFragment(
                 binding.workDen.setTextColor(Color.parseColor("#C8C8C8"))
                 binding.workDen.setBackgroundColor(Color.parseColor("#FFFFFF"))
                 binding.solutionPoint.setBackgroundResource(R.drawable.work_den_bg)
-                binding.fabFilter.visibility = View.GONE
-                viewModel.getQuery(startDate, "daily")
+                viewModel.getQuery(startDate, endDate1, selectedDuration)
             }
 
 //            R.id.select_cat_container -> {
@@ -253,20 +261,30 @@ class ActivityLogFragment(
 //            }
 
             R.id.fab_filter -> {
-                val fragmentManager: FragmentManager = requireActivity().supportFragmentManager
-                val transaction = fragmentManager.beginTransaction()
-                transaction.replace(
-                    R.id.fragmentContainerView,
-                    ActivityLogFiltersDialog(this, categories, getSelectedCategories())
-                )
-                transaction.addToBackStack(null)
-                transaction.commit()
-//                ActivityLogFiltersDialog(
-//                    this
-//                ).show(
-//                    (activity as HomeActivity).supportFragmentManager,
-//                    "ActivityLogFilter"
+                val intentOpenDetailPage = Intent(this.activity, ActivityLogFiltersDialog::class.java)
+                intentOpenDetailPage.putExtra("header_title", headerTitle)
+                intentOpenDetailPage.putExtra("detailType", detailType)
+                private val applyFilterListener: ActivityLogFiltersDialog.FilterListener,
+                private val categories: List<SelectedCategory>,
+                override var defaultCategories: MutableList<SelectedCategory>
+                ContextCompat.startActivity(requireContext(), intentOpenDetailPage, null)
+//                val fragmentManager: FragmentManager = requireActivity().supportFragmentManager
+//                val transaction = fragmentManager.beginTransaction()
+//                transaction.replace(
+//                    R.id.fragmentContainerView,
+//                    ActivityLogFiltersDialog(this, categories, getSelectedCategories())
 //                )
+//                transaction.addToBackStack(null)
+//                fragmentManager.executePendingTransactions();
+//
+//                if (!fragmentManager.isStateSaved) {
+//                    transaction.commit();
+//                }//                ActivityLogFiltersDialog(
+////                    this
+////                ).show(
+////                    (activity as HomeActivity).supportFragmentManager,
+////                    "ActivityLogFilter"
+////                )
             }
         }
     }
@@ -276,15 +294,15 @@ class ActivityLogFragment(
         viewModel.updateStatus(id, status)
     }
 
-    override fun filterData(platform: String, duration: String) {
-        selectedPlatform = platform
-        binding.fabFilter.text = selectedPlatform
-        binding.fabFilter.extend()
-        Handler(Looper.getMainLooper()).postDelayed({
-            binding.fabFilter.shrink()
-        }, 4000)
-        viewModel.getLogs(platform, duration)
-    }
+//    override fun filterData(platform: String, duration: String) {
+//        selectedPlatform = platform
+//        binding.fabFilter.text = selectedPlatform
+//        binding.fabFilter.extend()
+//        Handler(Looper.getMainLooper()).postDelayed({
+//            binding.fabFilter.shrink()
+//        }, 4000)
+//        viewModel.getLogs(platform, duration)
+//    }
 
     override fun filterData(
         platform: String,
@@ -309,6 +327,10 @@ class ActivityLogFragment(
         val formatter = DecimalFormat("00");
         ans = "${formatter.format(hours)}h : ${formatter.format(mins)}m"
         return ans
+    }
+
+    override fun changeRelevance(id: Int, relevance: Int) {
+        viewModel.updateRelevance(id, relevance, "webbot")
     }
 }
 /*

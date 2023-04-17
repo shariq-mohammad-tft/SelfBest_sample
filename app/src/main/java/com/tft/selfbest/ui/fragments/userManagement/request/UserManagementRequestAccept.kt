@@ -30,7 +30,6 @@ class UserManagementRequestAccept : Fragment(), AcceptedRequestAdapter.RejectReq
     var pendingRequests: MutableList<UserRequest> = mutableListOf()
     lateinit var adapter: AcceptedRequestAdapter
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }

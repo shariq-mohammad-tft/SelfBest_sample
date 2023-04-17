@@ -13,10 +13,11 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.charts.BarChart
+import com.github.mikephil.charting.components.Description
+import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
-import com.github.mikephil.charting.utils.ColorTemplate
 import com.github.mikephil.charting.utils.EntryXComparator
 import com.tft.selfbest.R
 import com.tft.selfbest.data.SelfBestPreference
@@ -39,6 +40,7 @@ import java.util.*
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
+
 @AndroidEntryPoint
 @SuppressLint("SetTextI18n")
 class GetGoHour : Fragment(), View.OnClickListener {
@@ -47,6 +49,7 @@ class GetGoHour : Fragment(), View.OnClickListener {
     lateinit var preferences: SelfBestPreference
     lateinit var binding: GetGoHourActivityBinding
     val viewModel by viewModels<GetGoHourViewModel>()
+
     //val viewModelCal by viewModels<CalenderViewModel>()
     private val viewModelChart by viewModels<ChartViewModel>()
     private val overviewViewModel by viewModels<OverviewViewModel>()
@@ -122,14 +125,14 @@ class GetGoHour : Fragment(), View.OnClickListener {
 
         viewModel.activityLogObserver.observe(viewLifecycleOwner) {
             if (it is NetworkResponse.Success) {
-                if(it.data!!.categoryList != null) {
+                if (it.data!!.categoryList != null) {
                     labels.clear()
                     for (entry in (it.data.categoryList as Map<String, String>)) {
-                        if(entry.value != "")
+                        if (entry.value != "")
                             labels.add(entry.value)
                     }
                 }
-                if(it.data!!.activities != null) {
+                if (it.data!!.activities != null) {
                     activities = it.data.activities
                     setBarChart(activities)
                 }
@@ -258,13 +261,12 @@ class GetGoHour : Fragment(), View.OnClickListener {
             timerEnded = true
             viewModel.getActivity()
         }
-        viewModel.activityLogObserver.observe(viewLifecycleOwner){
+        viewModel.activityLogObserver.observe(viewLifecycleOwner) {
             if (it is NetworkResponse.Success && timerEnded) {
                 Log.e("ActivityLog: ", " Success")
-                if(it.data!!.activities == null || it.data.activities.isEmpty()){
-                    ipViewModel.getInput(InputData( preferences.getGetHourId, listOf(),1))
-                }
-                else if (it.data.activities.isNotEmpty()) {
+                if (it.data!!.activities == null || it.data.activities.isEmpty()) {
+                    ipViewModel.getInput(InputData(preferences.getGetHourId, listOf(), 1))
+                } else if (it.data.activities.isNotEmpty()) {
                     val transaction = requireActivity().supportFragmentManager.beginTransaction()
                     transaction.replace(R.id.fragmentContainerView, InputProgress())
                     transaction.disallowAddToBackStack()
@@ -312,9 +314,10 @@ class GetGoHour : Fragment(), View.OnClickListener {
         binding.lChart.axisLeft.axisMinimum = 0F
         binding.lChart.axisRight.axisMinimum = 0F
         binding.lChart.xAxis.axisMinimum = 0F
-        binding.lChart.xAxis.axisMaximum = (binding.timeHour.text.toString().toInt()*60F)
-        binding.exPg.axisLeft.axisMinimum = 0F
-        binding.exPg.axisRight.axisMinimum = 0F
+        binding.lChart.xAxis.axisMaximum = (binding.timeHour.text.toString().toInt() * 60F)
+
+        binding.lChart.legend.verticalAlignment = Legend.LegendVerticalAlignment.TOP
+
         yVals.add(Entry(0F, 0F))
         val sety = LineDataSet(yVals, "Time")
         val data = LineData(sety)
@@ -324,17 +327,19 @@ class GetGoHour : Fragment(), View.OnClickListener {
         binding.lChart.xAxis.position = XAxis.XAxisPosition.BOTTOM
         binding.lChart.axisRight.isEnabled = false
         binding.lChart.description.isEnabled = true
-        binding.lChart.description.text = "Time (in minutes)"
-        binding.exPg.xAxis.position = XAxis.XAxisPosition.BOTTOM
-        binding.exPg.axisRight.isEnabled = false
-        binding.exPg.description.isEnabled = false
+        val xDescription = Description()
+        xDescription.text = "Time (in minutes)"
+        xDescription.textSize = 14f
+//        xDescription.setPosition(
+//            binding.lChart.width / 2f,
+//            binding.lChart.xAxis.yOffset + binding.lChart.xAxis.textSize + 16f
+//        )
+        binding.lChart.description = xDescription
+        binding.lChart.extraBottomOffset = 16f
+
         //binding.lChart.animateX(1800, Easing.EaseInExpo)
         binding.lChart.data = data
         binding.lChart.xAxis.setDrawGridLines(false)
-
-        binding.exPg.animateX(1800, Easing.EaseInExpo)
-        binding.exPg.data = data
-        binding.exPg.xAxis.setDrawGridLines(false)
     }
 
 
@@ -474,11 +479,11 @@ class GetGoHour : Fragment(), View.OnClickListener {
 //                    acvityDetails = chartlogDa.Activity
 //                    if (acvityDetails.toString() != null) {
 
-                        //  val categoryMap= acvityDetails as LinkedTreeMap<>
-                    }
+                //  val categoryMap= acvityDetails as LinkedTreeMap<>
+            }
 
 //                }
-                // var list:ArrayList<ProgressDetailsSubPart> = arrayListOf()
+            // var list:ArrayList<ProgressDetailsSubPart> = arrayListOf()
 
 //                val listCat: ArrayList<ActivitiesDetailsSubPart> = arrayListOf()
 //                if (acvityDetails != null) {
@@ -497,10 +502,10 @@ class GetGoHour : Fragment(), View.OnClickListener {
 //                            doc = getTimeInFormat(actDet.duration)
 //                        }
 //                        Log.d("yyy", actDet.Cate)
-                        //Log.d("zzz","time : "+actDet.duration.toString())
+            //Log.d("zzz","time : "+actDet.duration.toString())
 
-                    //}
-                //}
+            //}
+            //}
 //                if (acvityDetails != null) {
 //                    for (actDet in acvityDetails!!) {
 //                        listDur.add(ActivitiesDetailsDuration(actDet.duration))
@@ -706,7 +711,7 @@ class GetGoHour : Fragment(), View.OnClickListener {
     private fun getBarChartData() {
         //var i:Float=0f
         barEntriesList = ArrayList()
-       barEntriesList.add(BarEntry(1f, 4f))
+        barEntriesList.add(BarEntry(1f, 4f))
         barEntriesList.add(BarEntry(2f, 5f))
         barEntriesList.add(BarEntry(3f, 3f))
         barEntriesList.add(BarEntry(4f, 2f))
@@ -725,8 +730,12 @@ class GetGoHour : Fragment(), View.OnClickListener {
     }
 
     private fun setLineChart(progress: List<SubProgressResponse>) {
+        yVals.clear()
+        yVals.add(Entry(0f, 0f))
+        var points = 0f
         for (p in progress) {
-            yVals.add(Entry(p.xAxisLabel.toFloat(), p.point))
+            points += p.point
+            yVals.add(Entry(p.xAxisLabel.toFloat(), points))
         }
         Collections.sort(yVals, EntryXComparator())
         val sety = LineDataSet(yVals, "Points")
@@ -738,13 +747,11 @@ class GetGoHour : Fragment(), View.OnClickListener {
         binding.lChart.xAxis.position = XAxis.XAxisPosition.BOTTOM
         binding.lChart.axisRight.isEnabled = false
         binding.lChart.xAxis.axisMinimum = 0F
-        binding.lChart.xAxis.axisMaximum = (binding.timeHour.text.toString().toInt()*60F)
+        binding.lChart.xAxis.axisMaximum = (binding.timeHour.text.toString().toInt() * 60F)
         binding.lChart.animateX(1800, Easing.EaseInOutQuad)
         binding.lChart.data = data
-        binding.exPg.xAxis.position = XAxis.XAxisPosition.BOTTOM
-        binding.exPg.axisRight.isEnabled = false
-        binding.exPg.animateX(1800, Easing.EaseInOutQuad)
-        binding.exPg.data = data
+        binding.lChart.invalidate()
+
     }
 
     fun printCHart(arrayList: List<Entry>?) {
@@ -792,11 +799,11 @@ class GetGoHour : Fragment(), View.OnClickListener {
         var x = 1f
         labels.remove("")
 
-        for(entry in labels){
+        for (entry in labels) {
             barEntries[entry] = 0.0
         }
 
-        for(activity in activities) {
+        for (activity in activities) {
             if (activity.category in barEntries.keys) {
                 barEntries[activity.category] = barEntries[activity.category]!! + activity.duration
             } else {
@@ -807,7 +814,7 @@ class GetGoHour : Fragment(), View.OnClickListener {
         labels.add(0, "")
 
         Log.e("BarChart", barEntries.toString())
-        for(entry in barEntries.keys){
+        for (entry in barEntries.keys) {
             barEntriesList.add(BarEntry(x, getTimeForBarChart(barEntries[entry]!!)))
             Log.e("BarChart X = ", "$x")
             x += 1f
@@ -821,6 +828,7 @@ class GetGoHour : Fragment(), View.OnClickListener {
         barDataSet.highLightColor = Color.TRANSPARENT
         binding.bar.data = barData
         binding.bar.description.isEnabled = false
+        binding.bar.extraBottomOffset = 16f
         binding.bar.elevation = 30f
 //                binding.bar.renderer=
 //                    RoundedBarChart(binding.bar,binding.bar.animator,binding.bar.viewPortHandler)
@@ -836,7 +844,7 @@ class GetGoHour : Fragment(), View.OnClickListener {
         binding.bar.legend.isEnabled = false
         binding.bar.xAxis.valueFormatter = IndexAxisValueFormatter(labels)
         binding.bar.axisLeft.axisMinimum = 0f
-        binding.bar.axisLeft.axisMaximum = (binding.timeHour.text.toString().toInt()*60F)
+        binding.bar.axisLeft.axisMaximum = (binding.timeHour.text.toString().toInt() * 60F)
         barDataSet.setColors(
             Color.parseColor("#C8C8C8"), Color.parseColor("#C8C8C8"),
             Color.parseColor("#C8C8C8"), Color.parseColor("#3E3E3E"),
@@ -849,7 +857,7 @@ class GetGoHour : Fragment(), View.OnClickListener {
     private fun getTimeForBarChart(time: Double): Float {
         return time.toFloat() / 60
     }
-    
+
 }
 
 

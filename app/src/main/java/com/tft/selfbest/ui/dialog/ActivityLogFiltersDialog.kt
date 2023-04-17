@@ -2,7 +2,9 @@ package com.tft.selfbest.ui.dialog
 
 import android.app.DatePickerDialog
 import android.app.Dialog
+import android.content.Intent
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -10,8 +12,8 @@ import android.view.ViewGroup
 import android.view.Window
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.Button
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -30,11 +32,7 @@ import java.util.*
 
 
 @AndroidEntryPoint
-class ActivityLogFiltersDialog(
-    private val applyFilterListener: FilterListener,
-    private val categories: List<SelectedCategory>,
-    override var defaultCategories: MutableList<SelectedCategory>
-) : Fragment(), View.OnClickListener, ForCategories {
+class ActivityLogFiltersDialog() : AppCompatActivity(), View.OnClickListener, ForCategories {
     lateinit var binding: FragmentActivityLogFiltersDialogBinding
     private val platforms = listOf("Mobile", "Web", "Desktop")
     private val durations = listOf("daily", "weekly", "monthly", "yearly", "custom")
@@ -45,13 +43,10 @@ class ActivityLogFiltersDialog(
     val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.US)
     var custom_selected = false
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
+        super.onCreate(savedInstanceState, persistentState)
         // Inflate the layout for this fragment
-        (activity as HomeActivity?)?.hideForFullScreen()
-        binding = FragmentActivityLogFiltersDialogBinding.inflate(inflater)
+        binding = FragmentActivityLogFiltersDialogBinding.inflate(layoutInflater)
         val sortedList = categories.sortedByDescending { it.duration }
         binding.givenCategories.layoutManager = LinearLayoutManager(binding.root.context)
         binding.givenCategories.adapter = SelectCategoryAdapter(
@@ -158,20 +153,13 @@ class ActivityLogFiltersDialog(
                     }
                 }
             }
-
-        return binding.root
-    }
+ }
 
     private fun setClickListeners() {
         binding.arrow.setOnClickListener(this)
         binding.applyFilter.setOnClickListener(this)
         binding.reset.setOnClickListener(this)
         binding.selectCategory.setOnClickListener(this)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        (activity as HomeActivity?)?.showForFullScreen()
     }
 
 
@@ -182,40 +170,45 @@ class ActivityLogFiltersDialog(
     override fun onClick(view: View?) {
         when (view?.id) {
             R.id.arrow -> {
-                Log.e("Filters", "Not Applied")
-                requireActivity().supportFragmentManager.popBackStack()
-
+                finish()
             }
             R.id.apply_filter -> {
                 Log.e("Filters", selectedPlatform + " " + selectedDuration)
-                val fragmentManager: FragmentManager = requireActivity().supportFragmentManager
-                fragmentManager.popBackStack()
-                val transaction = fragmentManager.beginTransaction()
-                if (custom_selected)
-                    transaction.replace(
-                        R.id.fragmentContainerView,
-                        ActivityLogFragment(getSelectedCategories(), selectedPlatform, selectedDuration, startDate, endDate, false)
-                    )
+                if (custom_selected){
+                    val intent = Intent(this,HomeActivity::class.java)
+                    intent.putExtra("FRAGMENT", 1)
+                    intent.putExtra("DETAILS", arrayOf(selectedPlatform, selectedDuration, startDate, endDate))
+                    intent.putExtra("FIRST_TIME", false)
+                    startActivity(intent)
+                    finish()
+                }
+//                    transaction.replace(
+//                        R.id.fragmentContainerView,
+//                        ActivityLogFragment(getSelectedCategories(), selectedPlatform, selectedDuration, startDate, endDate, false)
+//                    )
 //                    applyFilterListener.filterData(
 //                        selectedPlatform,
 //                        selectedDuration,
 //                        startDate,
 //                        endDate
 //                    )
-                else
-                    transaction.replace(
-                        R.id.fragmentContainerView,
-                        ActivityLogFragment(getSelectedCategories(), selectedPlatform, selectedDuration, "", "", false)
-                    )
+                else{
+                    val intent = Intent(this,HomeActivity::class.java)
+                    intent.putExtra("Fragment", 1)
+                    intent.putExtra("Details", arrayOf(getSelectedCategories(), selectedPlatform, selectedDuration, "", "", false))
+                }
+//                    transaction.replace(
+//                        R.id.fragmentContainerView,
+//                        ActivityLogFragment(getSelectedCategories(), selectedPlatform, selectedDuration, "", "", false)
+//                    )
                 //transaction.addToBackStack(null)
-                transaction.commit()
-                //requireActivity().supportFragmentManager.popBackStack()
+
             }
 
             R.id.reset -> {
                 binding.duration.setSelection(0)
                 binding.platform.setSelection(0)
-                applyFilterListener.filterData("Mobile", "daily")
+                applyFilterListener.filterData("Mobile", "daily", "", "")
             }
 
             R.id.select_category -> {
@@ -230,7 +223,6 @@ class ActivityLogFiltersDialog(
 
 
     interface FilterListener {
-        fun filterData(platform: String, duration: String)
         fun filterData(
             platform: String,
             duration: String,

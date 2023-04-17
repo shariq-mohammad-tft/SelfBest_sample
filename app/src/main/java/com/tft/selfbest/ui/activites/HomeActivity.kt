@@ -107,6 +107,10 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,HomeActivityCalle
         binding.viewNotifications.setOnClickListener(this)
         binding.viewCalenderEvent.setOnClickListener(this)
         binding.profile.setOnClickListener(this)
+
+        if(intent.hasExtra("FRAGMENT")){
+            showActivityLogFragment()
+        }
         bottomNavigation.setOnItemSelectedListener { it ->
             when (it.itemId) {
                 R.id.overviewFragment -> {
@@ -147,6 +151,15 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,HomeActivityCalle
 
             }
             false
+        }
+    }
+
+    private fun showActivityLogFragment() {
+        val id = intent.getIntExtra("FRAGMENT", 0)
+        if(id == 1){
+            val values = intent.getStringArrayExtra("DETAILS")
+            val firstTime = intent.getBooleanExtra("FIRST_TIME", true)
+            loadFragment(ActivityLogFragment(mutableListOf(), values!![0], values[1], values[2], values[3], firstTime))
         }
     }
 
@@ -326,15 +339,15 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,HomeActivityCalle
         }
     }
 
-    fun hideForFullScreen(){
-        binding.myToolbar.visibility = View.GONE
-        binding.bottomNavigation.visibility = View.GONE
-    }
-
-    fun showForFullScreen(){
-        binding.myToolbar.visibility = View.VISIBLE
-        binding.bottomNavigation.visibility = View.VISIBLE
-    }
+//    fun hideForFullScreen(){
+//        binding.myToolbar.visibility = View.GONE
+//        binding.bottomNavigation.visibility = View.GONE
+//    }
+//
+//    fun showForFullScreen(){
+//        binding.myToolbar.visibility = View.VISIBLE
+//        binding.bottomNavigation.visibility = View.VISIBLE
+//    }
 
     override fun callHomeActivity() {
         val intent=Intent(this, HomeActivity::class.java)

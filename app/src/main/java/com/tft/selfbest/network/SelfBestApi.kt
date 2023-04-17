@@ -147,6 +147,15 @@ interface SelfBestApi {
         @Query("year") year: Int,
     ): List<EventDetail>
 
+//    @GET("/user/{user_id}/calendar/events")
+//    suspend fun getUpcomingEvents(
+//        @Path("user_id") userID: Int,
+//        @Query("location") location: String,
+//        @Query("day") day: Int,
+//        @Query("month") month: String,
+//        @Query("year") year: Int,
+//    ): List<EventDetail>
+
     @POST("/user/{user_id}/calendar/event")
     suspend fun addOneDayEvent(
         @Path("user_id") userID: Int,
@@ -360,11 +369,20 @@ interface SelfBestApi {
         @Query("type") type:String
     ): QueryTableResponse
 
+    @GET("https://webbot.self.best/userresponses/helpsession-details")
+    suspend fun getQuery(
+        @Query("id") id: Int,
+        @Query("start_date") start_date: String,
+        @Query("end_date") end_date: String,
+        @Query("type") type:String
+    ): QueryTableResponse
+
     @GET("https://webbot.self.best/userresponses/helpsession-details-expert")
     suspend fun getAnsweredQuery(
         @Query("email") email: String,
         @Query("team_id") team_id: String,
         @Query("start_date") start_date: String,
+        @Query("end_date") end_date: String,
         @Query("type") type: String
     ): List<QueryAnsweredResponse>
 
@@ -373,6 +391,14 @@ interface SelfBestApi {
     suspend fun updateStatus(
         @Field("id") id: Int,
         @Field("status") status: Int
+    ): UpdationBody
+
+    @FormUrlEncoded
+    @POST("https://webbot.self.best/userresponses/update-relevance/")
+    suspend fun updateRelevance(
+        @Field("id") id: Int,
+        @Field("relevance") status: Int,
+        @Field("db_detail") db_detail: String
     ): UpdationBody
 
     @GET("/user/{user_id}/skill-recommendation")

@@ -5,6 +5,8 @@ import com.google.gson.annotations.SerializedName
 data class UserRequest (
     @SerializedName("Email")
     val email: String,
+    @SerializedName("LinkedinProfileUrl")
+    val linkedInUrl: String,
     @SerializedName("Name")
     val name: String,
     @SerializedName("Status")

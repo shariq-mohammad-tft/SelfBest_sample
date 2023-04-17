@@ -18,7 +18,11 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 @AndroidEntryPoint
-class AnsweredQuery : Fragment(), AnsweredQueryAdapter.ChangeStatusListener {
+class AnsweredQuery(
+    val startDate1: String,
+    val endDate: String,
+    val type: String
+) : Fragment(), AnsweredQueryAdapter.ChangeStatusListener {
 
     lateinit var binding: FragmentAnsweredQueryBinding
     val viewModel by viewModels<StatisticsViewModel>()
@@ -26,6 +30,7 @@ class AnsweredQuery : Fragment(), AnsweredQueryAdapter.ChangeStatusListener {
     lateinit var startDate: String
     val startDateCal = Calendar.getInstance()
     val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.US)
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,7 +43,8 @@ class AnsweredQuery : Fragment(), AnsweredQueryAdapter.ChangeStatusListener {
         // Inflate the layout for this fragment
         binding = FragmentAnsweredQueryBinding.inflate(layoutInflater)
         startDate = dateFormat.format(startDateCal.time)
-        viewModel.getAnsweredQuery("", startDate, "daily")
+        //viewModel.getAnsweredQuery("", startDate, "daily")
+        viewModel.getAnsweredQuery("", startDate1, endDate, type)
         viewModel.queryAnsweredObserver.observe(viewLifecycleOwner) {
             if (it is NetworkResponse.Success) {
                 answeredQueries = it.data!!
@@ -47,7 +53,7 @@ class AnsweredQuery : Fragment(), AnsweredQueryAdapter.ChangeStatusListener {
                     binding.answeredQueries.layoutManager = LinearLayoutManager(binding.root.context)
                     binding.answeredQueries.adapter = AnsweredQueryAdapter(
                         binding.root.context,
-                        answeredQueries.take(10),
+                        answeredQueries,
                         this
                     )
             }
@@ -55,8 +61,7 @@ class AnsweredQuery : Fragment(), AnsweredQueryAdapter.ChangeStatusListener {
         return binding.root
     }
 
-    override fun changeStatus(id: Int, status: Int) {
-        viewModel.updateStatus(id, status)
-
+    override fun changeRelevance(id: Int, relevance: Int) {
+        viewModel.updateRelevance(id, relevance, "webbot")
     }
 }

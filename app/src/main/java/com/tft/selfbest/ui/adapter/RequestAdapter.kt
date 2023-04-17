@@ -26,6 +26,7 @@ class RequestAdapter(
         val view =
             LayoutInflater.from(parent.context)
                 .inflate(R.layout.pending_layout_item, parent, false)
+        Log.e("Entered 2", "Pending Requests")
         return RequestViewHolder(view)
     }
 
@@ -33,7 +34,7 @@ class RequestAdapter(
         var check = false
         val request = fileteredList[position]
         holder.gmail.text = request.email
-        holder.linkedin.text = request.email
+        holder.linkedin.text = request.linkedInUrl
         holder.selected.isChecked = selectall
         val spinAdapter = ArrayAdapter(
             context,

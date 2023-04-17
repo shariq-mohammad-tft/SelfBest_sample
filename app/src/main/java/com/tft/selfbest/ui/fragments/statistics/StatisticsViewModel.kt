@@ -44,17 +44,17 @@ class StatisticsViewModel @Inject constructor(
         }
     }
 
-    fun getLogs(type : String, event : String){
-        viewModelScope.launch {
-            val id = preference.getLoginData?.id ?: return@launch
-            statisticsRepository.getActivityLogs(id, type, event).collect {
-                if(it is NetworkResponse.Success)
-                    activityLogs.postValue(it)
-                else
-                    Log.e("Activity Log", it.toString())
-            }
-        }
-    }
+//    fun getLogs(type : String, event : String){
+//        viewModelScope.launch {
+//            val id = preference.getLoginData?.id ?: return@launch
+//            statisticsRepository.getActivityLogs(id, type, event).collect {
+//                if(it is NetworkResponse.Success)
+//                    activityLogs.postValue(it)
+//                else
+//                    Log.e("Activity Log", it.toString())
+//            }
+//        }
+//    }
 
     fun getLogs(type : String, event : String, startDate: String, endDate: String){
         viewModelScope.launch {
@@ -78,10 +78,30 @@ class StatisticsViewModel @Inject constructor(
         }
     }
 
-    fun getAnsweredQuery(team_id: String, startDate: String, type: String){
+    fun getQuery(startDate: String, endDate: String, type: String){
+        viewModelScope.launch {
+            val id = preference.getLoginData?.id ?: return@launch
+            statisticsRepository.getQuery(id, startDate, endDate, type).collect {
+                if(it is NetworkResponse.Success)
+                    queryLiveData.postValue(it)
+            }
+        }
+    }
+
+//    fun getAnsweredQuery(team_id: String, startDate: String, type: String){
+//        viewModelScope.launch {
+//            val email = preference.getLoginData?.email ?: return@launch
+//            statisticsRepository.getAnsweredQuery(email, team_id, startDate, type).collect {
+//                if(it is NetworkResponse.Success)
+//                    queryAnsweredLiveData.postValue(it)
+//            }
+//        }
+//    }
+
+    fun getAnsweredQuery(team_id: String, startDate: String, endDate: String, type: String){
         viewModelScope.launch {
             val email = preference.getLoginData?.email ?: return@launch
-            statisticsRepository.getAnsweredQuery(email, team_id, startDate, type).collect {
+            statisticsRepository.getAnsweredQuery(email, team_id, startDate,endDate, type).collect {
                 if(it is NetworkResponse.Success)
                     queryAnsweredLiveData.postValue(it)
             }
@@ -91,6 +111,16 @@ class StatisticsViewModel @Inject constructor(
     fun updateStatus(id: Int, status: Int){
         viewModelScope.launch {
             statisticsRepository.updateStatus(id, status).collect {
+                if(it is NetworkResponse.Success) {
+                    updation.postValue(it)
+                }
+            }
+        }
+    }
+
+    fun updateRelevance(id: Int, status: Int, db_detail: String){
+        viewModelScope.launch {
+            statisticsRepository.updateRelevance(id, status, db_detail).collect {
                 if(it is NetworkResponse.Success) {
                     updation.postValue(it)
                 }

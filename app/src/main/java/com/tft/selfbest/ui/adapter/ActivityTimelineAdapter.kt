@@ -3,10 +3,13 @@ package com.tft.selfbest.ui.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.tft.selfbest.R
 import com.tft.selfbest.models.ActivityTimelineResponse
+import java.text.SimpleDateFormat
+import java.util.*
 
 class ActivityTimelineAdapter(
     val list: List<ActivityTimelineResponse>
@@ -20,26 +23,41 @@ class ActivityTimelineAdapter(
 
     override fun onBindViewHolder(holder: ActivityViewHolder, position: Int) {
         val res = list[position]
-        val ss = "00" + res.points.toString()
-        holder.points.text = ss
-//        when(res.focusTime){
-//            is Duration.IntValue -> {
-//                holder.focus.text = getTimeInFormat(res.focusTime.value.toDouble())
-//            }
-//            is Duration.DoubleValue -> {
-//                holder.focus.text = getTimeInFormat(res.focusTime.value)
-//            }
-//        }
-//        when(res.distractionTime){
-//            is Duration.IntValue -> {
-//                holder.distraction.text = getTimeInFormat(res.distractionTime.value.toDouble())
-//            }
-//            is Duration.DoubleValue -> {
-//                holder.distraction.text = getTimeInFormat(res.distractionTime.value)
-//            }
-//        }
-        holder.focus.text = getTimeInFormat(res.focusTime)
-        holder.distraction.text = getTimeInFormat(res.distractionTime)
+        if(res.points >= 0) {
+            holder.distraction_container.visibility = View.GONE
+            holder.neg_points.visibility = View.GONE
+            holder.focused_container.visibility = View.VISIBLE
+            holder.pos_points.visibility = View.VISIBLE
+            val ss = "+ " + res.points.toString() + " Pts"
+            holder.pos_points.text = ss
+
+            val df = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
+            df.timeZone = TimeZone.getTimeZone("UTC")
+            val date = df.parse(res.createdAt)
+            val formatter =
+                SimpleDateFormat("hh:mm a", Locale.getDefault())
+            formatter.timeZone = TimeZone.getDefault()
+            val dateStr = formatter.format(date!!)
+            holder.pos_time.text = dateStr
+            holder.pos_description.text = res.description
+        }else{
+            holder.distraction_container.visibility = View.VISIBLE
+            holder.neg_points.visibility = View.VISIBLE
+            holder.focused_container.visibility = View.GONE
+            holder.pos_points.visibility = View.GONE
+            val ss = res.points.toString() + " Pts"
+            holder.neg_points.text = ss
+
+            val df = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
+            df.timeZone = TimeZone.getTimeZone("UTC")
+            val date = df.parse(res.createdAt)
+            val formatter =
+                SimpleDateFormat("hh:mm a", Locale.getDefault())
+            formatter.timeZone = TimeZone.getDefault()
+            val dateStr = formatter.format(date!!)
+            holder.neg_time.text = dateStr
+            holder.neg_description.text = res.description
+        }
     }
 
     override fun getItemCount(): Int {
@@ -48,9 +66,15 @@ class ActivityTimelineAdapter(
 
     inner class ActivityViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-        val points = view.findViewById(R.id.recent_dayText) as TextView
-        val focus = view.findViewById(R.id.focused_time) as TextView
-        val distraction = view.findViewById(R.id.distracted_time) as TextView
+        val pos_points = view.findViewById(R.id.points) as TextView
+        val pos_description = view.findViewById(R.id.description) as TextView
+        val pos_time = view.findViewById(R.id.time_created) as TextView
+        val focused_container = view.findViewById(R.id.focused) as LinearLayout
+
+        val neg_points = view.findViewById(R.id.neg_points) as TextView
+        val neg_description = view.findViewById(R.id.neg_description) as TextView
+        val neg_time = view.findViewById(R.id.neg_time_created) as TextView
+        val distraction_container = view.findViewById(R.id.distracted) as LinearLayout
     }
 
     private fun getTimeInFormat(time: Double): String {

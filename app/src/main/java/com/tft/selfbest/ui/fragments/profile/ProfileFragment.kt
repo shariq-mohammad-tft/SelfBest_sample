@@ -315,7 +315,7 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
         binding.skillSearch.onItemClickListener =
             AdapterView.OnItemClickListener { arg0, _, position, _ ->
                 val selectedItem = arg0.getItemAtPosition(position) as String
-                binding.skillList.visibility = View.VISIBLE
+                binding.skillListScroll.visibility = View.VISIBLE
                 profileSkills[selectedItem] = 1
                 currentSkills.add(selectedItem)
                 (binding.skillList.adapter as ProfileSkillsAdapter).addSkill(
@@ -385,7 +385,7 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
         binding.genderSpinner.setSelection(genderCategory.indexOf(profileData.gender))
         Log.e("Gender", "" + profileData.gender)
         if (profileSkills.isNotEmpty()) {
-            binding.skillList.visibility = View.VISIBLE
+            binding.skillListScroll.visibility = View.VISIBLE
         }
         binding.skillList.layoutManager = LinearLayoutManager(binding.root.context)
         binding.skillList.adapter =
@@ -396,7 +396,7 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
             )
         if (pendingSkills.isNotEmpty()) {
             binding.pendingSkillHeading.visibility = View.VISIBLE
-            binding.pendingSkillList.visibility = View.VISIBLE
+            binding.pendingSkillListScroll.visibility = View.VISIBLE
         }
         binding.pendingSkillList.layoutManager = LinearLayoutManager(binding.root.context)
         binding.pendingSkillList.adapter =
@@ -620,7 +620,7 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
                     ).show()
                     return
                 }
-                binding.skillList.visibility = View.VISIBLE
+                binding.skillListScroll.visibility = View.VISIBLE
                 //currentSkills.add(binding.skill.text.toString())
                 if (isPresentSkill(binding.skillSearch.text.toString())) {
                     currentSkills.add(binding.skillSearch.text.toString())
@@ -903,7 +903,7 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
             skill,
             1
         )
-        binding.skillList.visibility = View.VISIBLE
+        binding.skillListScroll.visibility = View.VISIBLE
         viewModel.getRecommendation(skill)
     }
 

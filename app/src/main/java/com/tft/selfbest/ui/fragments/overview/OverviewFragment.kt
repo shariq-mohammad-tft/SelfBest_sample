@@ -18,6 +18,7 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tft.selfbest.R
 import com.tft.selfbest.databinding.FragmentOverviewBinding
+import com.tft.selfbest.models.ActivityTimelineResponse
 import com.tft.selfbest.models.GetGoHourResponse
 import com.tft.selfbest.models.StartTime
 import com.tft.selfbest.models.overview.CourseDetail

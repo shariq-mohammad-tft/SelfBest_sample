@@ -7,9 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import com.tft.selfbest.R
 import com.tft.selfbest.databinding.FragmentUserManagementSkillRequestBinding
-import com.tft.selfbest.ui.adapter.ViewPagerAdapter
 import com.tft.selfbest.ui.adapter.ViewPagerSkillAdapter
 
 class UserManagementSkillRequest : Fragment() {

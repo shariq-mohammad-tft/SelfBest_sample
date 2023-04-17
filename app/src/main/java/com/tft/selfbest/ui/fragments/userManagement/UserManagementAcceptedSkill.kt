@@ -120,6 +120,9 @@ class UserManagementAcceptedSkill : Fragment(),
                 if (!query.isNullOrEmpty() && acceptedSkills.isNotEmpty()) {
                     Log.e("Query", "1")
                     adapter.filter.filter(query)
+                    val searchViewIcon: ImageView =
+                        binding.search.findViewById(R.id.search_close_btn) as ImageView
+                    searchViewIcon.visibility = View.GONE
                     return false
                 }
                 return true

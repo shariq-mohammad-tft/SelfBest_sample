@@ -27,9 +27,10 @@ class UserManagementRequest : Fragment() {
         // Inflate the layout for this fragment
         binding=FragmentUserManagementRequestBinding.inflate(layoutInflater)
         //loadFragment(UserManagementPending())
+
+        binding.tablayout.tabMode= TabLayout.MODE_FIXED
         val adapter= activity?.let { ViewPagerAdapter(it.supportFragmentManager,lifecycle) }
         binding.viewpager.adapter=adapter
-        binding.tablayout.tabMode= TabLayout.MODE_FIXED
 
         TabLayoutMediator(binding.tablayout,binding.viewpager){tab,position->
             when(position){

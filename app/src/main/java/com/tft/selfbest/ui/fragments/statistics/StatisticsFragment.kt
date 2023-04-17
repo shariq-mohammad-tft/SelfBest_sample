@@ -117,7 +117,7 @@ class StatisticsFragment : Fragment(), View.OnClickListener,
         binding.exPg.axisLeft.setDrawGridLines(false)
         setClickListeners()
         setUpPieChart()
-        viewModel.getLogs("Mobile", "daily")
+        viewModel.getLogs("Mobile", "daily", "", "")
 //        viewModel.activityLogsObserver.observe(viewLifecycleOwner) {
 //            if (it is NetworkResponse.Success && it.data!!.logs != null) {
 //                activityLogs = it.data.logs
@@ -398,7 +398,7 @@ class StatisticsFragment : Fragment(), View.OnClickListener,
                 binding.answered.setTextColor(Color.WHITE)
                 binding.answered.setBackgroundResource(R.drawable.ans_query_bg)
                 binding.queryHeading.setTextColor(Color.parseColor("#00A2A4"))
-                viewModel.getAnsweredQuery("", startDate, "daily")
+                viewModel.getAnsweredQuery("", "01/12/2022", startDate,"custom")
             }
 
             R.id.asked -> {
@@ -550,41 +550,41 @@ class StatisticsFragment : Fragment(), View.OnClickListener,
         viewModel.updateStatus(id, status)
     }
 
-    override fun filterData(platform: String, duration: String) {
-        when (duration) {
-            "Daily" -> {
-                viewModel.getLogs(platform, "daily")
-                viewModel.getStats(startDate, endDate)
-                viewModel.getPoints(duration.lowercase(), "", "")
-            }
-            "Weekly" -> {
-                viewModel.getLogs(platform, "week")
-                endDateCal.add(Calendar.DAY_OF_YEAR, -7)
-                endDate = dateFormat.format(endDateCal.time)
-                viewModel.getStats(startDate, endDate)
-                viewModel.getPoints(duration.lowercase(), "", "")
-            }
-            "Monthly" -> {
-                Log.e("Point graph", "Month ")
-                viewModel.getLogs(platform, "month")
-                startDateCal.set(Calendar.DAY_OF_MONTH, startDateCal.getActualMinimum(Calendar.DAY_OF_MONTH))
-                startDate = dateFormat.format(startDateCal.time)
-                endDateCal.set(Calendar.DAY_OF_MONTH, endDateCal.getActualMaximum(Calendar.DAY_OF_MONTH))
-                endDate = dateFormat.format(endDateCal.time)
-                viewModel.getStats(startDate, endDate)
-                viewModel.getPoints(duration.lowercase(), "", "")
-            }
-            else -> {
-                viewModel.getLogs(platform, "month")
-                startDateCal.set(Calendar.DAY_OF_MONTH, startDateCal.getActualMinimum(Calendar.DAY_OF_MONTH))
-                startDate = dateFormat.format(startDateCal.time)
-                endDateCal.set(Calendar.DAY_OF_MONTH, endDateCal.getActualMaximum(Calendar.DAY_OF_MONTH))
-                endDate = dateFormat.format(endDateCal.time)
-                viewModel.getStats(startDate, endDate)
-                viewModel.getPoints(duration.lowercase(), "", "")
-            }
-        }
-    }
+//    override fun filterData(platform: String, duration: String) {
+//        when (duration) {
+//            "Daily" -> {
+//                viewModel.getLogs(platform, "daily")
+//                viewModel.getStats(startDate, endDate)
+//                viewModel.getPoints(duration.lowercase(), "", "")
+//            }
+//            "Weekly" -> {
+//                viewModel.getLogs(platform, "week")
+//                endDateCal.add(Calendar.DAY_OF_YEAR, -7)
+//                endDate = dateFormat.format(endDateCal.time)
+//                viewModel.getStats(startDate, endDate)
+//                viewModel.getPoints(duration.lowercase(), "", "")
+//            }
+//            "Monthly" -> {
+//                Log.e("Point graph", "Month ")
+//                viewModel.getLogs(platform, "month")
+//                startDateCal.set(Calendar.DAY_OF_MONTH, startDateCal.getActualMinimum(Calendar.DAY_OF_MONTH))
+//                startDate = dateFormat.format(startDateCal.time)
+//                endDateCal.set(Calendar.DAY_OF_MONTH, endDateCal.getActualMaximum(Calendar.DAY_OF_MONTH))
+//                endDate = dateFormat.format(endDateCal.time)
+//                viewModel.getStats(startDate, endDate)
+//                viewModel.getPoints(duration.lowercase(), "", "")
+//            }
+//            else -> {
+//                viewModel.getLogs(platform, "month")
+//                startDateCal.set(Calendar.DAY_OF_MONTH, startDateCal.getActualMinimum(Calendar.DAY_OF_MONTH))
+//                startDate = dateFormat.format(startDateCal.time)
+//                endDateCal.set(Calendar.DAY_OF_MONTH, endDateCal.getActualMaximum(Calendar.DAY_OF_MONTH))
+//                endDate = dateFormat.format(endDateCal.time)
+//                viewModel.getStats(startDate, endDate)
+//                viewModel.getPoints(duration.lowercase(), "", "")
+//            }
+//        }
+//    }
 
     override fun filterData(
         platform: String,
@@ -593,6 +593,10 @@ class StatisticsFragment : Fragment(), View.OnClickListener,
         endDate: String
     ) {
         TODO("Not yet implemented")
+    }
+
+    override fun changeRelevance(id: Int, relevance: Int) {
+        viewModel.updateRelevance(id, relevance, "webbot")
     }
 
 }

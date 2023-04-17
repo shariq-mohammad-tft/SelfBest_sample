@@ -29,7 +29,7 @@ class PendingSkillRequestAdapter(
 
     override fun onBindViewHolder(holder: SKillRequestViewHolder, position: Int) {
         val request = fileteredList[position]
-        holder.requestId.text = request.name
+        holder.requestId.text = request.email
         holder.skill.text = request.skill
         val adapter = ArrayAdapter(
             context,
@@ -91,7 +91,7 @@ class PendingSkillRequestAdapter(
                     val filteredList1 = mutableListOf<SkillResponse>()
                     list
                         .filter {
-                            (it.skill.contains(constraint!!))
+                            (it.skill.contains(constraint!!)|| it.email.contains(constraint))
                         }
                         .forEach { filteredList1.add(it) }
                     filteredList1
