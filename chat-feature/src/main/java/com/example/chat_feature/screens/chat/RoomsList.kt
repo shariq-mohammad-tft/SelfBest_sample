@@ -531,7 +531,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -566,6 +565,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.chat_feature.R
@@ -573,6 +574,7 @@ import com.example.chat_feature.data.experts.BotUnseenCountRequest
 import com.example.chat_feature.data.experts.Expert
 import com.example.chat_feature.data.experts.ExpertListRequest
 import com.example.chat_feature.navigation.AppScreen
+import com.example.chat_feature.screens.chat.components.ComposableLifecycle
 import com.example.chat_feature.screens.chat.components.telegram.ChatItem
 import com.example.chat_feature.utils.Constants
 import com.example.chat_feature.utils.Resource
@@ -580,22 +582,22 @@ import com.example.chat_feature.utils.createSocketUrl
 import com.example.chat_feature.utils.toast
 import com.example.chat_feature.view_models.ExpertListViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
 private const val TAG = "ExpertList"
 
 @RequiresApi(Build.VERSION_CODES.O)
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalCoroutinesApi::class)
+@OptIn(
+    ExperimentalMaterial3Api::class, ExperimentalCoroutinesApi::class, ExperimentalUnitApi::class
+)
 @Composable
 fun RoomsList(
     navController: NavController,
     viewModel: ExpertListViewModel = hiltViewModel(),
 
-) {
+    ) {
     val experts = viewModel.experts
-    val listState = rememberLazyListState()
     val scope = rememberCoroutineScope()
     val context = LocalContext.current as? Activity
     val userId = viewModel.userId
@@ -603,23 +605,34 @@ fun RoomsList(
 
     val unseenObj = buildMessages(senderId = userId)
 
+    var counter by remember { mutableStateOf(0) }
+
 
 
     //TODO call init function
     LaunchedEffect(Unit) {
-        viewModel.loadExpertList(
+       /* viewModel.loadExpertList(
             ExpertListRequest(
                 senderId = userId,
             )
-        )
-        viewModel.connectSocket(socketUrl = Constants.SELF_BEST_SOCKET_URL.createSocketUrl(userId))
+        )*/
+       // viewModel.connectSocket(socketUrl = Constants.SELF_BEST_SOCKET_URL.createSocketUrl(userId))
+    }
+    ComposableLifecycle { _, event ->
+        when (event) {
+            Lifecycle.Event.ON_CREATE  -> {
+                viewModel.loadExpertList(
+                    ExpertListRequest(
+                        senderId = userId,
+                    )
+                )
+            }
+            Lifecycle.Event.ON_RESUME  -> viewModel.connectSocket(Constants.SELF_BEST_SOCKET_URL.createSocketUrl(userId))
+            Lifecycle.Event.ON_STOP  -> viewModel.closeConnection()
+            else -> Unit
+        }
+    }
 
-    }
-    LaunchedEffect(Unit ){
-       // viewModel.getBotUnseenCount(unseenObj)
-        //delay(5000)
-        Log.d("lunch",viewModel.unseenMessageCount.toString())
-    }
 
 
 
@@ -633,10 +646,10 @@ fun RoomsList(
                     "Solution Point",
                     fontSize = TextUnit(20f, TextUnitType.Sp),
                     fontWeight = FontWeight.SemiBold,
-                    ) },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                containerColor = Color(0xFFF8F8F8)),
-                navigationIcon = {
+                )
+            }, colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                containerColor = Color(0xFFF8F8F8)
+            ), navigationIcon = {
                 IconButton(onClick = {
                     context?.finish()
                 }) {
@@ -649,7 +662,7 @@ fun RoomsList(
                 shape = RoundedCornerShape(0.dp).copy(
                     bottomStart = CornerSize(15.dp), bottomEnd = CornerSize(15.dp)
                 ),
-                )
+            )
         )
     }, content = { padding ->
         Column(
@@ -662,8 +675,7 @@ fun RoomsList(
                     viewModel.onAction(ExpertListViewModel.UserAction.CloseIconClicked)
                 }, text = searchState.searchText, onInputValueChange = {
                     viewModel.onAction(ExpertListViewModel.UserAction.TextFieldInput(it))
-                }) {
-                }
+                }) {}
 
             } else {
                 BotCard(navController, onSearchIconClicked = {
@@ -745,16 +757,25 @@ fun RoomsList(
                         } else {
                             UserList(data) { user ->
                                 scope.launch {
-                                    if (context != null) {
-                                        context.toast(user.sentTo)
-                                    }
-                                    navController.navigate(
-                                        AppScreen.ExpertChathistoryViaLoadRoom.buildRoute(
-                                            senderId = userId,
-                                            receiverId = user.sentTo,
-                                            queryId = user.queryId
+                                    context?.toast(user.sentTo)
+                                    if (user.queryStatus) {
+                                        navController.navigate(
+                                            AppScreen.ExpertChathistoryViaLoadRoomForClosedQuery.buildRoute(
+                                                senderId = userId,
+                                                // receiverId = user.sentTo,
+                                                queryId = user.queryId
+                                            )
                                         )
-                                    )
+                                    } else {
+                                        navController.navigate(
+                                            AppScreen.ExpertChathistoryViaLoadRoom.buildRoute(
+                                                senderId = userId,
+                                                receiverId = user.sentTo,
+                                                queryId = user.queryId
+                                            )
+                                        )
+                                    }
+
                                 }
                             }
                         }
@@ -772,14 +793,6 @@ fun UserList(users: List<Expert>, onClick: (user: Expert) -> Unit) {
     Column(modifier = Modifier.fillMaxWidth()) {
         LazyColumn(Modifier.weight(1f)) {
             items(users) { user ->
-               /* UserCard(user, onClick)
-                Divider(
-                    color = Color(0xFFC8C8C8),
-                    thickness = 1.dp,
-                    modifier = Modifier.padding(15.dp, 0.dp, 15.dp, 0.dp)
-                )*/
-
-
                 ChatItem(user = user, onClick)
                 Divider(
                     color = Color(0xFFE2E2E2),
@@ -807,51 +820,57 @@ fun SearchAppBar(
                 .fillMaxWidth()
                 .height(57.dp)
                 .weight(1f),
-            onClick = {})
-        {
-            TextField(modifier = Modifier.fillMaxWidth(), value = text, onValueChange = {
-                onInputValueChange(it)
-            },  textStyle = TextStyle(
-                color = Color.Black, fontSize = 18.sp
-            ),  placeholder = {
-                Text(
-                    text = "Search...", color = Color.Black.copy(alpha = ContentAlpha.medium)
-                )
-            },  leadingIcon = {
-                Icon(
-                    imageVector = Icons.Filled.Search,
-                    contentDescription = "Search Icon",
-                    tint = Color.Black.copy(
-                        alpha = ContentAlpha.medium
+            onClick = {}) {
+            TextField(modifier = Modifier.fillMaxWidth(),
+                value = text,
+                onValueChange = {
+                    onInputValueChange(it)
+                },
+                textStyle = TextStyle(
+                    color = Color.Black, fontSize = 18.sp
+                ),
+                placeholder = {
+                    Text(
+                        text = "Search...", color = Color.Black.copy(alpha = ContentAlpha.medium)
                     )
-                )
-            },  trailingIcon = {
-                Box(modifier = Modifier.padding(10.dp, 0.dp, 0.dp, 0.dp)) {
-                    Card(
-                        shape = CircleShape,
-                        backgroundColor = Color(0xFFC8C8C4),
-                        modifier = Modifier.size(57.dp)
-                    )  {
-                        IconButton(onClick = {
-                            if (text.isNotEmpty()) {
-                                onInputValueChange("")
-                            } else {
-                                onCloseIconClicked()
+                },
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Filled.Search,
+                        contentDescription = "Search Icon",
+                        tint = Color.Black.copy(
+                            alpha = ContentAlpha.medium
+                        )
+                    )
+                },
+                trailingIcon = {
+                    Box(modifier = Modifier.padding(10.dp, 0.dp, 0.dp, 0.dp)) {
+                        Card(
+                            shape = CircleShape,
+                            backgroundColor = Color(0xFFC8C8C4),
+                            modifier = Modifier.size(57.dp)
+                        ) {
+                            IconButton(onClick = {
+                                if (text.isNotEmpty()) {
+                                    onInputValueChange("")
+                                } else {
+                                    onCloseIconClicked()
+                                }
+                            }) {
+                                Icon(
+                                    imageVector = Icons.Filled.Close,
+                                    contentDescription = "Close Icon",
+                                    tint = Color(0xFF141821)
+                                )
                             }
-                        }) {
-                            Icon(
-                                imageVector = Icons.Filled.Close,
-                                contentDescription = "Close Icon",
-                                tint = Color(0xFF141821)
-                            )
                         }
                     }
-                }
-            },  colors = TextFieldDefaults.outlinedTextFieldColors(
-                unfocusedBorderColor = Color(0xFFC8C8C8),
-                focusedBorderColor = Color.Black,
-                cursorColor = Color.Black,
-            ),
+                },
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    unfocusedBorderColor = Color(0xFFC8C8C8),
+                    focusedBorderColor = Color.Black,
+                    cursorColor = Color.Black,
+                ),
                 keyboardActions = KeyboardActions(onSearch = { onSearchClicked() }),
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                 singleLine = true
@@ -864,9 +883,7 @@ fun SearchAppBar(
 @OptIn(ExperimentalMaterialApi::class, ExperimentalUnitApi::class)
 @Composable
 fun BotCard(
-    navController: NavController,
-    onSearchIconClicked: () -> Unit,
-    botunseen:String
+    navController: NavController, onSearchIconClicked: () -> Unit, botunseen: String
 ) {
     val context = LocalContext.current
     Row(modifier = Modifier.padding(15.dp)) {
@@ -912,7 +929,7 @@ fun BotCard(
                 verticalArrangement = Arrangement.aligned(Alignment.CenterVertically)
             ) {
                 Text(
-                    text = "Selfbest Bot +{$botunseen}}",
+                    text = "Selfbest Bot",
                     fontWeight = FontWeight.Bold,
                     color = Color(0xFFFFFFFF),
                     fontSize = TextUnit(16f, TextUnitType.Sp)
@@ -1127,7 +1144,7 @@ fun DefaultPreview() {
     Surface(Modifier.fillMaxSize()) {
         BotCard(rememberNavController(), onSearchIconClicked = {
             "viewModel"
-        },"")
+        }, "")
         //UserList()
 
 
@@ -1136,7 +1153,7 @@ fun DefaultPreview() {
 
 private fun buildMessages(
     senderId: String,
-    ): BotUnseenCountRequest {
+): BotUnseenCountRequest {
     return BotUnseenCountRequest(
         sentBy = senderId
     )

@@ -11,12 +11,12 @@ data class Expert(
     val queryText: String,
     @SerializedName("status")
     val status: Boolean,
-    @SerializedName("user_id")
+    @SerializedName("receiver_id")
     val sentTo:String,
     @SerializedName("query_id")
     val queryId:String,
     @SerializedName("useen_count")
-    val unSeenCount:Int,
+    var unSeenCount:Int,
     @SerializedName("query_status")
     val queryStatus:Boolean,
     @SerializedName("user_name")

@@ -56,7 +56,7 @@ fun CardSelfMessage(message: String) {
             ) {
                 Text(
                     modifier = Modifier.padding(8.dp),
-                    text = message,
+                    text = if(message.contains("yes help", ignoreCase = true)) "Yes" else if(message.contains("Can't help", ignoreCase = true)) "No" else message,
                     style = MaterialTheme.typography.caption,
                     color = Color(0xFFFFFFFF)
                 )
@@ -97,7 +97,7 @@ fun CardReceiverMessage(message: String) {
             ) {
                 Text(
                     modifier = Modifier.padding(8.dp),
-                    text = message,
+                    text = message.replace("<br>", "\n\n"),
                     style = MaterialTheme.typography.caption,
                     color = Color(0xFF3E3E3E)
                 )

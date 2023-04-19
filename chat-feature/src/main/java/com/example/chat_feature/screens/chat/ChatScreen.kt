@@ -42,6 +42,7 @@ import com.example.chat_feature.data.Message
 import com.example.chat_feature.data.PlainMessageRequest
 import com.example.chat_feature.navigation.AppScreen
 import com.example.chat_feature.navigation.CHAT_SELECTION_SCREEN
+import com.example.chat_feature.navigation.ROUTE_ROOM
 import com.example.chat_feature.screens.chat.components.*
 import com.example.chat_feature.utils.Constants
 import com.example.chat_feature.utils.Resource
@@ -69,14 +70,16 @@ fun ChatScreen(
     val userId = viewModel.userId
 
 
+
     Log.d(
-        TAG, "ChatScreen: SENDER - $userId and RECEIVER - $receiverId"
+        TAG, "ChatScreen: SENDER - $userId and RECEIVER - $receiverId "
     )
 
 
     LaunchedEffect(Unit) {
         viewModel.connectSocket(socketUrl = Constants.SELF_BEST_SOCKET_URL.createSocketUrl(userId))
     }
+
     Scaffold(topBar = {
         CenterAlignedTopAppBar(
             title = {
@@ -107,7 +110,7 @@ fun ChatScreen(
 
                 )
         )
-    }, content = {
+    }) {
 
         Column(
             modifier = Modifier
@@ -158,8 +161,7 @@ fun ChatScreen(
 
                             if (!message.value.channelId.isNullOrEmpty()) {
                                 LaunchedEffect(Unit) {
-
-                                    context.toast(message.value.queryId!!)
+                                    context.toast(message.value.channelId!!)
 
                                     // todo debug and check whether back press works
 
@@ -168,15 +170,16 @@ fun ChatScreen(
                                             senderId = userId,
                                             receiverId = message.value.channelId,
                                             queryId = message.value.queryId!!,
-
-
                                             )
                                     ) {
-                                        Log.d("queryIdd", message.value.queryId + userId)
-                                        popUpTo(CHAT_SELECTION_SCREEN) {
+                                        Log.d(
+                                            "queryIdd",
+                                            message.value.queryId + userId + message.value.channelId
+                                        )
+                                        popUpTo(ROUTE_ROOM) {
                                             inclusive = false
                                         }
-                                    }
+                                    }.also { viewModel.closeConnection() }
                                 }
 
 
@@ -215,7 +218,7 @@ fun ChatScreen(
                 },
             )
         }
-    })
+    }
 
 
 }
@@ -279,6 +282,7 @@ fun MessageCard(
         }
 
         if (!message.buttons.isNullOrEmpty()) {
+
 
             ButtonGridLayout(
                 buttons = message.buttons, isEnabled = isEnabled

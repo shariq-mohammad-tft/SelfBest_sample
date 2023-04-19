@@ -12,6 +12,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
@@ -41,6 +42,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     }
     private val scope = CoroutineScope(Dispatchers.Main + SupervisorJob() + handler)
 
+    @RequiresApi(Build.VERSION_CODES.S)
     @SuppressLint("MissingPermission")
     override fun onMessageReceived(message: RemoteMessage) {
 
@@ -52,7 +54,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                 addNextIntentWithParentStack(resultIntent)
                 getPendingIntent(
                     0,
-                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_ONE_SHOT
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_ONE_SHOT  or PendingIntent.FLAG_MUTABLE
                 )
             }
 

@@ -246,7 +246,18 @@ class ExpertChatViewModel @Inject constructor(
             }
         }
     }
+    private fun closeConnection() {
+        easyWs?.webSocket?.close(1001, "Closing manually")
+        Log.d("expertlistviewmodel", "closeConnectionFORCHATVIEWMODEL: CONNECTION CLOSED!")
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        closeConnection()
+        Log.d("expertlistviewmodel", "viewmodelClearedForChaTViewmodel")
+    }
 }
+
 
 
 /*

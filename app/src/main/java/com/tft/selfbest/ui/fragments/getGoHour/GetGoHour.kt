@@ -16,6 +16,7 @@ import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
+import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.utils.ColorTemplate
 import com.github.mikephil.charting.utils.EntryXComparator
 import com.tft.selfbest.R
@@ -136,7 +137,8 @@ class GetGoHour : Fragment(), View.OnClickListener {
                 Log.e("ActivityLog: ", " Success")
                 if (it.data.progress != null) {
                     progress = it.data.progress!!
-                    setLineChart(progress)
+                    //setLineChart(progress)
+                    addChartData(progress)
                 }
                 if (it.data.isPaused) {
                     pauseTimer()
@@ -474,11 +476,11 @@ class GetGoHour : Fragment(), View.OnClickListener {
 //                    acvityDetails = chartlogDa.Activity
 //                    if (acvityDetails.toString() != null) {
 
-                        //  val categoryMap= acvityDetails as LinkedTreeMap<>
-                    }
+                //  val categoryMap= acvityDetails as LinkedTreeMap<>
+            }
 
 //                }
-                // var list:ArrayList<ProgressDetailsSubPart> = arrayListOf()
+            // var list:ArrayList<ProgressDetailsSubPart> = arrayListOf()
 
 //                val listCat: ArrayList<ActivitiesDetailsSubPart> = arrayListOf()
 //                if (acvityDetails != null) {
@@ -497,10 +499,10 @@ class GetGoHour : Fragment(), View.OnClickListener {
 //                            doc = getTimeInFormat(actDet.duration)
 //                        }
 //                        Log.d("yyy", actDet.Cate)
-                        //Log.d("zzz","time : "+actDet.duration.toString())
+            //Log.d("zzz","time : "+actDet.duration.toString())
 
-                    //}
-                //}
+            //}
+            //}
 //                if (acvityDetails != null) {
 //                    for (actDet in acvityDetails!!) {
 //                        listDur.add(ActivitiesDetailsDuration(actDet.duration))
@@ -706,7 +708,7 @@ class GetGoHour : Fragment(), View.OnClickListener {
     private fun getBarChartData() {
         //var i:Float=0f
         barEntriesList = ArrayList()
-       barEntriesList.add(BarEntry(1f, 4f))
+        barEntriesList.add(BarEntry(1f, 4f))
         barEntriesList.add(BarEntry(2f, 5f))
         barEntriesList.add(BarEntry(3f, 3f))
         barEntriesList.add(BarEntry(4f, 2f))
@@ -746,6 +748,121 @@ class GetGoHour : Fragment(), View.OnClickListener {
         binding.exPg.animateX(1800, Easing.EaseInOutQuad)
         binding.exPg.data = data
     }
+
+   /* private fun addChartData(progress: List<SubProgressResponse>) {
+        val data = binding.lChart.data
+        val set = data.getDataSetByIndex(0) as? LineDataSet
+        if (set != null) {
+            for (p in progress) {
+                set.addEntry(Entry(p.xAxisLabel.toFloat(), p.point))
+            }
+            set.getValues().sortBy { it.x }
+            set.mode=LineDataSet.Mode.HORIZONTAL_BEZIER
+            set.lineWidth=3f
+            set.color = Color.parseColor("#1D71D4")
+
+            data.notifyDataChanged()
+            binding.lChart.notifyDataSetChanged()
+            binding.lChart.setVisibleXRangeMaximum(binding.timeHour.text.toString().toInt() * 60F)
+            binding.lChart.moveViewToX(data.xMax)
+        }
+    }*/
+
+    private fun addChartData(progress: List<SubProgressResponse>) {
+        val data = binding.lChart.data
+        val set = data.getDataSetByIndex(0) as? LineDataSet
+        if (set != null) {
+            val prevSize = set.entryCount
+            for (p in progress) {
+                set.addEntry(Entry(p.xAxisLabel.toFloat(), p.point))
+            }
+            set.getValues().sortBy { it.x }
+            set.mode = LineDataSet.Mode.HORIZONTAL_BEZIER
+            set.lineWidth = 3f
+            set.color = Color.parseColor("#1D71D4")
+            val newSize = set.entryCount
+            val xIncrement = if (newSize > prevSize) {
+                1f
+            } else {
+                (prevSize.toFloat() + 1) / newSize.toFloat()
+            }
+            binding.lChart.xAxis.valueFormatter = MyXAxisValueFormatter(xIncrement)
+            data.notifyDataChanged()
+            binding.lChart.notifyDataSetChanged()
+            binding.lChart.setVisibleXRangeMaximum(binding.timeHour.text.toString().toInt() * 60F)
+            binding.lChart.moveViewToX(data.xMax)
+        }
+    }
+
+    class MyXAxisValueFormatter(private val xIncrement: Float) : ValueFormatter() {
+        override fun getFormattedValue(value: Float): String {
+            return (value * xIncrement).toInt().toString()
+        }
+    }
+
+
+
+
+    /* private fun addChartData() {
+        val data = binding.lChart.data
+        val set = data.getDataSetByIndex(0) as? LineDataSet
+        if (set != null) {
+            // set.clear() // clear existing data
+            var currentPoint = 0f // starting point
+            for (p in dummyData) {
+                val xValue = p["x-axis-label"]!!.toFloat()
+                val yValue = p["points"]!!.toFloat()
+                if (yValue > currentPoint) { // if point has increased from previous interval
+                    currentPoint = yValue // update current point
+                    set.addEntry(Entry(xValue, yValue)) // add entry to set
+                } else { // if point has decreased or remained same from previous interval
+                    currentPoint = yValue // update current point
+                    set.addEntry(Entry(xValue, yValue)) // add entry to set
+                }
+            }
+            set.getValues().sortBy { it.x }
+            set.mode = LineDataSet.Mode.HORIZONTAL_BEZIER
+            set.lineWidth = 3f
+
+            set.color = Color.parseColor("#1D71D4")
+            set.cubicIntensity=.02f
+            data.notifyDataChanged()
+            binding.lChart.notifyDataSetChanged()
+            binding.lChart.setVisibleXRangeMaximum(binding.timeHour.text.toString().toInt() * 60F)
+            binding.lChart.moveViewToX(data.xMax)
+        }
+    }*/
+    /*---------working fine for dummy data------------------*/
+   /*private fun addChartData(progress: List<Map<String, String>>) {
+       val data = binding.lChart.data
+       val set = data.getDataSetByIndex(0) as? LineDataSet
+       if (set != null) {
+           for (p in progress) {
+               set.addEntry(Entry(p["x-axis-label"]!!.toFloat(), p["points"]!!.toFloat()))
+           }
+           set.getValues().sortBy { it.x }
+           set.mode = LineDataSet.Mode.HORIZONTAL_BEZIER
+           set.lineWidth = 3f
+           set.color = Color.parseColor("#1D71D4")
+
+           data.notifyDataChanged()
+           binding.lChart.notifyDataSetChanged()
+           binding.lChart.setVisibleXRangeMaximum(binding.timeHour.text.toString().toInt() * 60F)
+           binding.lChart.moveViewToX(data.xMax)
+       }
+   }*/
+    // dummy data
+    private val dummyData = listOf(
+        mapOf("x-axis-label" to "54", "points" to "57.31533333333334"),
+        mapOf("x-axis-label" to "108", "points" to "64.31330555555557"),
+        mapOf("x-axis-label" to "162", "points" to "40.409555555555556"),
+        mapOf("x-axis-label" to "216", "points" to "34.865583333333326"),
+        mapOf("x-axis-label" to "270", "points" to "63.34102777777777"),
+        mapOf("x-axis-label" to "324", "points" to "83.9233611111111"),
+        mapOf("x-axis-label" to "378", "points" to "26.81113888888889"),
+        mapOf("x-axis-label" to "432", "points" to "57.34099999999999"),
+        mapOf("x-axis-label" to "439", "points" to "2.899694444444444")
+    )
 
     fun printCHart(arrayList: List<Entry>?) {
         Log.d("prt", arrayList.toString())
@@ -849,7 +966,6 @@ class GetGoHour : Fragment(), View.OnClickListener {
     private fun getTimeForBarChart(time: Double): Float {
         return time.toFloat() / 60
     }
-    
-}
 
+}
 

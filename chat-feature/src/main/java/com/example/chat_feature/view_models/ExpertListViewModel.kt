@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.chat_feature.data.SocketUpdate
 import com.example.chat_feature.data.bot_history.ChatJson
@@ -22,8 +23,7 @@ import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.consumeEach
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import org.json.JSONObject
@@ -163,6 +163,7 @@ class ExpertListViewModel @Inject constructor(
     fun connectSocket(socketUrl: String = Constants.SELF_BEST_SOCKET_URL) {
         viewModelScope.launch(Dispatchers.IO) {
             easyWs = OkHttpClient().easyWebSocket(socketUrl)
+            Log.d("expertlistviewmodel", "Connection: CONNECTION established!")
             listenUpdates()
         }
     }
@@ -173,10 +174,14 @@ class ExpertListViewModel @Inject constructor(
         scheduledFuture=executorService.scheduleAtFixedRate({
             easyWs?.webSocket?.send(msg)
         },0,1,TimeUnit.SECONDS)
-
     }
 
-    private suspend fun listenUpdates() {
+    /* to call unseen message api
+    val getData= flow<Int> {
+
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(2000),0)*/
+
+    /*private suspend fun listenUpdates() {
         easyWs?.webSocket?.send("")
         easyWs?.textChannel?.consumeEach {
             when (it) {
@@ -202,8 +207,69 @@ class ExpertListViewModel @Inject constructor(
                 }
             }
         }
+    }*/
+    private suspend fun listenUpdates() {
+        easyWs?.webSocket?.send("")
+        easyWs?.textChannel?.consumeEach {
+            when (it) {
+                is SocketUpdate.Failure -> {
+                    Log.d("unseenPayload", "failed")
+                }
+                is SocketUpdate.Success -> {
+                    val text = it.text
+                    Log.d("unseenPayloadText", "onMessage: $text")
+                    val jsonObject = JSONObject(text)
+                    var responseObj = text!!
+
+                    if (jsonObject.has("data")) {
+                        responseObj = jsonObject.getString("data")
+                    }
+                    val response = gson.fromJson(responseObj, com.example.chat_feature.data.response.expert_chat.ChatJson::class.java)
+                    if(response.type=="chat") {
+
+                      /*  val updatedList = when (val result = experts.value) {
+                            is Resource.Success -> {
+                                val filteredExperts = result.value.filter { it.queryId == response.queryId }
+                                val updatedExperts = filteredExperts.map {
+                                    if (it.queryId == response.queryId) {
+                                        it.copy(unSeenCount = it.unSeenCount + 1)
+                                    } else {
+                                        it
+                                    }
+                                }
+                                val otherExperts = result.value.filterNot { it.queryId == response.queryId }
+                                Resource.Success( updatedExperts+otherExperts )
+                            }
+                            else -> result
+                        }
+
+                        experts.value = updatedList*/
+                        val updatedList = when (val result = experts.value) {
+                            is Resource.Success -> {
+                                val experts = result.value.toMutableList()
+                                val expertToUpdate = experts.find { it.queryId == response.queryId }
+                                if (expertToUpdate != null) {
+                                    val index = experts.indexOf(expertToUpdate)
+                                    val updatedExpert = expertToUpdate.copy(unSeenCount = expertToUpdate.unSeenCount + 1)
+                                    experts.set(index, updatedExpert)
+                                }
+                                Resource.Success(experts)
+                            }
+                            else -> result
+                        }
+
+                        experts.value = updatedList
+
+
+                    }
+
+
+                    Log.d("unseenPayloadText", "botMessageCount: $botMessageCount")
+                }
+            }
+        }
     }
-    private fun closeConnection() {
+     fun closeConnection() {
         easyWs?.webSocket?.close(1001, "Closing manually")
         Log.d("expertlistviewmodel", "closeConnection: CONNECTION CLOSED!")
     }
@@ -211,6 +277,7 @@ class ExpertListViewModel @Inject constructor(
     override fun onCleared() {
         super.onCleared()
         closeConnection()
+        Log.d("expertlistviewmodel", "viewmodelCleared")
     }
 }
 
