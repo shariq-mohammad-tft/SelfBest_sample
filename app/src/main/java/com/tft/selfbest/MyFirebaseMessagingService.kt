@@ -50,10 +50,17 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
             val resultPendingIntent: PendingIntent? = TaskStackBuilder.create(this).run {
                 addNextIntentWithParentStack(resultIntent)
-                getPendingIntent(
-                    0,
-                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_ONE_SHOT
-                )
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    getPendingIntent(
+                        0,
+                        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE
+                    )
+                } else {
+                    getPendingIntent(
+                        0,
+                        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_ONE_SHOT
+                    )
+                }
             }
 
             val notificationManger =
@@ -70,7 +77,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
             val builder = NotificationCompat.Builder(this, getString(R.string.app_name))
                 .setOngoing(false)
-                .setSmallIcon(R.drawable.selfbest)
+                .setSmallIcon(R.mipmap.ic_self_best_2_round)
                 .setContentIntent(resultPendingIntent)
                 .setContentTitle(it.title)
                 .setContentText(it.body)

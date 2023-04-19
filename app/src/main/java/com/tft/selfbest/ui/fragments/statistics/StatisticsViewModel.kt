@@ -1,5 +1,7 @@
 package com.tft.selfbest.ui.fragments.statistics
 
+import android.os.Parcel
+import android.os.Parcelable
 import android.util.Log
 import androidx.lifecycle.*
 import com.tft.selfbest.data.SelfBestPreference
@@ -7,8 +9,11 @@ import com.tft.selfbest.models.*
 import com.tft.selfbest.network.NetworkResponse
 import com.tft.selfbest.repository.StatisticsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -44,17 +49,17 @@ class StatisticsViewModel @Inject constructor(
         }
     }
 
-//    fun getLogs(type : String, event : String){
-//        viewModelScope.launch {
-//            val id = preference.getLoginData?.id ?: return@launch
-//            statisticsRepository.getActivityLogs(id, type, event).collect {
-//                if(it is NetworkResponse.Success)
-//                    activityLogs.postValue(it)
-//                else
-//                    Log.e("Activity Log", it.toString())
-//            }
-//        }
-//    }
+    fun getLogs(type : String, event : String){
+        viewModelScope.launch {
+            val id = preference.getLoginData?.id ?: return@launch
+            statisticsRepository.getActivityLogs(id, type, event).collect {
+                if(it is NetworkResponse.Success)
+                    activityLogs.postValue(it)
+                else
+                    Log.e("Activity Log", it.toString())
+            }
+        }
+    }
 
     fun getLogs(type : String, event : String, startDate: String, endDate: String){
         viewModelScope.launch {
@@ -64,16 +69,6 @@ class StatisticsViewModel @Inject constructor(
                     activityLogs.postValue(it)
                 else
                     Log.e("Activity Log", it.toString())
-            }
-        }
-    }
-
-    fun getQuery(startDate: String, type: String){
-        viewModelScope.launch {
-            val id = preference.getLoginData?.id ?: return@launch
-            statisticsRepository.getQuery(id, startDate, type).collect {
-                if(it is NetworkResponse.Success)
-                    queryLiveData.postValue(it)
             }
         }
     }
@@ -88,17 +83,7 @@ class StatisticsViewModel @Inject constructor(
         }
     }
 
-//    fun getAnsweredQuery(team_id: String, startDate: String, type: String){
-//        viewModelScope.launch {
-//            val email = preference.getLoginData?.email ?: return@launch
-//            statisticsRepository.getAnsweredQuery(email, team_id, startDate, type).collect {
-//                if(it is NetworkResponse.Success)
-//                    queryAnsweredLiveData.postValue(it)
-//            }
-//        }
-//    }
-
-    fun getAnsweredQuery(team_id: String, startDate: String, endDate: String, type: String){
+    fun getAnsweredQuery(team_id: String, startDate: String,endDate: String, type: String){
         viewModelScope.launch {
             val email = preference.getLoginData?.email ?: return@launch
             statisticsRepository.getAnsweredQuery(email, team_id, startDate,endDate, type).collect {

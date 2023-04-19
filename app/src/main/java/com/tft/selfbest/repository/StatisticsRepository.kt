@@ -27,12 +27,12 @@ class StatisticsRepository @Inject constructor(
         })
     }
 
-    suspend fun getQuery(id: Int, startDate: String, type: String) = flow{
-        emit(NetworkResponse.Loading())
-        emit(NetworkRequest.process {
-            client.apis.getQuery(id, startDate, type)
-        })
-    }
+//    suspend fun getQuery(id: Int, startDate: String, type: String) = flow{
+//        emit(NetworkResponse.Loading())
+//        emit(NetworkRequest.process {
+//            client.apis.getQuery(id, startDate, type)
+//        })
+//    }
 
     suspend fun getQuery(id: Int, startDate: String, endDate: String, type: String) = flow{
         emit(NetworkResponse.Loading())

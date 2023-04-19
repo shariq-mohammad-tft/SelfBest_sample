@@ -1,14 +1,15 @@
 package com.tft.selfbest.ui.activites
 
+import android.app.NotificationManager
+import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import androidx.appcompat.app.AppCompatActivity
 import com.example.chat_feature.ComposeActivity
-import com.example.chat_feature.screens.chat.ChatScreen
 import com.tft.selfbest.R
-import com.tft.selfbest.ui.login.LoginActivity
 import dagger.hilt.android.AndroidEntryPoint
+
 
 @AndroidEntryPoint
 class ChatActivity : AppCompatActivity() {

@@ -35,7 +35,7 @@ data class SelectedCategory(
     @SerializedName("Selected")
     val selected: Boolean
 
-)
+): java.io.Serializable
 
 //data class ActivityLogResponse(
 //    @SerializedName("Logs")

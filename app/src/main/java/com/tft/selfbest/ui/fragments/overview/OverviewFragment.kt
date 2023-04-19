@@ -1,6 +1,7 @@
 package com.tft.selfbest.ui.fragments.overview
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Build
@@ -13,13 +14,16 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tft.selfbest.R
+import com.tft.selfbest.data.SelfBestPreference
 import com.tft.selfbest.databinding.FragmentOverviewBinding
 import com.tft.selfbest.models.ActivityTimelineResponse
 import com.tft.selfbest.models.GetGoHourResponse
+import com.tft.selfbest.models.InputData
 import com.tft.selfbest.models.StartTime
 import com.tft.selfbest.models.overview.CourseDetail
 import com.tft.selfbest.network.NetworkResponse
@@ -30,13 +34,19 @@ import com.tft.selfbest.ui.dialog.AccessibilityOnDialog
 import com.tft.selfbest.ui.fragments.detailPage.SuggestedAppsViewModel
 import com.tft.selfbest.ui.fragments.getGoHour.GetGoHour
 import com.tft.selfbest.ui.fragments.getGoHour.GetGoHourViewModel
+import com.tft.selfbest.ui.fragments.inputProgress.InputProgress
+import com.tft.selfbest.ui.fragments.inputProgress.InputProgressViewModel
 import com.tft.selfbest.ui.fragments.water.WaterFragment
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.Instant
+import javax.inject.Inject
 import kotlin.math.roundToInt
 
 @AndroidEntryPoint
 class OverviewFragment : Fragment(), View.OnClickListener {
+
+    @Inject
+    lateinit var preferences: SelfBestPreference
 
     val viewModel by viewModels<SuggestedAppsViewModel>()
     private val overviewViewModel by viewModels<OverviewViewModel>()
@@ -45,6 +55,7 @@ class OverviewFragment : Fragment(), View.OnClickListener {
     private lateinit var getGoHourResponse: GetGoHourResponse
     private var isExpandTaskSummary: Boolean = false
     var access : Boolean = false
+    private val ipViewModel by viewModels<InputProgressViewModel>()
 //    private var suggestedInstalledApps: ArrayList<InstalledAppInfoUtil.Companion.InfoObject> =
 //        ArrayList()
     private var courseList: ArrayList<CourseDetail> = ArrayList()
@@ -73,6 +84,29 @@ class OverviewFragment : Fragment(), View.OnClickListener {
         binding.taskSummaryList.layoutManager = LinearLayoutManager(context)
         //val activity = activity as HomeActivity
 
+        gghViewViewModel.activityLogObserver.observe(viewLifecycleOwner){
+            if (it is NetworkResponse.Success) {
+                Log.e("ActivityLog: ", " Success")
+                if (it.data!!.activities == null || it.data.activities.isEmpty()) {
+                    ipViewModel.getInput(InputData(preferences.getGetHourId, listOf(), 1))
+                } else if (it.data.activities.isNotEmpty()) {
+                    val transaction = requireActivity().supportFragmentManager.beginTransaction()
+                    transaction.replace(R.id.fragmentContainerView, InputProgress())
+                    transaction.disallowAddToBackStack()
+                    transaction.commit()
+                }
+            }
+        }
+
+        ipViewModel.ratinObserver.observe(viewLifecycleOwner) {
+            val transaction =
+                requireActivity().supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.fragmentContainerView, OverviewFragment())
+            transaction.disallowAddToBackStack()
+            transaction.commit()
+            //Toast.makeText(binding.root.context, it, Toast.LENGTH_LONG).show()
+        }
+
         overviewViewModel.getGoHour()
         overviewViewModel.getGoHourObserver.observe(viewLifecycleOwner){
             if (it is NetworkResponse.Success) {
@@ -82,6 +116,15 @@ class OverviewFragment : Fragment(), View.OnClickListener {
                     val transaction =
                         requireActivity().supportFragmentManager.beginTransaction()
                     transaction.replace(R.id.fragmentContainerView, GetGoHour())
+                    transaction.disallowAddToBackStack()
+                    transaction.commit()
+                }else if(getGoHourResponse.getStarted && getGoHourResponse.ended){
+                    Log.e("GetgoHour", "ended")
+                    gghViewViewModel.getActivity()
+                }else if(getGoHourResponse.getStarted){
+                    val transaction =
+                        requireActivity().supportFragmentManager.beginTransaction()
+                    transaction.replace(R.id.fragmentContainerView, WaterFragment())
                     transaction.disallowAddToBackStack()
                     transaction.commit()
                 }
@@ -228,12 +271,11 @@ class OverviewFragment : Fragment(), View.OnClickListener {
     private fun checkAccessibilityPermission(): Boolean {
         var accessEnabled = 0
         try {
-            accessEnabled =
-                Settings.Secure.getInt(activity?.contentResolver, Settings.Secure.ACCESSIBILITY_ENABLED)
+            accessEnabled = Settings.Secure.getInt(activity?.contentResolver, Settings.Secure.ACCESSIBILITY_ENABLED, 0)
         } catch (e: Settings.SettingNotFoundException) {
             e.printStackTrace()
         }
-        return accessEnabled != 0
+        return accessEnabled == 1
         //return if (accessEnabled == 0) {
         // if not construct intent to request permission
 //            val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)

@@ -39,7 +39,7 @@ import java.util.*
 
 @AndroidEntryPoint
 class StatisticsFragment : Fragment(), View.OnClickListener,
-    QueryResponseAdapter.ChangeStatusListener, AnsweredQueryAdapter.ChangeStatusListener, ActivityLogFiltersDialog.FilterListener {
+    QueryResponseAdapter.ChangeStatusListener, AnsweredQueryAdapter.ChangeStatusListener {
     lateinit var pieChart: PieChart
     lateinit var binding: FragmentStatisticsBinding
     lateinit var startDate: String
@@ -204,7 +204,7 @@ class StatisticsFragment : Fragment(), View.OnClickListener,
                 }
             }
         }
-        viewModel.getQuery(startDate, "daily")
+        viewModel.getQuery(startDate, "","daily")
         viewModel.queryObserver.observe(viewLifecycleOwner) {
             if (it is NetworkResponse.Success) {
                 queries = it.data!!.query_data
@@ -409,7 +409,7 @@ class StatisticsFragment : Fragment(), View.OnClickListener,
                 binding.answered.setBackgroundColor(Color.parseColor("#ccf8f8f8"))
                 binding.queryHeading.setTextColor(Color.parseColor("#1D71D4"))
                 queries1.clear()
-                viewModel.getQuery(startDate, "daily")
+                viewModel.getQuery(startDate, "","daily")
             }
 
             R.id.load_more_btn -> {
@@ -586,14 +586,14 @@ class StatisticsFragment : Fragment(), View.OnClickListener,
 //        }
 //    }
 
-    override fun filterData(
-        platform: String,
-        duration: String,
-        startDate: String,
-        endDate: String
-    ) {
-        TODO("Not yet implemented")
-    }
+//    override fun filterData(
+//        platform: String,
+//        duration: String,
+//        startDate: String,
+//        endDate: String
+//    ) {
+//        TODO("Not yet implemented")
+//    }
 
     override fun changeRelevance(id: Int, relevance: Int) {
         viewModel.updateRelevance(id, relevance, "webbot")

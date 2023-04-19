@@ -1,5 +1,4 @@
 package com.tft.selfbest.ui.adapter
-
 import android.content.Context
 import android.graphics.Color
 import android.util.Log
@@ -19,12 +18,17 @@ import java.util.*
 
 class SelectCategoryAdapter(
     val context: Context,
-    val list: List<SelectedCategory>, override var defaultCategories: MutableList<SelectedCategory>
-) :
-    RecyclerView.Adapter<SelectCategoryAdapter.SelectCategoryViewHolder>(),
-    ForCategories {
+    val list: List<SelectedCategory>,
+    val selectionOfcategoriesListener: SelectionOfCategories) :
+    RecyclerView.Adapter<SelectCategoryAdapter.SelectCategoryViewHolder>() {
     var numberOfSelectedCategories = 3
-    var currentCategories = getSelectedCategories()
+    val selectedCategories = mutableListOf<String>()
+
+    init {
+        for (cat in list.sortedByDescending { it.duration }.take(3)){
+            selectedCategories.add(cat.category)
+        }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SelectCategoryViewHolder {
         return SelectCategoryViewHolder(
@@ -36,9 +40,7 @@ class SelectCategoryAdapter(
     override fun onBindViewHolder(holder: SelectCategoryViewHolder, position: Int) {
 
         val category = list[position]
-//        Log.e("Activity Log -1", holder.state.isChecked.toString())\
-        Log.e("Default Categories", getSelectedCategories().toString())
-        holder.state.isChecked = category in getSelectedCategories()
+        holder.state.isChecked = category.category in selectedCategories
         val rnd = Random()
         val color: Int = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256))
         holder.circleImage.setColorFilter(color)
@@ -46,21 +48,25 @@ class SelectCategoryAdapter(
         holder.duration.text = getTimeInFormat(category.duration)
         Log.e("Activity Log 0", holder.state.isChecked.toString())
         holder.state.setOnClickListener(View.OnClickListener {
-            if(category in getSelectedCategories()){
+            if(category.category in selectedCategories){
                 holder.state.isChecked = false
-                currentCategories.remove(category)
-                Log.e("Activity Log 0", category.category)
-                setSelectedCategories(currentCategories)
+                selectionOfcategoriesListener.deSelectCategory(category)
+                selectedCategories.remove(category.category)
+//                currentCategories.remove(category)
+//                Log.e("Activity Log 0", category.category)
+//                setSelectedCategories(currentCategories)
             }else{
-                if(getSelectedCategories().size >= 3){
+                if(selectedCategories.size >= 3){
                     holder.state.isChecked = false
                     Log.e("Activity Log 1", category.category)
                     Toast.makeText(context, "Please deselect any previous categories to select new categories", Toast.LENGTH_SHORT).show()
                 }else{
                     holder.state.isChecked = true
-                    currentCategories.add(category)
-                    Log.e("Activity Log 2", category.category)
-                    setSelectedCategories(currentCategories)
+                    selectionOfcategoriesListener.selectCategory(category)
+                    selectedCategories.add(category.category)
+//                    currentCategories.add(category)
+//                    Log.e("Activity Log 2", category.category)
+//                    setSelectedCategories(currentCategories)
                 }
             }
         })
@@ -89,6 +95,11 @@ class SelectCategoryAdapter(
             ans = "$hours hrs $mins mins"
         }
         return ans
+    }
+
+    interface SelectionOfCategories{
+        fun selectCategory(category: SelectedCategory)
+        fun deSelectCategory(category: SelectedCategory)
     }
 
 //    interface CategoryFilter{

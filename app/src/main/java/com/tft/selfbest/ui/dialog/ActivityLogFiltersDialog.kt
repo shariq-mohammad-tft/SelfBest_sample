@@ -2,9 +2,7 @@ package com.tft.selfbest.ui.dialog
 
 import android.app.DatePickerDialog
 import android.app.Dialog
-import android.content.Intent
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -12,8 +10,8 @@ import android.view.ViewGroup
 import android.view.Window
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Button
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -29,10 +27,14 @@ import dagger.hilt.android.AndroidEntryPoint
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 @AndroidEntryPoint
-class ActivityLogFiltersDialog() : AppCompatActivity(), View.OnClickListener, ForCategories {
+class ActivityLogFiltersDialog(
+    private val applyFilterListener: FilterListener,
+    private val categories: List<SelectedCategory>,
+) : Fragment(), View.OnClickListener, SelectCategoryAdapter.SelectionOfCategories {
     lateinit var binding: FragmentActivityLogFiltersDialogBinding
     private val platforms = listOf("Mobile", "Web", "Desktop")
     private val durations = listOf("daily", "weekly", "monthly", "yearly", "custom")
@@ -42,16 +44,24 @@ class ActivityLogFiltersDialog() : AppCompatActivity(), View.OnClickListener, Fo
     var endDate = ""
     val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.US)
     var custom_selected = false
+    var selectedCategories = mutableListOf<String>()
 
-    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-        super.onCreate(savedInstanceState, persistentState)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         // Inflate the layout for this fragment
-        binding = FragmentActivityLogFiltersDialogBinding.inflate(layoutInflater)
+        (activity as HomeActivity?)?.hideForFullScreen()
+        binding = FragmentActivityLogFiltersDialogBinding.inflate(inflater)
         val sortedList = categories.sortedByDescending { it.duration }
+        for(cat in sortedList.take(3)){
+            selectedCategories.add(cat.category)
+        }
         binding.givenCategories.layoutManager = LinearLayoutManager(binding.root.context)
         binding.givenCategories.adapter = SelectCategoryAdapter(
             binding.root.context,
-            sortedList, getSelectedCategories()
+            sortedList,
+            this
         )
         setClickListeners()
 
@@ -153,13 +163,20 @@ class ActivityLogFiltersDialog() : AppCompatActivity(), View.OnClickListener, Fo
                     }
                 }
             }
- }
+
+        return binding.root
+    }
 
     private fun setClickListeners() {
         binding.arrow.setOnClickListener(this)
         binding.applyFilter.setOnClickListener(this)
         binding.reset.setOnClickListener(this)
         binding.selectCategory.setOnClickListener(this)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        (activity as HomeActivity?)?.showForFullScreen()
     }
 
 
@@ -170,22 +187,26 @@ class ActivityLogFiltersDialog() : AppCompatActivity(), View.OnClickListener, Fo
     override fun onClick(view: View?) {
         when (view?.id) {
             R.id.arrow -> {
-                finish()
+                Log.e("Filters", "Not Applied")
+                requireActivity().supportFragmentManager.popBackStack()
+
             }
             R.id.apply_filter -> {
                 Log.e("Filters", selectedPlatform + " " + selectedDuration)
-                if (custom_selected){
-                    val intent = Intent(this,HomeActivity::class.java)
-                    intent.putExtra("FRAGMENT", 1)
-                    intent.putExtra("DETAILS", arrayOf(selectedPlatform, selectedDuration, startDate, endDate))
-                    intent.putExtra("FIRST_TIME", false)
-                    startActivity(intent)
-                    finish()
+                val fragmentManager: FragmentManager = requireActivity().supportFragmentManager
+                fragmentManager.popBackStack()
+                val transaction = fragmentManager.beginTransaction()
+                if (custom_selected) {
+                    val bundle = Bundle()
+                    bundle.putSerializable("Categories", ArrayList(selectedCategories))
+                    val ALFragment = ActivityLogFragment(selectedPlatform, selectedDuration, startDate, endDate)
+                    ALFragment.arguments = bundle
+                    transaction.replace(
+                        R.id.fragmentContainerView,
+                        ALFragment
+                        //ActivityLogFragment(getSelectedCategories(), selectedPlatform, selectedDuration, startDate, endDate, false)
+                    )
                 }
-//                    transaction.replace(
-//                        R.id.fragmentContainerView,
-//                        ActivityLogFragment(getSelectedCategories(), selectedPlatform, selectedDuration, startDate, endDate, false)
-//                    )
 //                    applyFilterListener.filterData(
 //                        selectedPlatform,
 //                        selectedDuration,
@@ -193,22 +214,25 @@ class ActivityLogFiltersDialog() : AppCompatActivity(), View.OnClickListener, Fo
 //                        endDate
 //                    )
                 else{
-                    val intent = Intent(this,HomeActivity::class.java)
-                    intent.putExtra("Fragment", 1)
-                    intent.putExtra("Details", arrayOf(getSelectedCategories(), selectedPlatform, selectedDuration, "", "", false))
+                    val bundle = Bundle()
+                    bundle.putSerializable("Categories", ArrayList(selectedCategories))
+                    val ALFragment = ActivityLogFragment(selectedPlatform, selectedDuration, "", "")
+                    ALFragment.arguments = bundle
+                    transaction.replace(
+                        R.id.fragmentContainerView,
+                        ALFragment
+                        //ActivityLogFragment(getSelectedCategories(), selectedPlatform, selectedDuration, startDate, endDate, false)
+                    )
                 }
-//                    transaction.replace(
-//                        R.id.fragmentContainerView,
-//                        ActivityLogFragment(getSelectedCategories(), selectedPlatform, selectedDuration, "", "", false)
-//                    )
                 //transaction.addToBackStack(null)
-
+                transaction.commit()
+                //requireActivity().supportFragmentManager.popBackStack()
             }
 
             R.id.reset -> {
                 binding.duration.setSelection(0)
                 binding.platform.setSelection(0)
-                applyFilterListener.filterData("Mobile", "daily", "", "")
+                applyFilterListener.filterData("Mobile", "daily")
             }
 
             R.id.select_category -> {
@@ -223,11 +247,20 @@ class ActivityLogFiltersDialog() : AppCompatActivity(), View.OnClickListener, Fo
 
 
     interface FilterListener {
+        fun filterData(platform: String, duration: String)
         fun filterData(
             platform: String,
             duration: String,
             startDate: String,
             endDate: String
         )
+    }
+
+    override fun selectCategory(category: SelectedCategory) {
+        selectedCategories.add(category.category)
+    }
+
+    override fun deSelectCategory(category: SelectedCategory) {
+        selectedCategories.remove(category.category)
     }
 }

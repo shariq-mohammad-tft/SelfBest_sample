@@ -36,7 +36,7 @@ data class GetGoHourResponse (
     @SerializedName("CreatedAt")
     val createdAt : String,
     @SerializedName("TotalTime")
-    val totalTime : Int,
+    val totalTime : Long,
     @SerializedName("Rating")
     val rating : Int,
     @SerializedName("EndNotified")
