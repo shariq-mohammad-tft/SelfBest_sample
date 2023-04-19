@@ -28,6 +28,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
+import org.json.JSONObject
 import javax.inject.Inject
 
 @HiltViewModel
@@ -88,6 +89,7 @@ class ChatViewModel @Inject constructor(
     }
 
 
+
     /*----------------------------------- Load Chats Between Bot and User --------------------------------*/
 
     private fun loadChatBetweenUserAndBot(senderId: String) =
@@ -107,12 +109,22 @@ class ChatViewModel @Inject constructor(
 
                 is Resource.Success -> {
                     val chatList = response.value.chatMessages
+                    Log.d("chatlist",chatList.toString())
+
                     chatList.forEach {
+                        Log.d("chatlist_internal",it.convertToMessage().toString())
                         messageList.add(Resource.Success(it.convertToMessage()))
                     }
-                }
+                    val lastmsg=messageList.last() as Resource.Success
+                    if(!lastmsg.value.buttons.isNullOrEmpty()){
+                        lastmsg.value.isButtonEnabled=true
+                        messageList.removeLast()
+                        messageList.add(lastmsg)
+                    }
 
+                }
             }
+
         }
 
 
@@ -150,12 +162,18 @@ class ChatViewModel @Inject constructor(
 
                     val text = it.text
                     Log.d(TAG, "onMessage: $text")
+                    val jsonObject = JSONObject(text)
+                    //var responseObj = text!!
+
+                    if (jsonObject.has("chat_messages")) return@consumeEach
 
                     val response = gson.fromJson(text, SocketResponseByBot::class.java)
+                    if(response.data.type=="query" || response.data.type=="create_chat_box"){
+                        Log.d(TAG, "onMessage: $response")
+                        messageList.add(Resource.Success(response.data.convertToMessage()))
+                    }
 
-                    Log.d(TAG, "onMessage: $response")
 
-                    messageList.add(Resource.Success(response.data.convertToMessage()))
 
                 }
             }
@@ -165,7 +183,7 @@ class ChatViewModel @Inject constructor(
     }
 
 
-    private fun closeConnection() {
+     fun closeConnection() {
         easyWs?.webSocket?.close(1001, "Closing manually")
         Log.d(TAG, "closeConnection: CONNECTION CLOSED!")
     }

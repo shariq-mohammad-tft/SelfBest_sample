@@ -11,10 +11,12 @@ data class Expert(
     val queryText: String,
     @SerializedName("status")
     val status: Boolean,
+    @SerializedName("receiver_id")
+    val sentTo:String,
     @SerializedName("query_id")
     val queryId:String,
     @SerializedName("useen_count")
-    val unSeenCount:Int,
+    var unSeenCount:Int,
     @SerializedName("query_status")
     val queryStatus:Boolean,
     @SerializedName("user_name")
@@ -22,7 +24,9 @@ data class Expert(
     @SerializedName("expert_name")
     val expertName: String,
     @SerializedName("receiver_name")
-    val receiverName: String
+    val receiverName: String,
+    @SerializedName("updated_at")
+    val updatedAt:String
 
 )
 

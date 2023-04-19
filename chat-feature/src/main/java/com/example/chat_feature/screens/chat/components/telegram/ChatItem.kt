@@ -1,27 +1,24 @@
 package com.example.chat_feature.screens.chat.components.telegram
 
+
+import android.os.Build
 import androidx.annotation.ColorInt
-import androidx.compose.foundation.Canvas
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.material.R
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Circle
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -31,18 +28,22 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.core.graphics.ColorUtils
-import coil.compose.AsyncImage
 import com.example.chat_feature.data.experts.Expert
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import kotlin.math.absoluteValue
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalUnitApi::class)
 @Composable
 fun ChatItem(user: Expert? = null, onClick: (user: Expert) -> Unit = {}) {
     user!!
     val iconSize = 14.dp
     val offsetInPx = LocalDensity.current.run { (iconSize / 2).roundToPx() }
+
+
+
     Row(
         Modifier
             .padding(15.dp, 10.dp, 15.dp, 10.dp)
@@ -56,11 +57,6 @@ fun ChatItem(user: Expert? = null, onClick: (user: Expert) -> Unit = {}) {
             var initials = (user.receiverName.split("\\s".toRegex())[0].take(1)).uppercase()
             if (user.receiverName.split("\\s".toRegex()).size > 1)
                 initials += (user.receiverName.split("\\s".toRegex())[1].take(1)).uppercase()
-//            Canvas(modifier = Modifier
-//                    .clip(CircleShape)
-//                    .size(50.dp)) {
-//                drawCircle(SolidColor(color))
-//            }
 
             Text(
                 modifier = Modifier
@@ -76,16 +72,6 @@ fun ChatItem(user: Expert? = null, onClick: (user: Expert) -> Unit = {}) {
                 color = Color.White,
                 fontSize = TextUnit(16f, TextUnitType.Sp)
             )
-//            AsyncImage(
-//                //model = "https://st2.depositphotos.com/1036149/10097/i/600/depositphotos_100972090-stock-photo-fun-cartoon-superhero.jpg",
-//
-//                model="https://selfbest-chatbot-image.s3.amazonaws.com/images/e5f0247e-1a14-4d64-9efc-295789e2868e",
-//                modifier = Modifier
-//                    .clip(CircleShape)
-//                    .size(50.dp),
-//                //contentScale = ContentScale.Crop,
-//                contentDescription = "Image from photo picker",
-//            )
             if (user.status) {
                 Icon(
                     imageVector = Icons.Default.Circle,
@@ -109,14 +95,14 @@ fun ChatItem(user: Expert? = null, onClick: (user: Expert) -> Unit = {}) {
                 .weight(7f)
         ) {
             Text(
-                text = (user.fullName).capitalize(),
+                text = (user.fullName).replaceFirstChar { it.uppercase() },
                 fontWeight = FontWeight.SemiBold,
                 fontSize = TextUnit(14f, TextUnitType.Sp),
                 style = MaterialTheme.typography.button
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = user.queryText.capitalize(),
+                text = user.queryText.replaceFirstChar { it.uppercase() },
                 fontStyle = FontStyle.Normal,
                 fontSize = TextUnit(12f, TextUnitType.Sp),
                 color = Color.Gray,
@@ -166,9 +152,13 @@ fun ChatItem(user: Expert? = null, onClick: (user: Expert) -> Unit = {}) {
             modifier = Modifier
                 .padding(5.dp, 0.dp, 0.dp, 0.dp)
         ) {
-            if (user.unSeenCount == 0) {
+            val formatter=DateTimeFormatter.ofPattern("yyyy-MM-dd")
+            val updateAt= LocalDate.parse(user.updatedAt.substring(0,10),formatter)
+            val displayFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+            val displayDate = updateAt.format(displayFormat)
+            if (user.unSeenCount==0) {
                 Text(
-                    text = "08/02/2023",
+                    text = displayDate.toString(),
                     fontWeight = FontWeight.Normal,
                     // color = selfBestDefaultColor,
                     fontSize = TextUnit(12f, TextUnitType.Sp),
@@ -177,9 +167,9 @@ fun ChatItem(user: Expert? = null, onClick: (user: Expert) -> Unit = {}) {
                 )
             } else {
                 Text(
-                    text = "+{${user.unSeenCount}}",
+                    text = "${user.unSeenCount}",
                     fontWeight = FontWeight.Normal,
-                    modifier = Modifier.background(Color(0xFF2FD765)),
+                    modifier = Modifier.background(Color(0xFF2FD765), shape = RoundedCornerShape(50)),
                     color = Color.White,
                     textAlign = TextAlign.Justify,
                     // color = selfBestDefaultColor,
@@ -212,6 +202,7 @@ fun ChatItem(user: Expert? = null, onClick: (user: Expert) -> Unit = {}) {
 }
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview
 @Composable
 fun ChatItemPreview() {

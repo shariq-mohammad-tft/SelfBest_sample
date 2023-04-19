@@ -13,11 +13,11 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.charts.BarChart
-import com.github.mikephil.charting.components.Description
-import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
+import com.github.mikephil.charting.formatter.ValueFormatter
+import com.github.mikephil.charting.utils.ColorTemplate
 import com.github.mikephil.charting.utils.EntryXComparator
 import com.tft.selfbest.R
 import com.tft.selfbest.data.SelfBestPreference
@@ -40,7 +40,6 @@ import java.util.*
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
-
 @AndroidEntryPoint
 @SuppressLint("SetTextI18n")
 class GetGoHour : Fragment(), View.OnClickListener {
@@ -49,7 +48,6 @@ class GetGoHour : Fragment(), View.OnClickListener {
     lateinit var preferences: SelfBestPreference
     lateinit var binding: GetGoHourActivityBinding
     val viewModel by viewModels<GetGoHourViewModel>()
-
     //val viewModelCal by viewModels<CalenderViewModel>()
     private val viewModelChart by viewModels<ChartViewModel>()
     private val overviewViewModel by viewModels<OverviewViewModel>()
@@ -125,21 +123,22 @@ class GetGoHour : Fragment(), View.OnClickListener {
 
         viewModel.activityLogObserver.observe(viewLifecycleOwner) {
             if (it is NetworkResponse.Success) {
-                if (it.data!!.categoryList != null) {
+                if(it.data!!.categoryList != null) {
                     labels.clear()
                     for (entry in (it.data.categoryList as Map<String, String>)) {
-                        if (entry.value != "")
+                        if(entry.value != "")
                             labels.add(entry.value)
                     }
                 }
-                if (it.data!!.activities != null) {
+                if(it.data!!.activities != null) {
                     activities = it.data.activities
                     setBarChart(activities)
                 }
                 Log.e("ActivityLog: ", " Success")
                 if (it.data.progress != null) {
                     progress = it.data.progress!!
-                    setLineChart(progress)
+                    //setLineChart(progress)
+                    addChartData(progress)
                 }
                 if (it.data.isPaused) {
                     pauseTimer()
@@ -261,12 +260,13 @@ class GetGoHour : Fragment(), View.OnClickListener {
             timerEnded = true
             viewModel.getActivity()
         }
-        viewModel.activityLogObserver.observe(viewLifecycleOwner) {
+        viewModel.activityLogObserver.observe(viewLifecycleOwner){
             if (it is NetworkResponse.Success && timerEnded) {
                 Log.e("ActivityLog: ", " Success")
-                if (it.data!!.activities == null || it.data.activities.isEmpty()) {
-                    ipViewModel.getInput(InputData(preferences.getGetHourId, listOf(), 1))
-                } else if (it.data.activities.isNotEmpty()) {
+                if(it.data!!.activities == null || it.data.activities.isEmpty()){
+                    ipViewModel.getInput(InputData( preferences.getGetHourId, listOf(),1))
+                }
+                else if (it.data.activities.isNotEmpty()) {
                     val transaction = requireActivity().supportFragmentManager.beginTransaction()
                     transaction.replace(R.id.fragmentContainerView, InputProgress())
                     transaction.disallowAddToBackStack()
@@ -314,10 +314,9 @@ class GetGoHour : Fragment(), View.OnClickListener {
         binding.lChart.axisLeft.axisMinimum = 0F
         binding.lChart.axisRight.axisMinimum = 0F
         binding.lChart.xAxis.axisMinimum = 0F
-        binding.lChart.xAxis.axisMaximum = (binding.timeHour.text.toString().toInt() * 60F)
-
-        binding.lChart.legend.verticalAlignment = Legend.LegendVerticalAlignment.TOP
-
+        binding.lChart.xAxis.axisMaximum = (binding.timeHour.text.toString().toInt()*60F)
+        binding.exPg.axisLeft.axisMinimum = 0F
+        binding.exPg.axisRight.axisMinimum = 0F
         yVals.add(Entry(0F, 0F))
         val sety = LineDataSet(yVals, "Time")
         val data = LineData(sety)
@@ -327,19 +326,17 @@ class GetGoHour : Fragment(), View.OnClickListener {
         binding.lChart.xAxis.position = XAxis.XAxisPosition.BOTTOM
         binding.lChart.axisRight.isEnabled = false
         binding.lChart.description.isEnabled = true
-        val xDescription = Description()
-        xDescription.text = "Time (in minutes)"
-        xDescription.textSize = 14f
-//        xDescription.setPosition(
-//            binding.lChart.width / 2f,
-//            binding.lChart.xAxis.yOffset + binding.lChart.xAxis.textSize + 16f
-//        )
-        binding.lChart.description = xDescription
-        binding.lChart.extraBottomOffset = 16f
-
+        binding.lChart.description.text = "Time (in minutes)"
+        binding.exPg.xAxis.position = XAxis.XAxisPosition.BOTTOM
+        binding.exPg.axisRight.isEnabled = false
+        binding.exPg.description.isEnabled = false
         //binding.lChart.animateX(1800, Easing.EaseInExpo)
         binding.lChart.data = data
         binding.lChart.xAxis.setDrawGridLines(false)
+
+        binding.exPg.animateX(1800, Easing.EaseInExpo)
+        binding.exPg.data = data
+        binding.exPg.xAxis.setDrawGridLines(false)
     }
 
 
@@ -730,12 +727,8 @@ class GetGoHour : Fragment(), View.OnClickListener {
     }
 
     private fun setLineChart(progress: List<SubProgressResponse>) {
-        yVals.clear()
-        yVals.add(Entry(0f, 0f))
-        var points = 0f
         for (p in progress) {
-            points += p.point
-            yVals.add(Entry(p.xAxisLabel.toFloat(), points))
+            yVals.add(Entry(p.xAxisLabel.toFloat(), p.point))
         }
         Collections.sort(yVals, EntryXComparator())
         val sety = LineDataSet(yVals, "Points")
@@ -747,12 +740,129 @@ class GetGoHour : Fragment(), View.OnClickListener {
         binding.lChart.xAxis.position = XAxis.XAxisPosition.BOTTOM
         binding.lChart.axisRight.isEnabled = false
         binding.lChart.xAxis.axisMinimum = 0F
-        binding.lChart.xAxis.axisMaximum = (binding.timeHour.text.toString().toInt() * 60F)
+        binding.lChart.xAxis.axisMaximum = (binding.timeHour.text.toString().toInt()*60F)
         binding.lChart.animateX(1800, Easing.EaseInOutQuad)
         binding.lChart.data = data
-        binding.lChart.invalidate()
-
+        binding.exPg.xAxis.position = XAxis.XAxisPosition.BOTTOM
+        binding.exPg.axisRight.isEnabled = false
+        binding.exPg.animateX(1800, Easing.EaseInOutQuad)
+        binding.exPg.data = data
     }
+
+   /* private fun addChartData(progress: List<SubProgressResponse>) {
+        val data = binding.lChart.data
+        val set = data.getDataSetByIndex(0) as? LineDataSet
+        if (set != null) {
+            for (p in progress) {
+                set.addEntry(Entry(p.xAxisLabel.toFloat(), p.point))
+            }
+            set.getValues().sortBy { it.x }
+            set.mode=LineDataSet.Mode.HORIZONTAL_BEZIER
+            set.lineWidth=3f
+            set.color = Color.parseColor("#1D71D4")
+
+            data.notifyDataChanged()
+            binding.lChart.notifyDataSetChanged()
+            binding.lChart.setVisibleXRangeMaximum(binding.timeHour.text.toString().toInt() * 60F)
+            binding.lChart.moveViewToX(data.xMax)
+        }
+    }*/
+
+    private fun addChartData(progress: List<SubProgressResponse>) {
+        val data = binding.lChart.data
+        val set = data.getDataSetByIndex(0) as? LineDataSet
+        if (set != null) {
+            val prevSize = set.entryCount
+            for (p in progress) {
+                set.addEntry(Entry(p.xAxisLabel.toFloat(), p.point))
+            }
+            set.getValues().sortBy { it.x }
+            set.mode = LineDataSet.Mode.HORIZONTAL_BEZIER
+            set.lineWidth = 3f
+            set.color = Color.parseColor("#1D71D4")
+            val newSize = set.entryCount
+            val xIncrement = if (newSize > prevSize) {
+                1f
+            } else {
+                (prevSize.toFloat() + 1) / newSize.toFloat()
+            }
+            binding.lChart.xAxis.valueFormatter = MyXAxisValueFormatter(xIncrement)
+            data.notifyDataChanged()
+            binding.lChart.notifyDataSetChanged()
+            binding.lChart.setVisibleXRangeMaximum(binding.timeHour.text.toString().toInt() * 60F)
+            binding.lChart.moveViewToX(data.xMax)
+        }
+    }
+
+    class MyXAxisValueFormatter(private val xIncrement: Float) : ValueFormatter() {
+        override fun getFormattedValue(value: Float): String {
+            return (value * xIncrement).toInt().toString()
+        }
+    }
+
+
+
+
+    /* private fun addChartData() {
+        val data = binding.lChart.data
+        val set = data.getDataSetByIndex(0) as? LineDataSet
+        if (set != null) {
+            // set.clear() // clear existing data
+            var currentPoint = 0f // starting point
+            for (p in dummyData) {
+                val xValue = p["x-axis-label"]!!.toFloat()
+                val yValue = p["points"]!!.toFloat()
+                if (yValue > currentPoint) { // if point has increased from previous interval
+                    currentPoint = yValue // update current point
+                    set.addEntry(Entry(xValue, yValue)) // add entry to set
+                } else { // if point has decreased or remained same from previous interval
+                    currentPoint = yValue // update current point
+                    set.addEntry(Entry(xValue, yValue)) // add entry to set
+                }
+            }
+            set.getValues().sortBy { it.x }
+            set.mode = LineDataSet.Mode.HORIZONTAL_BEZIER
+            set.lineWidth = 3f
+
+            set.color = Color.parseColor("#1D71D4")
+            set.cubicIntensity=.02f
+            data.notifyDataChanged()
+            binding.lChart.notifyDataSetChanged()
+            binding.lChart.setVisibleXRangeMaximum(binding.timeHour.text.toString().toInt() * 60F)
+            binding.lChart.moveViewToX(data.xMax)
+        }
+    }*/
+    /*---------working fine for dummy data------------------*/
+   /*private fun addChartData(progress: List<Map<String, String>>) {
+       val data = binding.lChart.data
+       val set = data.getDataSetByIndex(0) as? LineDataSet
+       if (set != null) {
+           for (p in progress) {
+               set.addEntry(Entry(p["x-axis-label"]!!.toFloat(), p["points"]!!.toFloat()))
+           }
+           set.getValues().sortBy { it.x }
+           set.mode = LineDataSet.Mode.HORIZONTAL_BEZIER
+           set.lineWidth = 3f
+           set.color = Color.parseColor("#1D71D4")
+
+           data.notifyDataChanged()
+           binding.lChart.notifyDataSetChanged()
+           binding.lChart.setVisibleXRangeMaximum(binding.timeHour.text.toString().toInt() * 60F)
+           binding.lChart.moveViewToX(data.xMax)
+       }
+   }*/
+    // dummy data
+    private val dummyData = listOf(
+        mapOf("x-axis-label" to "54", "points" to "57.31533333333334"),
+        mapOf("x-axis-label" to "108", "points" to "64.31330555555557"),
+        mapOf("x-axis-label" to "162", "points" to "40.409555555555556"),
+        mapOf("x-axis-label" to "216", "points" to "34.865583333333326"),
+        mapOf("x-axis-label" to "270", "points" to "63.34102777777777"),
+        mapOf("x-axis-label" to "324", "points" to "83.9233611111111"),
+        mapOf("x-axis-label" to "378", "points" to "26.81113888888889"),
+        mapOf("x-axis-label" to "432", "points" to "57.34099999999999"),
+        mapOf("x-axis-label" to "439", "points" to "2.899694444444444")
+    )
 
     fun printCHart(arrayList: List<Entry>?) {
         Log.d("prt", arrayList.toString())
@@ -799,11 +909,11 @@ class GetGoHour : Fragment(), View.OnClickListener {
         var x = 1f
         labels.remove("")
 
-        for (entry in labels) {
+        for(entry in labels){
             barEntries[entry] = 0.0
         }
 
-        for (activity in activities) {
+        for(activity in activities) {
             if (activity.category in barEntries.keys) {
                 barEntries[activity.category] = barEntries[activity.category]!! + activity.duration
             } else {
@@ -814,7 +924,7 @@ class GetGoHour : Fragment(), View.OnClickListener {
         labels.add(0, "")
 
         Log.e("BarChart", barEntries.toString())
-        for (entry in barEntries.keys) {
+        for(entry in barEntries.keys){
             barEntriesList.add(BarEntry(x, getTimeForBarChart(barEntries[entry]!!)))
             Log.e("BarChart X = ", "$x")
             x += 1f
@@ -828,7 +938,6 @@ class GetGoHour : Fragment(), View.OnClickListener {
         barDataSet.highLightColor = Color.TRANSPARENT
         binding.bar.data = barData
         binding.bar.description.isEnabled = false
-        binding.bar.extraBottomOffset = 16f
         binding.bar.elevation = 30f
 //                binding.bar.renderer=
 //                    RoundedBarChart(binding.bar,binding.bar.animator,binding.bar.viewPortHandler)
@@ -844,7 +953,7 @@ class GetGoHour : Fragment(), View.OnClickListener {
         binding.bar.legend.isEnabled = false
         binding.bar.xAxis.valueFormatter = IndexAxisValueFormatter(labels)
         binding.bar.axisLeft.axisMinimum = 0f
-        binding.bar.axisLeft.axisMaximum = (binding.timeHour.text.toString().toInt() * 60F)
+        binding.bar.axisLeft.axisMaximum = (binding.timeHour.text.toString().toInt()*60F)
         barDataSet.setColors(
             Color.parseColor("#C8C8C8"), Color.parseColor("#C8C8C8"),
             Color.parseColor("#C8C8C8"), Color.parseColor("#3E3E3E"),
@@ -859,5 +968,4 @@ class GetGoHour : Fragment(), View.OnClickListener {
     }
 
 }
-
 

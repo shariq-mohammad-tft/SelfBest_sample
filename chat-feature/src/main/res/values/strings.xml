@@ -1,6 +1,7 @@
 <resources>
     <string name="chat_selection">Chat Selection</string>
     <string name="expert_chat">Expert Chat</string>
+    <string name="expert_chat_Closed_Room">Expert Chat Closed</string>
     <string name="room_list">Room List</string>
     <string name="chat_bot">Chat Bot</string>
     <string name="upload_photo">Photo Upload</string>

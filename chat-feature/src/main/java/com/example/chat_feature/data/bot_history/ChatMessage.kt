@@ -15,8 +15,9 @@ data class ChatMessage(
 ) {
     fun convertToMessage(): Message {
         return chatJson.let { chatMap ->
+            val id=if (chatMap.sender_id==null) chatMap.sentBy.toString() else chatMap.sender_id.toString()
             Message(
-                senderId = chatMap.sender_id.toString(),
+                senderId = id,
                 receiverId = chatMap.sentTo.toString(),
                 message = chatMap.message.toString(),
                 buttons = chatMap.buttons,

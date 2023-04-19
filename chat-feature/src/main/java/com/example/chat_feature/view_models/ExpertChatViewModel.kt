@@ -46,7 +46,6 @@ class ExpertChatViewModel @Inject constructor(
 
 //    val response: LiveData<Resource<UploadPhotoResponse>> = _response
 
-
     var imageUri by mutableStateOf<String?>(null)
         private set
 
@@ -112,7 +111,6 @@ class ExpertChatViewModel @Inject constructor(
                         messageList.add(Resource.Success(it.chatJson))
                     }
                 }
-
             }
         }
 
@@ -237,15 +235,29 @@ class ExpertChatViewModel @Inject constructor(
                     }
 
                     val response = gson.fromJson(responseObj, ChatJson::class.java)
-                    Log.d(TAG, "onMessage: $response")
+                    if(response.type=="chat"){
+                        Log.d(TAG, "onMessage: $response")
 
-                    messageList.add(Resource.Success(response))
+                        messageList.add(Resource.Success(response))
+                    }
+
 
                 }
             }
         }
     }
+    private fun closeConnection() {
+        easyWs?.webSocket?.close(1001, "Closing manually")
+        Log.d("expertlistviewmodel", "closeConnectionFORCHATVIEWMODEL: CONNECTION CLOSED!")
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        closeConnection()
+        Log.d("expertlistviewmodel", "viewmodelClearedForChaTViewmodel")
+    }
 }
+
 
 
 /*
