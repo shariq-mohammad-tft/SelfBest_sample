@@ -23,6 +23,17 @@ data class BotUnseenCountRequest(
     @SerializedName("sentBy")
     val sentBy:String
 )
+data class TotalUnseenCountRequest(
+    @SerializedName("type")
+    val type:String="unseen_count",
+    @SerializedName("sentBy")
+    val sentBy:String
+)
+
+data class BotSeenRequest(
+    @SerializedName("sentBy")
+    val sentBy: String
+)
 
 data class ChatData (
 

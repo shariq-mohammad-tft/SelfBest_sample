@@ -3,6 +3,7 @@ package com.example.chat_feature.network
 import com.example.chat_feature.data.InteractiveMessageRequest
 import com.example.chat_feature.data.PlainMessageRequest
 import com.example.chat_feature.data.bot_history.BotHistoryResponse
+import com.example.chat_feature.data.experts.BotSeenRequest
 import com.example.chat_feature.data.experts.ExpertListDemo
 import com.example.chat_feature.data.response.MessageResponse
 import com.example.chat_feature.data.response.UploadPhotoResponse
@@ -55,4 +56,8 @@ interface Api {
         @Part file: MultipartBody.Part,
     ): UploadPhotoResponse
 
+    @POST("conversation/update-message-status/")
+    suspend fun botMessageSeenRequest(
+        @Body data:BotSeenRequest
+    )
 }

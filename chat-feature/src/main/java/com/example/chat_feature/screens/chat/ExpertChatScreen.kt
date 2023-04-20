@@ -242,7 +242,7 @@ fun ExpertChatScreen(
                                 } else {
                                     CardReceiverMessage(
                                         message = data.message ?: "",
-                                    )
+                                    timestamp = data.timestamp?:"2023-04-19 20:25:13.218301+00:00")
                                 }
                             }
 
@@ -547,8 +547,7 @@ fun ExpertChatScreenForClosedQuery(
                                     )
                                 } else {
                                     CardReceiverMessage(
-                                        message = data.message ?: "",
-                                    )
+                                        message = data.message ?: "", timestamp = data.timestamp?:"2023-04-19 20:25:13.218301+00:00")
                                 }
                             }
 

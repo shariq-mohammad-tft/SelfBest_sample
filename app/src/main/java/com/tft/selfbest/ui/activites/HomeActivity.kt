@@ -7,12 +7,15 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.graphics.Color.green
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.view.accessibility.AccessibilityManager
 import android.view.inputmethod.InputMethodManager
@@ -25,13 +28,24 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
+import com.example.chat_feature.data.SocketUpdate
+import com.example.chat_feature.data.experts.BotUnseenCountRequest
+import com.example.chat_feature.data.experts.TotalUnseenCountRequest
 import com.example.chat_feature.interfaces.HomeActivityCaller
+import com.example.chat_feature.network.web_socket.EasyWS
+import com.example.chat_feature.network.web_socket.easyWebSocket
+import com.example.chat_feature.utils.Constants
+import com.example.chat_feature.utils.createSocketUrl
 import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.material.badge.BadgeDrawable
+import com.google.android.material.bottomnavigation.BottomNavigationItemView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.messaging.FirebaseMessaging
+import com.google.gson.Gson
 import com.tft.selfbest.R
 import com.tft.selfbest.data.SelfBestPreference
 import com.tft.selfbest.databinding.ActivityMainBinding
@@ -42,6 +56,14 @@ import com.tft.selfbest.ui.fragments.profile.ProfileViewModel
 import com.tft.selfbest.ui.fragments.settings.SettingFragment
 import com.tft.selfbest.utils.InstalledAppInfoUtil
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.consumeEach
+import kotlinx.coroutines.launch
+import okhttp3.OkHttpClient
+import org.json.JSONObject
+import java.util.concurrent.Executors
+import java.util.concurrent.ScheduledFuture
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 
@@ -58,6 +80,18 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,HomeActivityCalle
 
     @Inject
     lateinit var preferences: SelfBestPreference
+
+    private var easyWS: EasyWS ?=null
+    private val gson by lazy { Gson() }
+
+    private val executorService = Executors.newSingleThreadScheduledExecutor()
+    private var scheduledFuture: ScheduledFuture<*>? = null
+
+    var botMessageCount =0
+    var unseenMessageCount=0
+
+
+
 
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -107,6 +141,14 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,HomeActivityCalle
         binding.viewNotifications.setOnClickListener(this)
         binding.viewCalenderEvent.setOnClickListener(this)
         binding.profile.setOnClickListener(this)
+      //  binding.bottomNavigation.getOrCreateBadge(R.id.overviewFragment).number=5
+        
+
+
+        getTotalUnseenCount(TotalUnseenCountRequest(sentBy = preferences.getLoginData?.id.toString()))
+
+
+
 
         bottomNavigation.setOnItemSelectedListener { it ->
             when (it.itemId) {
@@ -116,27 +158,16 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,HomeActivityCalle
                     //Toast.makeText(this, "Overview Page", Toast.LENGTH_LONG).show()
                     return@setOnItemSelectedListener true
                 }
-//                R.id.myCourseFragment -> {
-//                    loadFragment(MyCourseFragment())
-//                    binding.headerTitle.text = "My Course"
-//                     Toast.makeText(this, "myCourseFragment Page", Toast.LENGTH_LONG).show()
-//                    return@setOnItemSelectedListener true
-//                }
                 R.id.statisticsFragment -> {
                     loadFragment(ActivityLogFragment("Mobile", "daily", "", ""))
                     binding.headerTitle.text = ""
                     // Toast.makeText(this, "statisticsFragment Page", Toast.LENGTH_LONG).show()
                     return@setOnItemSelectedListener true
                 }
-//                R.id.eventsFragment -> {
-//                    loadFragment(MyCalendarFragment())
-//                    binding.headerTitle.text = ""
-//                    // Toast.makeText(this, "eventsFragment Page", Toast.LENGTH_LONG).show()
-//                    return@setOnItemSelectedListener true
-//                }
                 R.id.eventsFragment -> {
                     val intentOpenDetailPage = Intent(this, ChatActivity::class.java)
                     ContextCompat.startActivity(this, intentOpenDetailPage, null)
+
                 }
                 R.id.settingFragment -> {
                     loadFragment(SettingFragment())
@@ -150,6 +181,8 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,HomeActivityCalle
             false
         }
     }
+
+
 
     private fun askForNotificationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -223,9 +256,10 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,HomeActivityCalle
             })
         }
     }
-
     override fun onResume() {
         super.onResume()
+
+        connectSocket(Constants.SELF_BEST_SOCKET_URL.createSocketUrl(preferences.getLoginData?.id.toString()))
         binding.progress.visibility = View.GONE
         /*if (!isAccessibilityServiceEnabled(this, SelfBestAccessibilityService::class.java)) {
             redirectToSettings()
@@ -235,6 +269,13 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,HomeActivityCalle
             Glide.with(applicationContext).load(preferences.getProfilePicture).into(binding.profile)
         else
             binding.profile.setImageResource(R.drawable.user_icon)
+
+
+    }
+
+    override fun onStop() {
+        super.onStop()
+        closeConnection()
     }
 
     // method to check is the user has permitted the accessibility permission
@@ -258,7 +299,10 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,HomeActivityCalle
         //} else {
           //  true
         //}
+
     }
+
+
 
     private fun isAccessibilityServiceEnabled(
         context: Context,
@@ -341,5 +385,66 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,HomeActivityCalle
         val intent=Intent(this, HomeActivity::class.java)
         startActivity(intent)
     }
+
+
+
+
+
+
+
+
+    /*-------------------------------web socket--------------------------*/
+    fun connectSocket(socketurl:String=Constants.SELF_BEST_SOCKET_URL){
+        lifecycleScope.launch(Dispatchers.IO) {
+            easyWS = OkHttpClient().easyWebSocket(socketurl)
+            Log.d("HomeActivity", "Connection: CONNECTION established!")
+            listenUpdates()
+        }
+    }
+
+    fun getTotalUnseenCount(data: TotalUnseenCountRequest) {
+        val msg = gson.toJson(data)
+        Log.d("unseenPayload", msg.toString())
+        scheduledFuture=executorService.scheduleAtFixedRate({
+            easyWS?.webSocket?.send(msg)
+        },0,1, TimeUnit.SECONDS)
+    }
+
+    private suspend fun listenUpdates() {
+        easyWS?.webSocket?.send("")
+        easyWS?.textChannel?.consumeEach {
+            when (it) {
+                is SocketUpdate.Failure -> {
+                    Log.d("unseenPayload", "failed")
+                }
+                is SocketUpdate.Success -> {
+                    val text = it.text
+                    Log.d("unseenPayloadText", "onMessage: $text")
+                    val jsonObject = JSONObject(text)
+
+                    if (jsonObject.has("data")) {
+                        val dataObj = jsonObject.getJSONObject("data")
+                        if (dataObj.has("chat_data")) {
+                            val chatDataObj = dataObj.getJSONObject("chat_data")
+                            if (chatDataObj.has("total_message_count")) {
+                                botMessageCount = chatDataObj.getInt("total_message_count")
+                            }
+                        }
+                    }
+                    unseenMessageCount=botMessageCount
+                    Log.d("unseenPayloadText", "botMessageCount: $botMessageCount")
+                }
+            }
+        }
+    }
+
+
+
+    fun closeConnection() {
+        easyWS?.webSocket?.close(1001, "Closing manually")
+        Log.d("HomeActivity", "closeConnection: CONNECTION CLOSED!")
+    }
+
+
 
 }

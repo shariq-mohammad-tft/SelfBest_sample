@@ -36,10 +36,13 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
 import com.example.chat_feature.data.InteractiveMessageRequest
 import com.example.chat_feature.data.Message
 import com.example.chat_feature.data.PlainMessageRequest
+import com.example.chat_feature.data.experts.BotUnseenCountRequest
+import com.example.chat_feature.data.experts.ExpertListRequest
 import com.example.chat_feature.navigation.AppScreen
 import com.example.chat_feature.navigation.CHAT_SELECTION_SCREEN
 import com.example.chat_feature.navigation.ROUTE_ROOM
@@ -76,8 +79,19 @@ fun ChatScreen(
     )
 
 
-    LaunchedEffect(Unit) {
+    /*LaunchedEffect(Unit) {
         viewModel.connectSocket(socketUrl = Constants.SELF_BEST_SOCKET_URL.createSocketUrl(userId))
+    }*/
+
+    ComposableLifecycle { _, event ->
+        when (event) {
+            Lifecycle.Event.ON_CREATE  -> {
+                viewModel.seenBotMessage()
+            }
+            Lifecycle.Event.ON_RESUME  -> viewModel.connectSocket(Constants.SELF_BEST_SOCKET_URL.createSocketUrl(userId))
+            Lifecycle.Event.ON_STOP  -> viewModel.closeConnection()
+            else -> Unit
+        }
     }
 
     Scaffold(topBar = {
@@ -273,10 +287,10 @@ fun MessageCard(
 
         } else {
             if (message.message != "") {
-                CardReceiverMessage(message = message.message)
+                CardReceiverMessage(message = message.message, timestamp =  message.timeStamp?:"2023-04-19 20:25:13.218301+00:00")
 
             } else {
-                CardReceiverMessage(message = "Here is something I found")
+                CardReceiverMessage(message = "Here is something I found", timestamp = message.timeStamp?:"2023-04-19 20:25:13.218301+00:00")
             }
 
         }

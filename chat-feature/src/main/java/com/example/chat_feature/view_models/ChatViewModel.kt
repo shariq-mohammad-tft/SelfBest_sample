@@ -14,6 +14,7 @@ import com.example.chat_feature.data.InteractiveMessageRequest
 import com.example.chat_feature.data.Message
 import com.example.chat_feature.data.PlainMessageRequest
 import com.example.chat_feature.data.SocketUpdate
+import com.example.chat_feature.data.experts.BotSeenRequest
 import com.example.chat_feature.data.response.expert.SocketResponseByBot
 import com.example.chat_feature.network.Api
 import com.example.chat_feature.network.web_socket.EasyWS
@@ -126,6 +127,14 @@ class ChatViewModel @Inject constructor(
             }
 
         }
+
+    fun seenBotMessage(){
+        viewModelScope.launch {
+            safeApiCall {
+                api.botMessageSeenRequest(BotSeenRequest(userId))
+            }
+        }
+    }
 
 
     /*----------------------------------- Web Socket --------------------------------*/

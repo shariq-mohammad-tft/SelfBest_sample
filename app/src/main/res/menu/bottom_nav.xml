@@ -1,23 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    >
     <item
         android:id="@+id/overviewFragment"
         android:icon="@drawable/ic_overview"
+        android:enabled="true"
         android:title="Overview" />
-<!--    <item-->
-<!--        android:id="@+id/myCourseFragment"-->
-<!--        android:icon="@drawable/ic_course"-->
-<!--        android:title="My Course" />-->
+
     <item
         android:id="@+id/statisticsFragment"
         android:icon="@drawable/activity_log"
+        android:enabled="true"
         android:title="Activity Log" />
     <item
         android:id="@+id/eventsFragment"
         android:icon="@drawable/ic_chatbot"
+        android:enabled="true"
         android:title="Chat bot" />
     <item
         android:id="@+id/settingFragment"
         android:icon="@drawable/ic_setting"
+        android:enabled="true"
         android:title="Settings" />
 </menu>

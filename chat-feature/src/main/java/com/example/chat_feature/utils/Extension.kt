@@ -2,8 +2,10 @@ package com.example.chat_feature.utils
 
 import android.content.Context
 import android.net.Uri
+import android.os.Build
 import android.util.Log
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
@@ -13,6 +15,11 @@ import java.io.File
 import java.io.IOException
 import java.io.InputStream
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.OffsetDateTime
+import java.time.ZoneId
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 private const val TAG = "Extension"
@@ -139,4 +146,20 @@ fun File.toRequestBody(progressCallback: ((progress: Int) -> Unit)?): RequestBod
 fun Context.getUserId():  Int{
     val sharedPrefManager=SharedPrefManager(this)
     return sharedPrefManager.getInt("id")
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+fun String.extractTime(timeString: String): String? {
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSSxxx")
+    val utcDateTime = LocalDateTime.parse(timeString, formatter)
+        .atZone(ZoneId.of("UTC"))
+    val istDateTime = utcDateTime.withZoneSameInstant(ZoneId.of("Asia/Kolkata"))
+    val pattern = Regex("\\b([01]\\d|2[0-3]):([0-5]\\d)\\b")
+    val matchResult = pattern.find(istDateTime.toLocalTime().toString())
+    val time = matchResult?.value ?: return null
+    val hour = time.substringBefore(":").toInt()
+    val minute = time.substringAfter(":").toInt()
+    val amPm = if (hour < 12) "AM" else "PM"
+    val formattedHour = if (hour == 0 || hour == 12) 12 else hour % 12
+    return String.format("%02d:%02d %s", formattedHour, minute, amPm)
 }
