@@ -57,7 +57,9 @@ class ExpertListViewModel @Inject constructor(
         userId = application.applicationContext.getUserId().toString()
 
 
+
     }
+
     /*init {
         viewModelScope.launch(Dispatchers.IO) {
             listenUpdates()
@@ -71,13 +73,11 @@ class ExpertListViewModel @Inject constructor(
     val messagess = mutableStateListOf<Resource<ChatData>>()
     var botMessageCount by mutableStateOf(0)
     var unseenMessageCount by mutableStateOf(0)
-    private set
 
-    private val _counter = MutableStateFlow(0)
-    val counter: StateFlow<Int> = _counter
 
-    fun incrementCounter() {
-        _counter.value += 1
+    fun resetCounter() {
+        unseenMessageCount = 0
+        botMessageCount=0
     }
 
 
@@ -181,9 +181,10 @@ class ExpertListViewModel @Inject constructor(
     fun getBotUnseenCount(data: BotUnseenCountRequest) {
         val msg = gson.toJson(data)
         Log.d("unseenPayload", msg.toString())
-        scheduledFuture=executorService.scheduleAtFixedRate({
+        easyWs?.webSocket?.send(msg)
+       /* scheduledFuture=executorService.scheduleAtFixedRate({
             easyWs?.webSocket?.send(msg)
-        },0,1,TimeUnit.SECONDS)
+        },0,1,TimeUnit.SECONDS)*/
     }
 
     /* to call unseen message api
@@ -191,33 +192,7 @@ class ExpertListViewModel @Inject constructor(
 
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(2000),0)*/
 
-    /*private suspend fun listenUpdates() {
-        easyWs?.webSocket?.send("")
-        easyWs?.textChannel?.consumeEach {
-            when (it) {
-                is SocketUpdate.Failure -> {
-                    Log.d("unseenPayload", "failed")
-                }
-                is SocketUpdate.Success -> {
-                    val text = it.text
-                    Log.d("unseenPayloadText", "onMessage: $text")
-                    val jsonObject = JSONObject(text)
 
-                    if (jsonObject.has("data")) {
-                        val dataObj = jsonObject.getJSONObject("data")
-                        if (dataObj.has("chat_data")) {
-                            val chatDataObj = dataObj.getJSONObject("chat_data")
-                            if (chatDataObj.has("bot_message_count")) {
-                                botMessageCount = chatDataObj.getInt("bot_message_count")
-                            }
-                        }
-                    }
-                    unseenMessageCount=botMessageCount
-                    Log.d("unseenPayloadText", "botMessageCount: $botMessageCount")
-                }
-            }
-        }
-    }*/
     private suspend fun listenUpdates() {
         val pattern = "A query has been raised in your area of expertise".toRegex()
         easyWs?.webSocket?.send("")
@@ -271,27 +246,30 @@ class ExpertListViewModel @Inject constructor(
                             }
                             else -> result
                         }
-
                         experts.value = updatedList
-
-
                     }
                     else if(response.type=="bot_count"){
                         Log.d("response.type", "count $response")
-                       /* val dataObj = jsonObject.getJSONObject("data")
-                        Log.d("response.type", "dataObje $dataObj")
-                        if (dataObj.has("chat_data")) {
-                            val chatDataObj = dataObj.getJSONObject("chat_data")
-                            if (chatDataObj.has("bot_message_count")) {
-                                botMessageCount = chatDataObj.getInt("bot_message_count")
+                        /* val dataObj = jsonObject.getJSONObject("data")
+                         Log.d("response.type", "dataObje $dataObj")
+                         if (dataObj.has("chat_data")) {
+                             val chatDataObj = dataObj.getJSONObject("chat_data")
+                             if (chatDataObj.has("bot_message_count")) {
+                                 botMessageCount = chatDataObj.getInt("bot_message_count")
 
-                            }
-                        }*/
+                             }
+                         }*/
                         val dataObj = jsonObject.optJSONObject("data")
                         val chatDataObj = dataObj?.optJSONObject("chat_data")
                         botMessageCount = chatDataObj?.optInt("bot_message_count", 0) ?: 0
                         Log.d("unseenPayloadText", "unseenMessageCount: $unseenMessageCount + $botMessageCount")
+                        // botMessageCount+=1
                     }
+                    else if(response.type=="query"){
+                        Log.d("response.type", "count $response")
+                        botMessageCount+=1
+                    }
+
                     unseenMessageCount=botMessageCount
 
 

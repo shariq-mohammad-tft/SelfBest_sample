@@ -98,6 +98,7 @@ fun RoomsList(
             )
         )*/
        // viewModel.connectSocket(socketUrl = Constants.SELF_BEST_SOCKET_URL.createSocketUrl(userId))
+       // viewModel.getBotUnseenCount(BotUnseenCountRequest(sentBy = userId))
     }
     ComposableLifecycle { _, event ->
         when (event) {
@@ -107,9 +108,19 @@ fun RoomsList(
                         senderId = userId,
                     )
                 )
+                viewModel.connectSocket(Constants.SELF_BEST_SOCKET_URL.createSocketUrl(userId))
+
+
+            }
+            Lifecycle.Event.ON_RESUME  -> {
+                Log.d("OnResumeCalled","RoomList")
+                /*viewModel.getBotUnseenCount(BotUnseenCountRequest(sentBy = userId))
+                viewModel.getBotUnseenCount(BotUnseenCountRequest(sentBy = userId))
+                viewModel.getBotUnseenCount(BotUnseenCountRequest(sentBy = userId))*/
+               /* viewModel.getBotUnseenCount(BotUnseenCountRequest(sentBy = userId))
+                viewModel.getBotUnseenCount(BotUnseenCountRequest(sentBy = userId))*/
                 viewModel.getBotUnseenCount(BotUnseenCountRequest(sentBy = userId))
             }
-            Lifecycle.Event.ON_RESUME  -> viewModel.connectSocket(Constants.SELF_BEST_SOCKET_URL.createSocketUrl(userId))
             Lifecycle.Event.ON_STOP  -> viewModel.closeConnection()
             else -> Unit
         }
@@ -368,7 +379,10 @@ fun BotCard(
     navController: NavController, onSearchIconClicked: () -> Unit, botunseen: Int
 ) {
     val context = LocalContext.current
+    val iconSize = 14.dp
+    val offsetInPx = LocalDensity.current.run { (iconSize / 2).roundToPx() }
     Row(modifier = Modifier.padding(15.dp)) {
+
         Card(shape = RoundedCornerShape(50),
             backgroundColor = Color(0xFF7630F2),
             modifier = Modifier
@@ -380,11 +394,14 @@ fun BotCard(
                     AppScreen.ChatBot.buildRoute(
                         senderId = Constants.USER_ID, receiverId = Constants.BOT_ID
                     )
+
                 )
                 Toast.makeText(
                     context, "Clicked on Bot", Toast.LENGTH_LONG
                 ).show()
+
             }) {
+
 
             Box() {
                 Card(
@@ -392,6 +409,8 @@ fun BotCard(
                     backgroundColor = Color(0xFFF8F8F8),
                     modifier = Modifier.size(57.dp)
                 ) {
+
+
                     Image(
                         painter = painterResource(id = R.drawable.robot),
                         contentDescription = "Bot Picture Holder",
@@ -411,18 +430,29 @@ fun BotCard(
                 verticalArrangement = Arrangement.aligned(Alignment.CenterVertically)
             ) {
                 Text(
-                    text = if(botunseen==0) "Selfbest Bot" else "Selfbest Bot  ${botunseen.toString()}",
+                    text = "Selfbest Bot" ,
                     fontWeight = FontWeight.Bold,
                     color = Color(0xFFFFFFFF),
                     fontSize = TextUnit(16f, TextUnitType.Sp)
                 )
-                Text(
-                    text = "Click here to start a new query",
-                    color = Color(0xFFFFFFFF),
-                    fontStyle = FontStyle.Normal,
-                    fontSize = TextUnit(13f, TextUnitType.Sp),
-                    style = MaterialTheme.typography.body2
-                )
+                if(botunseen!=0){
+                    Text(
+                        text = "$botunseen New Message",
+                        color = Color(0xFF2FD765),
+                        fontStyle = FontStyle.Normal,
+                        fontSize = TextUnit(13f, TextUnitType.Sp),
+                        style = MaterialTheme.typography.body2
+                    )
+                }else{
+                    Text(
+                        text = "Click here to start a new query",
+                        color = Color(0xFFFFFFFF),
+                        fontStyle = FontStyle.Normal,
+                        fontSize = TextUnit(13f, TextUnitType.Sp),
+                        style = MaterialTheme.typography.body2
+                    )
+                }
+
             }
 
         }

@@ -13,12 +13,11 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import android.view.accessibility.AccessibilityManager
 import android.view.inputmethod.InputMethodManager
+import android.widget.FrameLayout
+import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -146,6 +145,25 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,HomeActivityCalle
 
 
         getTotalUnseenCount(TotalUnseenCountRequest(sentBy = preferences.getLoginData?.id.toString()))
+        /*val itemView: BottomNavigationItemView = bottomNavigation.findViewById(R.id.settingFragment)
+        val notificationBadge: View = LayoutInflater.from(this).inflate(R.layout.component_tabbar_badge, itemView, true)
+        val badgeTextView = notificationBadge.findViewById<TextView>(R.id.notification_badge_text)
+        badgeTextView.text = "${5}"
+
+        val layoutParams = notificationBadge.layoutParams
+        if (layoutParams is ViewGroup.MarginLayoutParams) {
+            layoutParams.topMargin = resources.getDimensionPixelSize(R.dimen.padding_small)
+            layoutParams.marginEnd = resources.getDimensionPixelSize(R.dimen.padding_small)
+
+            notificationBadge.layoutParams = layoutParams
+            notificationBadge.translationY = (-layoutParams.topMargin).toFloat()
+            notificationBadge.translationX = layoutParams.marginEnd.toFloat()
+        }*/
+
+
+
+
+
 
 
 
@@ -255,6 +273,10 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,HomeActivityCalle
                 Log.e("Firebase Message", token)
             })
         }
+    }
+    fun Context.dpToPx(dp: Int): Int {
+        val scale = resources.displayMetrics.density
+        return (dp * scale + 0.5f).toInt()
     }
     override fun onResume() {
         super.onResume()

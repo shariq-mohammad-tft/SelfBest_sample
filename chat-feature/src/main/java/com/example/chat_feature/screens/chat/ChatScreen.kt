@@ -53,6 +53,7 @@ import com.example.chat_feature.utils.createSocketUrl
 import com.example.chat_feature.utils.normalText
 import com.example.chat_feature.utils.toast
 import com.example.chat_feature.view_models.ChatViewModel
+import com.example.chat_feature.view_models.ExpertListViewModel
 import kotlinx.coroutines.launch
 
 private const val TAG = "ChatScreen"
@@ -63,7 +64,8 @@ fun ChatScreen(
     navController: NavController,
     senderId: String,
     receiverId: String,
-    viewModel: ChatViewModel = hiltViewModel()
+    viewModel: ChatViewModel = hiltViewModel(),
+    expertListViewModel: ExpertListViewModel= hiltViewModel()
 ) {
 
     val messages = viewModel.messageList
@@ -78,6 +80,9 @@ fun ChatScreen(
         TAG, "ChatScreen: SENDER - $userId and RECEIVER - $receiverId "
     )
 
+    var botMessageCount by rememberSaveable { mutableStateOf(0) }
+    var unseenMessageCount by rememberSaveable { mutableStateOf(0) }
+
 
     /*LaunchedEffect(Unit) {
         viewModel.connectSocket(socketUrl = Constants.SELF_BEST_SOCKET_URL.createSocketUrl(userId))
@@ -87,9 +92,16 @@ fun ChatScreen(
         when (event) {
             Lifecycle.Event.ON_CREATE  -> {
                 viewModel.seenBotMessage()
+
             }
             Lifecycle.Event.ON_RESUME  -> viewModel.connectSocket(Constants.SELF_BEST_SOCKET_URL.createSocketUrl(userId))
-            Lifecycle.Event.ON_STOP  -> viewModel.closeConnection()
+            Lifecycle.Event.ON_STOP  -> {
+                viewModel.closeConnection()
+                viewModel.seenBotMessage()
+                expertListViewModel.botMessageCount=0
+                expertListViewModel.unseenMessageCount=0
+                Log.d("onStopCalled",expertListViewModel.unseenMessageCount.toString() )
+            }
             else -> Unit
         }
     }

@@ -167,9 +167,9 @@ fun ChatItem(user: Expert? = null, onClick: (user: Expert) -> Unit = {}) {
                 )
             } else {
                 Text(
-                    text = "${user.unSeenCount}",
+                    text = " +${user.unSeenCount}",
                     fontWeight = FontWeight.Normal,
-                    modifier = Modifier.background(Color(0xFF2FD765), shape = CircleShape),
+                    modifier = Modifier.background(Color(0xFF2FD765), shape = RoundedCornerShape(20)),
                     color = Color.White,
                     textAlign = TextAlign.Justify,
                     // color = selfBestDefaultColor,
