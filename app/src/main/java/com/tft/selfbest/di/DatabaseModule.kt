@@ -1,5 +1,6 @@
 package com.tft.selfbest.di
 
+import android.app.Application
 import android.content.Context
 import androidx.room.Room
 import com.tft.selfbest.data.SelfBestDatabase
@@ -11,6 +12,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Named
 import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
@@ -20,6 +22,7 @@ class DatabaseModule {
     fun distractedAppDao(appDatabase: SelfBestDatabase): DistractedAppDao {
         return appDatabase.distractedAppDao()
     }
+
 
     @Provides
     fun profileDao(appDatabase: SelfBestDatabase): ProfileDao {
@@ -40,4 +43,5 @@ class DatabaseModule {
             "selfbest"
         ).build()
     }
+
 }

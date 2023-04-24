@@ -27,6 +27,8 @@ import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.consumeEach
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import org.json.JSONObject
@@ -35,7 +37,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ChatViewModel @Inject constructor(
     private val api: Api,
-    application: Application
+    application: Application,
+    private val context: Context
 
 ) : AndroidViewModel(application), SafeApiCall {
 
@@ -60,6 +63,10 @@ class ChatViewModel @Inject constructor(
 
 
     val messageList = mutableStateListOf<Resource<Message>>()
+
+    private val _secondLastMsgText = MutableStateFlow("")
+    val secondLastMsgText: StateFlow<String>
+        get() = _secondLastMsgText
 
 
     fun updateMessage(newValue: String) {
@@ -122,6 +129,18 @@ class ChatViewModel @Inject constructor(
                         messageList.removeLast()
                         messageList.add(lastmsg)
                     }
+                    else if(lastmsg.value.message=="Please select a valid skill from this dropdown"){
+                        val secondLastmsg=messageList[messageList.size-2] as? Resource.Success
+                        if(secondLastmsg!=null){
+                            _secondLastMsgText.value= secondLastmsg.value.eventMessage!!
+                            secondLastmsg.value.wrongskill=secondLastmsg.value.eventMessage
+                           // Log.d("secondLastmsgvale",_secondLastMsgText.value.toString())
+                        }
+                        Log.d("secondLastmsg",secondLastmsg.toString())
+                        Log.d("secondLastmsg", secondLastmsg?.value?.wrongskill.toString())
+
+
+                    }
 
                 }
             }
@@ -154,7 +173,7 @@ class ChatViewModel @Inject constructor(
     fun connectSocket(socketUrl: String = Constants.SELF_BEST_SOCKET_URL) =
         viewModelScope.launch(Dispatchers.IO) {
             // /chat/676/
-            easyWs = OkHttpClient().easyWebSocket(socketUrl)
+            easyWs = OkHttpClient().easyWebSocket(socketUrl, context)
             listenUpdates()
         }
 

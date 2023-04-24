@@ -37,6 +37,7 @@ import com.tft.selfbest.ui.fragments.getGoHour.GetGoHourViewModel
 import com.tft.selfbest.ui.fragments.inputProgress.InputProgress
 import com.tft.selfbest.ui.fragments.inputProgress.InputProgressViewModel
 import com.tft.selfbest.ui.fragments.water.WaterFragment
+import com.tft.selfbest.ui.login.LoginActivity
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.Instant
 import javax.inject.Inject
@@ -171,7 +172,12 @@ class OverviewFragment : Fragment(), View.OnClickListener {
                 binding.level.text = "Level $currentLevel"
             }else if(it is NetworkResponse.Error){
                 binding.progress.visibility = View.GONE
-                Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Check your internet connection", Toast.LENGTH_SHORT).show()
+                preferences.clear()
+                val loginScreen = Intent(activity, LoginActivity::class.java)
+                loginScreen.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                startActivity(loginScreen)
+                activity?.finish()
             }
         }
         overviewViewModel.getCourses()

@@ -1,6 +1,7 @@
 package com.example.chat_feature.di
 
 import android.app.Application
+import android.content.Context
 import com.example.chat_feature.interfaces.HomeActivityCallerClass
 import com.example.chat_feature.network.Api
 import com.example.chat_feature.utils.Constants
@@ -20,6 +21,12 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
+
+    @Provides
+    @Singleton
+    fun provideContext(application: Application): Context {
+        return application.applicationContext
+    }
 
     @Provides
     @Singleton

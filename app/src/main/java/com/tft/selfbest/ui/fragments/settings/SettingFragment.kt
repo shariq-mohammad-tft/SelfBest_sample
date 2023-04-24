@@ -50,16 +50,23 @@ class SettingFragment : Fragment(), View.OnClickListener {
         // Inflate the layout for this fragment
         binding = FragmentSettingBinding.inflate(layoutInflater)
         setOnClickListener()
+        isAdmin = preferences.isOrgAdmin
+        if(isAdmin)
+            binding.usermanagement.visibility = View.VISIBLE
+        else
+            binding.usermanagement.visibility = View.GONE
 
-        viewModel.profileObserver.observe(viewLifecycleOwner) {
+       /* viewModel.profileObserver.observe(viewLifecycleOwner) {
             if (it is NetworkResponse.Success) {
                 profileData = it.data?.profileData!!
-                isAdmin= profileData.isOrgAdmin!!
-                Log.e("checkAdmin",profileData.isOrgAdmin.toString())
-
-
+                isAdmin = profileData.isOrgAdmin!!
+                if (isAdmin)
+                    binding.usermanagement.visibility = View.VISIBLE
+                else
+                    binding.usermanagement.visibility = View.GONE
+                Log.e("checkAdmin", profileData.isOrgAdmin.toString())
             }
-        }
+        }*/
         return binding.root
     }
 
@@ -80,10 +87,10 @@ class SettingFragment : Fragment(), View.OnClickListener {
                 startActivity(intentOpenDetailPage)
             }
 
-//            R.id.calendar -> {
-//                Toast.makeText(activity, "Calendar Event", Toast.LENGTH_SHORT).show()
-//                loadFragment(MyCalendarFragment())
-//            }
+           /* R.id.calendar -> {
+                Toast.makeText(activity, "Calendar Event", Toast.LENGTH_SHORT).show()
+                loadFragment(MyCalendarFragment())
+            }*/
 
             R.id.distraction -> {
                 //Toast.makeText(activity, "Distraction", Toast.LENGTH_SHORT).show()
@@ -92,8 +99,8 @@ class SettingFragment : Fragment(), View.OnClickListener {
 
             R.id.usermanagement -> {
                 //Toast.makeText(activity, "Distraction", Toast.LENGTH_SHORT).show()
-                if(!isAdmin) loadFragment(UserManagement())
-                else Toast.makeText(activity, "you are not an admin", Toast.LENGTH_SHORT).show()
+                if(isAdmin) loadFragment(UserManagement())
+               // else Toast.makeText(activity, "you are not an admin", Toast.LENGTH_SHORT).show()
 
             }
 

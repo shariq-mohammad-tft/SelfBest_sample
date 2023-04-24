@@ -56,7 +56,7 @@ data class Data(
             receiverId = channelId ?: Constants.EXPERT_ID,
             queryId = queryId,
             name = fullName,
-            queryName = queryName
+            queryName = queryName,
         )
     }
 }

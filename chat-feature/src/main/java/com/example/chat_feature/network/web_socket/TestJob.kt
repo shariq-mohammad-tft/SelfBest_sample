@@ -13,6 +13,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 
+/*
 private val pieSocketUrl =
     "wss://demo.piesocket.com/v3/channel_1?api_key=VCXCEuvhGcBDP7XhiJJUDvR1e1D3eiVjgZ9VRiaV&notify_self"
 private val client by lazy { OkHttpClient() }
@@ -38,10 +39,12 @@ private fun CoroutineScope.testingChannelAndFlow() {
             println("[RECEIVED - 1] <-- $num")
         }
 
-        /*channel.collect { num ->
+        */
+/*channel.collect { num ->
             delay(3000)
             println("[RECEIVED - 1] <-- $num")
-        }*/
+        }*//*
+
     }
     launch {
         for (num in channel) {
@@ -50,10 +53,12 @@ private fun CoroutineScope.testingChannelAndFlow() {
         }
 
 
-        /* channel.collect { num ->
+        */
+/* channel.collect { num ->
              delay(1000)
              println("[RECEIVED - 2] <-- $num")
-         }*/
+         }*//*
+
     }
 
     launch {
@@ -66,26 +71,31 @@ private fun CoroutineScope.testingChannelAndFlow() {
 
 private suspend fun socketJob() = withContext(Dispatchers.IO) {
     try {
-        val easyWS = client.easyWebSocket(Constants.SELF_BEST_SOCKET_URL)
+       val easyWS = client.easyWebSocket(Constants.SELF_BEST_SOCKET_URL,)
         println("[socketJob] Open: ${easyWS.response}")
 
-        /*launch {
+        */
+/*launch {
             val msg = "{\n" +
                     "    \"type\": \"subscribe\",\n" +
                     "    \"channels\": [{ \"name\": \"ticker\", \"product_ids\": [\"BTC-EUR\"] }]\n" +
                     "}"
 
             easyWS.webSocket.send(msg)
-        }*/
-        /*launch {
+        }*//*
+
+        */
+/*launch {
             repeat(5) {
                 easyWS.webSocket.send(it.toString())
                 println("[socketJob] --> $it")
                 delay(1000)
             }
-        }*/
+        }*//*
 
-        /*launch {
+
+        */
+/*launch {
             repeat(10) {
                 delay(1000)
                 if (it > 5) {
@@ -93,7 +103,8 @@ private suspend fun socketJob() = withContext(Dispatchers.IO) {
 //                client.dispatcher.executorService.shutdown()
                 }
             }
-        }*/
+        }*//*
+
 
         easyWS.textChannel.consumeEach { msg ->
             when (msg) {
@@ -107,4 +118,4 @@ private suspend fun socketJob() = withContext(Dispatchers.IO) {
         e.printStackTrace()
         Log.d(TAG, "socketJob: ${e.message}")
     }
-}
+}*/

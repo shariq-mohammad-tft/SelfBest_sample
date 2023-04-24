@@ -22,11 +22,14 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.example.chat_feature.data.SocketUpdate
@@ -49,17 +52,13 @@ import com.tft.selfbest.R
 import com.tft.selfbest.data.SelfBestPreference
 import com.tft.selfbest.databinding.ActivityMainBinding
 import com.tft.selfbest.models.suggestedApps.AppDetail
+import com.tft.selfbest.network.NetworkResponse
 import com.tft.selfbest.ui.fragments.activityLog.ActivityLogFragment
 import com.tft.selfbest.ui.fragments.overview.OverviewFragment
 import com.tft.selfbest.ui.fragments.profile.ProfileViewModel
 import com.tft.selfbest.ui.fragments.settings.SettingFragment
 import com.tft.selfbest.utils.InstalledAppInfoUtil
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.channels.consumeEach
-import kotlinx.coroutines.launch
-import okhttp3.OkHttpClient
-import org.json.JSONObject
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
@@ -76,6 +75,7 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,HomeActivityCalle
     var suggestedInstalledApps: ArrayList<AppDetail> = ArrayList()
     lateinit var binding: ActivityMainBinding
     val viewModel by viewModels<ProfileViewModel>()
+    private val viewmodel2 by viewModels<HomeActivityViewModel>()
 
     @Inject
     lateinit var preferences: SelfBestPreference
@@ -88,6 +88,7 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,HomeActivityCalle
 
     var botMessageCount =0
     var unseenMessageCount=0
+
 
 
 
@@ -120,6 +121,7 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,HomeActivityCalle
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         hideKeyboard()
@@ -136,29 +138,41 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,HomeActivityCalle
         //installedApps = InstalledAppInfoUtil.getInstallApps(this)
         loadFragment(OverviewFragment())
         viewModel.getProfileData(true)
+        viewModel.profileObserver.observe(this){
+            if(it is NetworkResponse.Success){
+                Log.e("Profile", "Observer")
+                preferences.setOrgAdmin(it.data!!.profileData!!.isOrgAdmin!!)
+                if(it.data.profileData!!.image != null) {
+                    preferences.setProfilePicture(it.data.profileData.image!!)
+                    Glide.with(applicationContext).load(preferences.getProfilePicture).into(binding.profile)
+                }
+            }
+        }
         // val navController = findNavController(R.id.fragmentContainerView)
         binding.viewNotifications.setOnClickListener(this)
         binding.viewCalenderEvent.setOnClickListener(this)
         binding.profile.setOnClickListener(this)
-      //  binding.bottomNavigation.getOrCreateBadge(R.id.overviewFragment).number=5
-        
 
 
-        getTotalUnseenCount(TotalUnseenCountRequest(sentBy = preferences.getLoginData?.id.toString()))
-        /*val itemView: BottomNavigationItemView = bottomNavigation.findViewById(R.id.settingFragment)
-        val notificationBadge: View = LayoutInflater.from(this).inflate(R.layout.component_tabbar_badge, itemView, true)
-        val badgeTextView = notificationBadge.findViewById<TextView>(R.id.notification_badge_text)
-        badgeTextView.text = "${5}"
+         viewmodel2.getTotalUnseenCount(TotalUnseenCountRequest(sentBy = preferences.getLoginData?.id.toString()))
 
-        val layoutParams = notificationBadge.layoutParams
-        if (layoutParams is ViewGroup.MarginLayoutParams) {
-            layoutParams.topMargin = resources.getDimensionPixelSize(R.dimen.padding_small)
-            layoutParams.marginEnd = resources.getDimensionPixelSize(R.dimen.padding_small)
+        viewmodel2.unseenMessageCount.observe(this, Observer {
+            val itemView: BottomNavigationItemView = bottomNavigation.findViewById(R.id.eventsFragment)
+            if(it>0){
+                Log.d("unseenTotalCount", it.toString())
+                val notificationBadge: View =
+                    LayoutInflater.from(this).inflate(R.layout.component_tabbar_badge, itemView, true)
+                val badgeTextView = notificationBadge.findViewById<TextView>(R.id.notification_badge_text)
+                badgeTextView.text = java.lang.String.valueOf(it)
+            }
+            else{
+                val notificationBadge: View =
+                    LayoutInflater.from(this).inflate(R.layout.component_tabbar_badge, itemView, true)
+                notificationBadge.isVisible=false
+            }
+        })
 
-            notificationBadge.layoutParams = layoutParams
-            notificationBadge.translationY = (-layoutParams.topMargin).toFloat()
-            notificationBadge.translationX = layoutParams.marginEnd.toFloat()
-        }*/
+
 
 
 
@@ -278,10 +292,13 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,HomeActivityCalle
         val scale = resources.displayMetrics.density
         return (dp * scale + 0.5f).toInt()
     }
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onResume() {
         super.onResume()
 
-        connectSocket(Constants.SELF_BEST_SOCKET_URL.createSocketUrl(preferences.getLoginData?.id.toString()))
+        viewmodel2.connectSocket(Constants.SELF_BEST_SOCKET_URL.createSocketUrl(preferences.getLoginData?.id.toString()))
+
+
         binding.progress.visibility = View.GONE
         /*if (!isAccessibilityServiceEnabled(this, SelfBestAccessibilityService::class.java)) {
             redirectToSettings()
@@ -295,9 +312,10 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,HomeActivityCalle
 
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onStop() {
         super.onStop()
-        closeConnection()
+        viewmodel2.closeConnection()
     }
 
     // method to check is the user has permitted the accessibility permission
@@ -323,8 +341,6 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,HomeActivityCalle
         //}
 
     }
-
-
 
     private fun isAccessibilityServiceEnabled(
         context: Context,
@@ -416,9 +432,10 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,HomeActivityCalle
 
 
     /*-------------------------------web socket--------------------------*/
+  /*  @RequiresApi(Build.VERSION_CODES.M)
     fun connectSocket(socketurl:String=Constants.SELF_BEST_SOCKET_URL){
         lifecycleScope.launch(Dispatchers.IO) {
-            easyWS = OkHttpClient().easyWebSocket(socketurl)
+            easyWS = OkHttpClient().easyWebSocket(socketurl, this@HomeActivity)
             Log.d("HomeActivity", "Connection: CONNECTION established!")
             listenUpdates()
         }
@@ -450,11 +467,13 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,HomeActivityCalle
                             val chatDataObj = dataObj.getJSONObject("chat_data")
                             if (chatDataObj.has("total_message_count")) {
                                 botMessageCount = chatDataObj.getInt("total_message_count")
+
+                               // updateUnseenMessageCountBadge(unseenMessageCount)
                             }
                         }
                     }
                     unseenMessageCount=botMessageCount
-                    Log.d("unseenPayloadText", "botMessageCount: $botMessageCount")
+                    Log.d("unseenMsgAtHome", "TotalMessageCount: $botMessageCount")
                 }
             }
         }
@@ -465,7 +484,7 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,HomeActivityCalle
     fun closeConnection() {
         easyWS?.webSocket?.close(1001, "Closing manually")
         Log.d("HomeActivity", "closeConnection: CONNECTION CLOSED!")
-    }
+    }*/
 
 
 

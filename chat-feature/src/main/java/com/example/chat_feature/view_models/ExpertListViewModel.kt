@@ -1,6 +1,7 @@
 package com.example.chat_feature.view_models
 
 import android.app.Application
+import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -38,6 +39,7 @@ import javax.inject.Inject
 class ExpertListViewModel @Inject constructor(
     private val api: Api,
     application: Application,
+    private val context: Context
 ) : AndroidViewModel(application), SafeApiCall {
 
     companion object {
@@ -172,7 +174,7 @@ class ExpertListViewModel @Inject constructor(
 
     fun connectSocket(socketUrl: String = Constants.SELF_BEST_SOCKET_URL) {
         viewModelScope.launch(Dispatchers.IO) {
-            easyWs = OkHttpClient().easyWebSocket(socketUrl)
+            easyWs = OkHttpClient().easyWebSocket(socketUrl,context)
             Log.d("expertlistviewmodel", "Connection: CONNECTION established!")
             listenUpdates()
         }

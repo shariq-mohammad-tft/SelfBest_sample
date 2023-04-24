@@ -30,6 +30,8 @@ data class Message(
     val name: String? = null,
     var links:ArrayList<String>?= arrayListOf(),
     val timeStamp:String?=null,
+    var wrongskill:String?=null
+
 
     )
 
