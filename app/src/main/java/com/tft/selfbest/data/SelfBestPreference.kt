@@ -85,7 +85,7 @@ class SelfBestPreference @Inject constructor(application: Application) {
     }
 
     val isOrgAdmin: Boolean
-    get() = PreferenceUtil.getBoolean(_pref, Key.IS_ORG_ADMIN, false)
+        get() = PreferenceUtil.getBoolean(_pref, Key.IS_ORG_ADMIN, false)
 
     fun setOrgAdmin(data: Boolean){
         PreferenceUtil.setBoolean(_pref, Key.IS_ORG_ADMIN, data)

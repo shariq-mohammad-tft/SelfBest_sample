@@ -23,7 +23,7 @@ class SelfBestApiClient @Inject constructor(
 
     private fun buildTokenApi(): TokenRefreshApi {
         return Retrofit.Builder()
-            .baseUrl("https://backend-staging.self.best/")
+            .baseUrl("https://backend.self.best/")
             .client(getRetrofitClient())
             .addConverterFactory(GsonConverterFactory.create())
             .build()

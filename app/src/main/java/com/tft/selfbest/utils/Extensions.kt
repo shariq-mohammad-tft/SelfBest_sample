@@ -1,5 +1,6 @@
 package com.tft.selfbest.utils
 
+import android.content.Context
 import android.util.Log
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -29,4 +30,8 @@ fun CoroutineContext.logDetails(TAG: String, throwable: Throwable? = null) {
     FirebaseCrashlytics.getInstance().log(log)
     Log.e(TAG, log)
     throwable?.printStackTrace()
+}
+fun Context.dpToPx(dp: Int): Int {
+    val scale = resources.displayMetrics.density
+    return (dp * scale + 0.5f).toInt()
 }

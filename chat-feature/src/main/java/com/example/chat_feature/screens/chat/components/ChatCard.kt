@@ -11,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -21,6 +22,8 @@ import coil.compose.AsyncImage
 import com.example.chat_feature.LinkifyText
 import com.example.chat_feature.navigation.AppScreen
 import com.example.chat_feature.screens.chat.cardShapeFor
+import com.example.chat_feature.utils.extractTime
+import java.sql.Timestamp
 
 
 @Composable
@@ -56,7 +59,7 @@ fun CardSelfMessage(message: String) {
             ) {
                 Text(
                     modifier = Modifier.padding(8.dp),
-                    text = message,
+                    text = if(message.contains("yes help", ignoreCase = true)) "Yes" else if(message.contains("Can't help", ignoreCase = true)) "No" else message,
                     style = MaterialTheme.typography.caption,
                     color = Color(0xFFFFFFFF)
                 )
@@ -73,7 +76,8 @@ fun CardSelfMessagePreview() {
 
 
 @Composable
-fun CardReceiverMessage(message: String) {
+fun CardReceiverMessage(message: String, timestamp: String) {
+    val context = LocalContext.current
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -97,7 +101,7 @@ fun CardReceiverMessage(message: String) {
             ) {
                 Text(
                     modifier = Modifier.padding(8.dp),
-                    text = message,
+                    text = message.replace("<br>", "\n\n"),
                     style = MaterialTheme.typography.caption,
                     color = Color(0xFF3E3E3E)
                 )
@@ -106,7 +110,7 @@ fun CardReceiverMessage(message: String) {
                 modifier = Modifier
                     .padding(start = 2.dp)
                     .align(Alignment.Bottom),
-                text = "01:33 AM",
+                text = String().extractTime(timestamp)!!,
                 fontSize = 10.sp,
                 style = MaterialTheme.typography.caption,
                 color = Color(0xFF707070)
@@ -164,7 +168,7 @@ fun CardlinksMessage(message: ArrayList<String>) {
 @Composable
 @Preview(showBackground = true)
 fun CardReceiverMessagePreview() {
-    CardReceiverMessage("Cool")
+    CardReceiverMessage("Cool","time")
 }
 
 @Composable

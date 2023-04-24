@@ -76,7 +76,7 @@ fun ButtonGridLayout(
 
             ) {
                 Text(
-                    text = button.value,
+                    text = if(button.value.contains("yes help", ignoreCase = true)) "Yes" else if(button.value.contains("Can't help", ignoreCase = true)) "No" else button.value,
                     modifier = Modifier.padding(2.dp),
                     style = MaterialTheme.typography.caption
                 )

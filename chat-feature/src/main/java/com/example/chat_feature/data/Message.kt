@@ -25,9 +25,14 @@ data class Message(
         Button("1001", "Yes", "Yes", "Yes"),
         Button("1002", "No", "No", "No"),
     ),
-    val isButtonEnabled: Boolean = false,
+    var isButtonEnabled: Boolean = false,
     val queryName: String? = null,
     val name: String? = null,
     var links:ArrayList<String>?= arrayListOf(),
-    val timeStamp:String?=null
-)
+    val timeStamp:String?=null,
+    var wrongskill:String?=null
+
+
+    )
+
+

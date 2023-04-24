@@ -1,5 +1,6 @@
 package com.example.chat_feature.view_models
 
+import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -35,6 +36,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ExpertChatViewModel @Inject constructor(
     private val api: Api,
+    private val context: Context
 ) : ViewModel(), SafeApiCall {
 
     companion object {
@@ -45,7 +47,6 @@ class ExpertChatViewModel @Inject constructor(
         private set
 
 //    val response: LiveData<Resource<UploadPhotoResponse>> = _response
-
 
     var imageUri by mutableStateOf<String?>(null)
         private set
@@ -112,7 +113,6 @@ class ExpertChatViewModel @Inject constructor(
                         messageList.add(Resource.Success(it.chatJson))
                     }
                 }
-
             }
         }
 
@@ -201,7 +201,7 @@ class ExpertChatViewModel @Inject constructor(
     fun connectSocket(socketUrl: String = Constants.SELF_BEST_SOCKET_URL) =
         viewModelScope.launch(Dispatchers.IO) {
             // /chat/676/
-            easyWs = OkHttpClient().easyWebSocket(socketUrl)
+            easyWs = OkHttpClient().easyWebSocket(socketUrl,context)
             Log.d(TAG, "connectSocket: Called Listen Channel")
             listenUpdates()
         }
@@ -237,15 +237,29 @@ class ExpertChatViewModel @Inject constructor(
                     }
 
                     val response = gson.fromJson(responseObj, ChatJson::class.java)
-                    Log.d(TAG, "onMessage: $response")
+                    if(response.type=="chat"){
+                        Log.d(TAG, "onMessage: $response")
 
-                    messageList.add(Resource.Success(response))
+                        messageList.add(Resource.Success(response))
+                    }
+
 
                 }
             }
         }
     }
+    private fun closeConnection() {
+        easyWs?.webSocket?.close(1001, "Closing manually")
+        Log.d("expertlistviewmodel", "closeConnectionFORCHATVIEWMODEL: CONNECTION CLOSED!")
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        closeConnection()
+        Log.d("expertlistviewmodel", "viewmodelClearedForChaTViewmodel")
+    }
 }
+
 
 
 /*

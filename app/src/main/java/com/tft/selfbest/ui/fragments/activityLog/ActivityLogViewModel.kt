@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.*
 import com.tft.selfbest.data.SelfBestPreference
-import com.tft.selfbest.models.FilterOptions
 import com.tft.selfbest.models.SelectedCategory
 import com.tft.selfbest.network.NetworkResponse
 import com.tft.selfbest.repository.StatisticsRepository

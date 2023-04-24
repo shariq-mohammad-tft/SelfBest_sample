@@ -18,7 +18,7 @@ data class InteractiveMessageRequest(
 
     @SerializedName("event_type")
     val eventType: String = EventType.INTERACTIVE.value,
-){
+): MessageRequest{
     fun convertToMessage(): Message {
         return Message(
             senderId = Constants.USER_ID,

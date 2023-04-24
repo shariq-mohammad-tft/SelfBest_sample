@@ -14,6 +14,7 @@ import com.example.chat_feature.data.InteractiveMessageRequest
 import com.example.chat_feature.data.Message
 import com.example.chat_feature.data.PlainMessageRequest
 import com.example.chat_feature.data.SocketUpdate
+import com.example.chat_feature.data.experts.BotSeenRequest
 import com.example.chat_feature.data.response.expert.SocketResponseByBot
 import com.example.chat_feature.network.Api
 import com.example.chat_feature.network.web_socket.EasyWS
@@ -26,14 +27,18 @@ import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.consumeEach
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
+import org.json.JSONObject
 import javax.inject.Inject
 
 @HiltViewModel
 class ChatViewModel @Inject constructor(
     private val api: Api,
-    application: Application
+    application: Application,
+    private val context: Context
 
 ) : AndroidViewModel(application), SafeApiCall {
 
@@ -58,6 +63,10 @@ class ChatViewModel @Inject constructor(
 
 
     val messageList = mutableStateListOf<Resource<Message>>()
+
+    private val _secondLastMsgText = MutableStateFlow("")
+    val secondLastMsgText: StateFlow<String>
+        get() = _secondLastMsgText
 
 
     fun updateMessage(newValue: String) {
@@ -88,6 +97,7 @@ class ChatViewModel @Inject constructor(
     }
 
 
+
     /*----------------------------------- Load Chats Between Bot and User --------------------------------*/
 
     private fun loadChatBetweenUserAndBot(senderId: String) =
@@ -107,13 +117,43 @@ class ChatViewModel @Inject constructor(
 
                 is Resource.Success -> {
                     val chatList = response.value.chatMessages
+                    Log.d("chatlist",chatList.toString())
+
                     chatList.forEach {
+                        Log.d("chatlist_internal",it.convertToMessage().toString())
                         messageList.add(Resource.Success(it.convertToMessage()))
                     }
-                }
+                    val lastmsg=messageList.last() as Resource.Success
+                    if(!lastmsg.value.buttons.isNullOrEmpty()){
+                        lastmsg.value.isButtonEnabled=true
+                        messageList.removeLast()
+                        messageList.add(lastmsg)
+                    }
+                    else if(lastmsg.value.message=="Please select a valid skill from this dropdown"){
+                        val secondLastmsg=messageList[messageList.size-2] as? Resource.Success
+                        if(secondLastmsg!=null){
+                            _secondLastMsgText.value= secondLastmsg.value.eventMessage!!
+                            secondLastmsg.value.wrongskill=secondLastmsg.value.eventMessage
+                           // Log.d("secondLastmsgvale",_secondLastMsgText.value.toString())
+                        }
+                        Log.d("secondLastmsg",secondLastmsg.toString())
+                        Log.d("secondLastmsg", secondLastmsg?.value?.wrongskill.toString())
 
+
+                    }
+
+                }
+            }
+
+        }
+
+    fun seenBotMessage(){
+        viewModelScope.launch {
+            safeApiCall {
+                api.botMessageSeenRequest(BotSeenRequest(userId))
             }
         }
+    }
 
 
     /*----------------------------------- Web Socket --------------------------------*/
@@ -133,7 +173,7 @@ class ChatViewModel @Inject constructor(
     fun connectSocket(socketUrl: String = Constants.SELF_BEST_SOCKET_URL) =
         viewModelScope.launch(Dispatchers.IO) {
             // /chat/676/
-            easyWs = OkHttpClient().easyWebSocket(socketUrl)
+            easyWs = OkHttpClient().easyWebSocket(socketUrl, context)
             listenUpdates()
         }
 
@@ -150,12 +190,18 @@ class ChatViewModel @Inject constructor(
 
                     val text = it.text
                     Log.d(TAG, "onMessage: $text")
+                    val jsonObject = JSONObject(text)
+                    //var responseObj = text!!
+
+                    if (jsonObject.has("chat_messages")) return@consumeEach
 
                     val response = gson.fromJson(text, SocketResponseByBot::class.java)
+                    if(response.data.type=="query" || response.data.type=="create_chat_box"){
+                        Log.d(TAG, "onMessage: $response")
+                        messageList.add(Resource.Success(response.data.convertToMessage()))
+                    }
 
-                    Log.d(TAG, "onMessage: $response")
 
-                    messageList.add(Resource.Success(response.data.convertToMessage()))
 
                 }
             }
@@ -165,7 +211,7 @@ class ChatViewModel @Inject constructor(
     }
 
 
-    private fun closeConnection() {
+     fun closeConnection() {
         easyWs?.webSocket?.close(1001, "Closing manually")
         Log.d(TAG, "closeConnection: CONNECTION CLOSED!")
     }

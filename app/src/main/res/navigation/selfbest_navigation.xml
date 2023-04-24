@@ -24,7 +24,7 @@
         android:id="@+id/eventsFragment"
         android:name="com.tft.selfbest.ui.fragments.calenderEvents.MyCalendarFragment"
         android:label="fragment_events"
-        tools:layout="@layout/fragment_my_calendar" />
+         />
     <fragment
         android:id="@+id/settingFragment"
         android:name="com.tft.selfbest.ui.fragments.settings.SettingFragment"

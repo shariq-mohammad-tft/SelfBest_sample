@@ -14,7 +14,7 @@ data class PlainMessageRequest(
 
     @SerializedName("event_type")
     val eventType: String = EventType.MESSAGE.value,
-) {
+) :MessageRequest{
     fun convertToMessage(): Message {
         return Message(
             senderId = senderId,

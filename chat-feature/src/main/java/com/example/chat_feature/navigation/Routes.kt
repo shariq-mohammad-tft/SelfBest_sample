@@ -11,6 +11,7 @@ import com.example.chat_feature.R
 const val ROUTE_CHAT = "chat_screen"
 const val ROUTE_EXPERT_CHAT = "expert_chat_screen"
 const val ROUTE_ROOM = "rooms"
+const val ROUTE_ROOM_CLOSED = "rooms"
 const val CHAT_SELECTION_SCREEN = "chat_selection_screen"
 const val ROUTE_UPLOAD_PHOTO = "photo_upload"
 const val ROUTE_PHOTO_PREVIEW = "photo_preview"
@@ -25,7 +26,7 @@ sealed class AppScreen(
     @StringRes val title: Int, @DrawableRes val icon: Int? = null, val route: String,
 ) {
     object ChatSelection : AppScreen(
-        title = R.string.chat_selection, route = CHAT_SELECTION_SCREEN
+        title = R.string.chat_selection, route = ROUTE_ROOM
     )
 
     object ChatBot : AppScreen(
@@ -52,11 +53,24 @@ sealed class AppScreen(
 
     object ExpertChathistoryViaLoadRoom : AppScreen(
         title = R.string.expert_chat,
-        route = "$ROUTE_ROOM/{$SENDER_ID_ARGUMENT}/{$QUERY_ID_ARGUMENT}"
+        route = "$ROUTE_ROOM/{$SENDER_ID_ARGUMENT}/{$QUERY_ID_ARGUMENT}/{$RECEIVER_ID_ARGUMENT}"
+    ) {
+        fun buildRoute(senderId: String, queryId: String,receiverId: String) =
+            route.replace(oldValue = "{$SENDER_ID_ARGUMENT}", newValue = senderId)
+                .replace(oldValue = "{$RECEIVER_ID_ARGUMENT}", newValue = receiverId)
+                .replace(oldValue = "{$QUERY_ID_ARGUMENT}", newValue = queryId)
+
+
+        //TODO add queryID
+    }
+
+    object ExpertChathistoryViaLoadRoomForClosedQuery : AppScreen(
+        title = R.string.expert_chat_Closed_Room,
+        route = "$ROUTE_ROOM_CLOSED/{$SENDER_ID_ARGUMENT}/{$QUERY_ID_ARGUMENT}"
     ) {
         fun buildRoute(senderId: String, queryId: String) =
             route.replace(oldValue = "{$SENDER_ID_ARGUMENT}", newValue = senderId)
-                //.replace(oldValue = "{$RECEIVER_ID_ARGUMENT}", newValue = receiverId)
+               // .replace(oldValue = "{$RECEIVER_ID_ARGUMENT}", newValue = receiverId)
                 .replace(oldValue = "{$QUERY_ID_ARGUMENT}", newValue = queryId)
 
 
@@ -89,8 +103,6 @@ sealed class AppScreen(
             Log.d("path", path)
             return path
         }
-
-
     }
 
 }
