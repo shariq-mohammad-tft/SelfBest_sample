@@ -232,7 +232,10 @@ class ActivityLogFiltersDialog(
             R.id.reset -> {
                 binding.duration.setSelection(0)
                 binding.platform.setSelection(0)
-                applyFilterListener.filterData("Mobile", "daily")
+                selectedPlatform = "Mobile"
+                selectedDuration = "daily"
+                startDate = ""
+                endDate = ""
             }
 
             R.id.select_category -> {

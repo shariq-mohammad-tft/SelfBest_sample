@@ -70,7 +70,6 @@ class TokenAuthenticator @Inject constructor(
                         else -> null
                     }
                 } else {
-                    pref.clear()
                     null
                 }
             }

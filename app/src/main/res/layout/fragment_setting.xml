@@ -45,6 +45,7 @@
         android:textSize="12dp"
         android:paddingStart="10dp"
         android:paddingBottom="14dp"
+        android:visibility="gone"
         android:fontFamily="@font/roboto_medium_new"
         android:paddingTop="14dp"
         android:textColor="@color/black"
@@ -63,6 +64,7 @@
         android:fontFamily="@font/roboto_medium_new"
         android:paddingTop="14dp"
         android:textColor="@color/black"
+        android:visibility="gone"
         android:layout_marginBottom="10dp"
 
         android:background="@drawable/circle" >

@@ -157,7 +157,7 @@ class SignupFragment : Fragment(), View.OnClickListener,
                     currentSkills.add(key)
                 }
                 if (resumeSkills.isNotEmpty()) {
-                    binding.skillList.visibility = View.VISIBLE
+                    binding.skillListContainer.visibility = View.VISIBLE
                 }
                 binding.skillList.adapter =
                     SignUpSkillListAdapter(
@@ -200,7 +200,7 @@ class SignupFragment : Fragment(), View.OnClickListener,
         binding.uploadResume.setOnClickListener(this)
         binding.skill.onItemClickListener = OnItemClickListener { arg0, _, position, _ ->
             val selectedItem = arg0.getItemAtPosition(position) as String
-            binding.skillList.visibility = View.VISIBLE
+            binding.skillListContainer.visibility = View.VISIBLE
             currentSkills.add(selectedItem)
             profileSkills[selectedItem] = 1
             (binding.skillList.adapter as SignUpSkillListAdapter).addSkill(
@@ -229,7 +229,7 @@ class SignupFragment : Fragment(), View.OnClickListener,
                     return
                 }
                 //binding.emptyList.visibility = View.GONE
-                binding.skillList.visibility = View.VISIBLE
+                binding.skillListContainer.visibility = View.VISIBLE
                 currentSkills.add(binding.skill.text.toString())
                 profileSkills[binding.skill.text.toString()] = 1
                 (binding.skillList.adapter as SignUpSkillListAdapter).addSkill(
@@ -293,7 +293,7 @@ class SignupFragment : Fragment(), View.OnClickListener,
             skill,
             1
         )
-        binding.skillList.visibility = View.VISIBLE
+        binding.skillListContainer.visibility = View.VISIBLE
         viewModel.getRecommendation(skill)
     }
 
@@ -362,6 +362,21 @@ class SignupFragment : Fragment(), View.OnClickListener,
         return File(path)
     }
 
+//    private fun openResumerChooser(){
+//        val permission = Manifest.permission.READ_EXTERNAL_STORAGE
+//        val requestCode = 123
+//
+//        if (ContextCompat.checkSelfPermission(activity as Signup, permission) == PackageManager.PERMISSION_GRANTED) {
+//            // Permission has already been granted
+//            // Do your file operations here
+//            val intent = Intent(Intent.ACTION_GET_CONTENT)
+//            intent.type = "application/pdf"
+//            someActivityResultLauncher.launch(intent)
+//        } else {
+//            // Permission has not been granted
+//            ActivityCompat.requestPermissions(activity as Signup, arrayOf(permission), requestCode)
+//        }
+//    }
     @RequiresApi(Build.VERSION_CODES.R)
     private fun openResumerChooser() {
         if (if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {

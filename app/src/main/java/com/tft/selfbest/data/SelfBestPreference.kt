@@ -27,6 +27,7 @@ class SelfBestPreference @Inject constructor(application: Application) {
         const val GetGoId="getGoHourId"
         const val PROFILE_DATA = "_profile_data"
         const val FIRST_TIME="_first_time"
+        const val IS_ORG_ADMIN="_is_org_admin"
     }
 
     val getLoginData: LogedInData?
@@ -80,7 +81,14 @@ class SelfBestPreference @Inject constructor(application: Application) {
         get() = PreferenceUtil.getBoolean(_pref, Key.FIRST_TIME, false)
 
     fun setFirstTime(data: Boolean) {
-        PreferenceUtil.setBoolean(_pref, Key.FIRST_TIME, true)
+        PreferenceUtil.setBoolean(_pref, Key.FIRST_TIME, data)
+    }
+
+    val isOrgAdmin: Boolean
+    get() = PreferenceUtil.getBoolean(_pref, Key.IS_ORG_ADMIN, false)
+
+    fun setOrgAdmin(data: Boolean){
+        PreferenceUtil.setBoolean(_pref, Key.IS_ORG_ADMIN, data)
     }
 
 }

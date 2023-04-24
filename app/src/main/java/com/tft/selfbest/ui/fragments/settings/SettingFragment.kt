@@ -33,11 +33,12 @@ class SettingFragment : Fragment(), View.OnClickListener {
 
     @Inject
     lateinit var preferences: SelfBestPreference
+
     @Inject
     lateinit var sharedPrefManager: SharedPrefManager
     val viewModel by viewModels<ProfileViewModel>()
     private lateinit var profileData: ProfileData
-    private var isAdmin:Boolean = false
+    private var isAdmin: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,16 +51,26 @@ class SettingFragment : Fragment(), View.OnClickListener {
         // Inflate the layout for this fragment
         binding = FragmentSettingBinding.inflate(layoutInflater)
         setOnClickListener()
+        isAdmin = preferences.isOrgAdmin
+        if(isAdmin)
+            binding.usermanagement.visibility = View.VISIBLE
+        else
+            binding.usermanagement.visibility = View.GONE
+//        viewModel.getProfileData(true)
 
-        viewModel.profileObserver.observe(viewLifecycleOwner) {
-            if (it is NetworkResponse.Success) {
-                profileData = it.data?.profileData!!
-                isAdmin= profileData.isOrgAdmin!!
-                Log.e("checkAdmin",profileData.isOrgAdmin.toString())
+//        viewModel.profileObserver.observe(viewLifecycleOwner) {
+//            if (it is NetworkResponse.Success) {
+//                profileData = it.data?.profileData!!
+//                isAdmin = profileData.isOrgAdmin!!
+//                if (isAdmin)
+//                    binding.usermanagement.visibility = View.VISIBLE
+//                else
+//                    binding.usermanagement.visibility = View.GONE
+//                Log.e("checkAdmin", profileData.isOrgAdmin.toString())
+//            }
+//        }
 
 
-            }
-        }
         return binding.root
     }
 
@@ -92,8 +103,7 @@ class SettingFragment : Fragment(), View.OnClickListener {
 
             R.id.usermanagement -> {
                 //Toast.makeText(activity, "Distraction", Toast.LENGTH_SHORT).show()
-                if(!isAdmin) loadFragment(UserManagement())
-                else Toast.makeText(activity, "you are not an admin", Toast.LENGTH_SHORT).show()
+                if (isAdmin) loadFragment(UserManagement())
 
             }
 

@@ -8,11 +8,11 @@
     <uses-permission
         android:name="android.permission.QUERY_ALL_PACKAGES"
         tools:ignore="QueryAllPackagesPermission" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+<!--    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />-->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission
-        android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
-        tools:ignore="ScopedStorage" />
+<!--    <uses-permission-->
+<!--        android:name="android.permission.MANAGE_EXTERNAL_STORAGE"-->
+<!--        tools:ignore="ScopedStorage" />-->
 
     <application
         android:name=".SelfBestApplication"
@@ -29,7 +29,13 @@
             android:exported="false" />
         <activity
             android:name=".ui.activites.ChatActivity"
-            android:exported="false" />
+            android:exported="true"
+            android:parentActivityName=".ui.activites.HomeActivity">
+            <intent-filter>
+                <action android:name="OPEN_ACTIVITY_1" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".ui.activites.Signup"
             android:exported="false" />

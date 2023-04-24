@@ -114,6 +114,9 @@ class ProfileViewModel @Inject constructor(
                     Log.e("Image VM", it.data?.imageUrl ?: "")
                     preference.setProfilePicture(it.data?.imageUrl ?: "")
                     profileImageLiveData.postValue(it)
+                }else if(it is NetworkResponse.Error) {
+                    Log.e("Image VM", it.msg)
+                    profileImageLiveData.postValue(it)
                 }
             }
         }

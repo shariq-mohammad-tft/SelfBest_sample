@@ -1,5 +1,6 @@
 package com.tft.selfbest.repository
 
+import android.util.Log
 import com.tft.selfbest.models.DeviceTokenRequest
 import com.tft.selfbest.models.ProfileChangesData
 import com.tft.selfbest.models.SignUpDetail
@@ -44,16 +45,16 @@ class ProfileRepository @Inject constructor(private val client: SelfBestApiClien
         })
     }.flowOn(Dispatchers.IO)
 
-    suspend fun updateProfilePhoto(file: File?, userId: Int) = flow {
-        val requestFile = RequestBody.create("multipart/form-data".toMediaTypeOrNull(), file!!)
-        val requestImage = MultipartBody.Part.createFormData("image", file.name, requestFile)
-        val requestUserId =
-            RequestBody.create("multipart/form-data".toMediaTypeOrNull(), userId.toString())
-        emit(NetworkResponse.Loading())
-        emit(NetworkRequest.process {
-            client.apis.updateProfilePicture(requestImage, requestUserId)
-        })
-    }.flowOn(Dispatchers.IO)
+        suspend fun updateProfilePhoto(file: File?, userId: Int) = flow {
+            val requestFile = RequestBody.create("multipart/form-data".toMediaTypeOrNull(), file!!)
+            val requestImage = MultipartBody.Part.createFormData("image", file.name, requestFile)
+            val requestUserId =
+                RequestBody.create("multipart/form-data".toMediaTypeOrNull(), userId.toString())
+            emit(NetworkResponse.Loading())
+            emit(NetworkRequest.process {
+                client.apis.updateProfilePicture(requestImage, requestUserId)
+            })
+        }.flowOn(Dispatchers.IO)
 
     suspend fun disconnectAllCalendar(userId: Int) = flow {
         emit(NetworkResponse.Loading())
