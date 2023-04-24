@@ -197,7 +197,7 @@ fun CardErrorMessage(message: String) {
             ) {
                 Text(
                     modifier = Modifier.padding(8.dp),
-                    text = message,
+                    text = message.replace("<br>", "\n"),
                     style = MaterialTheme.typography.caption,
                     color = MaterialTheme.colors.error,
                 )

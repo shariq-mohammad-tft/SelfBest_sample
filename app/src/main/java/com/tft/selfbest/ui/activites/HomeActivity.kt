@@ -168,7 +168,7 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,HomeActivityCalle
             else{
                 val notificationBadge: View =
                     LayoutInflater.from(this).inflate(R.layout.component_tabbar_badge, itemView, true)
-                notificationBadge.isVisible=false
+                notificationBadge.isVisible=true
             }
         })
 

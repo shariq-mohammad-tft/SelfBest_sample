@@ -9,9 +9,7 @@ import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -555,7 +553,7 @@ fun DropdownExample(
     var allOptions = remember { mutableStateOf(options) }
     var displayedOptions by remember { mutableStateOf(allOptions.value.take(pageSize)) }
     var expanded by remember { mutableStateOf(false) }
-    var scrollState = rememberLazyListState()
+    var scrollState = rememberScrollState()
 
     
 
@@ -619,7 +617,7 @@ fun DropdownExample(
             modifier = Modifier
                 .width(200.dp)
                 .padding(horizontal = 10.dp)
-                .wrapContentHeight().imeNestedScroll()
+                .wrapContentHeight()
         ) {
             TextButton(
                 modifier = Modifier
@@ -647,7 +645,7 @@ fun DropdownExample(
                 modifier = Modifier
                     .fillMaxWidth(fraction = 0.8f)
                     .padding(horizontal = 10.dp)
-                    .fillMaxHeight()
+                    .fillMaxHeight().imeNestedScroll()
             ) {
                 DropdownMenu(
                     expanded = expanded,
@@ -655,32 +653,24 @@ fun DropdownExample(
                     modifier = Modifier.height(300.dp)
                 ) {
 
-                    LazyColumn(modifier = Modifier.fillMaxHeight()) {
+                    Column(modifier = Modifier.fillMaxHeight()) {
 
-                       /* displayedOptions.forEach { option ->
+                        displayedOptions.forEach { option ->
                             DropdownMenuItem(
                                 onClick = {
                                     val selectedOptions = option
                                     expanded = false
                                     selectedOption.invoke(option)
                                 },
-                              *//*  modifier = Modifier.scrollable(
+                              /*  modifier = Modifier.scrollable(
                                     orientation = Orientation.Vertical,
                                     state= rememberScrollState(0),
                                     enabled = true,
                                     reverseDirection = true,
 
 
-                                )*//*
-                            )*/
-                        items(displayedOptions) { option ->
-                            DropdownMenuItem(
-                                onClick = {
-                                    val selectedOptions = option
-                                    expanded = false
-                                    selectedOption.invoke(option)
-                                }
-                            ){
+                                )*/
+                            ) {
                                 Text(option,style = MaterialTheme.typography.caption,
                                     color = Color(0xFF3E3E3E))
                             }
@@ -699,7 +689,7 @@ fun DropdownExample(
                                 val endIndex = minOf(startIndex + pageSize, allOptions.value.size)
                                 displayedOptions = allOptions.value.slice(startIndex until endIndex)
                                 CoroutineScope(Dispatchers.Default).launch {
-                                    scrollState.scrollToItem(0)
+                                    scrollState.scrollTo(0)
                                 }
                             },
                             modifier = Modifier
@@ -712,7 +702,7 @@ fun DropdownExample(
                     }
                     LaunchedEffect(Unit) {
                         // Scroll to top after recomposing with new options
-                        scrollState.animateScrollToItem(0)
+                        scrollState.animateScrollTo(0)
                     }
                     Box(
                         modifier = Modifier.width(200.dp),

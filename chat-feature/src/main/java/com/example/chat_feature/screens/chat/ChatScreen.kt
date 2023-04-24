@@ -153,7 +153,7 @@ fun ChatScreen(
                             Log.i(TAG, "ChatScreen: $message")
                             if (message.errorCode == 500) {
                                 //ErrorMessage("Server is down please try after sometime")
-                                CardErrorMessage(message = "Server is down please try after sometime")
+                                CardErrorMessage(message = "Server is down please try after sometime <br>or try to type Reset in chat box")
                             }
                         }
 
