@@ -683,6 +683,7 @@ fun DropdownExample(
                         Divider()
                         DropdownMenuItem(
                             onClick = {
+
                                 currentPage++
                                 val startIndex = currentPage * pageSize
                                /* val endIndex = startIndex + pageSize*/
