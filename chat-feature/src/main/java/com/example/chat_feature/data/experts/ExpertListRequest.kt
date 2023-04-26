@@ -36,7 +36,7 @@ data class BotSeenRequest(
 )
 
 data class ChatData (
-
-    @SerializedName("bot_message_count" ) var botMessageCount : Int? = null
+    @SerializedName("bot_message_count" )
+    var botMessageCount : Int? = null
 
 )

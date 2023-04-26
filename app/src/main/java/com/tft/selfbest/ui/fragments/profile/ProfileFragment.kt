@@ -116,7 +116,7 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
 
     companion object {
         private const val IMAGE_PICK_CODE = 100
-        private const val GOOGLE_REDIRECT_URL = "https://staging.self.best/user/profile"
+        private const val GOOGLE_REDIRECT_URL = "https://self.best/user/profile"
 
         // working only in production
         private const val MICROSOFT_REDIRECT_URL = "https://self.best/user/profile"
@@ -205,7 +205,7 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
                 )
             }
         }
-        viewModel.personalityTypeObserver.observe(viewLifecycleOwner) {
+       /* viewModel.personalityTypeObserver.observe(viewLifecycleOwner) {
             if (it is NetworkResponse.Success) {
                 personalityTypes = it.data as ArrayList<String>
                 Log.e("Personality List", "" + personalityTypes.size)
@@ -215,10 +215,10 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
                     personalityTypes
                 )
                 //personalityTypes.add("Choose Personality Attribute")
-                personalityAdapter.setDropDownViewResource(R.layout.spinner_dropdown_style)
-                binding.personalityTypeSpinner.adapter = personalityAdapter
-                binding.personalityTypeSpinner.setSelection(personalityTypes.indexOf(profileData.personalityType))
-//                binding.personalityTypeSpinner.onItemSelectedListener =
+//                personalityAdapter.setDropDownViewResource(R.layout.spinner_dropdown_style)
+//                binding.personalityTypeSpinner.adapter = personalityAdapter
+//                binding.personalityTypeSpinner.setSelection(personalityTypes.indexOf(profileData.personalityType))
+////                binding.personalityTypeSpinner.onItemSelectedListener =
 //                    object : AdapterView.OnItemSelectedListener {
 //                        override fun onNothingSelected(parent: AdapterView<*>?) {}
 //                        override fun onItemSelected(
@@ -275,7 +275,7 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
 //                    }
 
             }
-        }
+        }*/
         viewModel.profileImageObserver.observe(viewLifecycleOwner) {
             if (it is NetworkResponse.Success) {
                 Toast.makeText(context, "Image updated successfully", Toast.LENGTH_SHORT).show()
@@ -690,7 +690,8 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
                     viewModel.disconnectAllCalendar()
                 else {
                     calendarType = "Google"
-                    setCalendarPermissionWebViewDialog("https://accounts.google.com/o/oauth2/auth?approval_prompt=force&access_type=offline&client_id=446007361957-eajrsduofmu470dv2rsl0veol35b1bag.apps.googleusercontent.com&redirect_uri=https://staging.self.best/user/profile&response_type=code&scope=https://www.googleapis.com/auth/calendar&state=state-token&flowName=GeneralOAuthFlow")
+                    //setCalendarPermissionWebViewDialog("https://accounts.google.com/o/oauth2/auth?approval_prompt=force&access_type=offline&client_id=446007361957-ml80obi46ep9ulquiov4cujljk49c1u8.apps.googleusercontent.com&redirect_uri=https://staging.self.best/user/profile&response_type=code&scope=https://www.googleapis.com/auth/calendar&state=state-token&flowName=GeneralOAuthFlow")
+                    setCalendarPermissionWebViewDialog("https://accounts.google.com/o/oauth2/auth?approval_prompt=force&access_type=offline&client_id=446007361957-vmbmbuivs1r8f0e53q0piridcheo2g8j.apps.googleusercontent.com&redirect_uri=https://self.best/user/profile&response_type=code&scope=https://www.googleapis.com/auth/calendar&state=state-token&flowName=GeneralOAuthFlow")
                 }
             }
             R.id.microsoft_cal_btn -> {

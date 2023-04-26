@@ -14,7 +14,7 @@ object Constants {
     /*const val USER_ID = 855
     const val BOT_ID = 2*/
 
-    const val USER_ID = "676"
+    const val USER_ID = "000"
     const val EXPERT_ID = "776"
     const val BOT_ID = "bot"
     const val query = ""

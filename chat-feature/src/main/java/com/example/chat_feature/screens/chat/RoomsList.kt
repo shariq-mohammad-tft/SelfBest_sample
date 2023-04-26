@@ -109,17 +109,13 @@ fun RoomsList(
                     )
                 )
                 viewModel.connectSocket(Constants.SELF_BEST_SOCKET_URL.createSocketUrl(userId))
+                viewModel.BotUnseenCount()
 
 
             }
             Lifecycle.Event.ON_RESUME  -> {
                 Log.d("OnResumeCalled","RoomList")
-                /*viewModel.getBotUnseenCount(BotUnseenCountRequest(sentBy = userId))
-                viewModel.getBotUnseenCount(BotUnseenCountRequest(sentBy = userId))
-                viewModel.getBotUnseenCount(BotUnseenCountRequest(sentBy = userId))*/
-               /* viewModel.getBotUnseenCount(BotUnseenCountRequest(sentBy = userId))
-                viewModel.getBotUnseenCount(BotUnseenCountRequest(sentBy = userId))*/
-                viewModel.getBotUnseenCount(BotUnseenCountRequest(sentBy = userId))
+
             }
             Lifecycle.Event.ON_STOP  -> viewModel.closeConnection()
             else -> Unit
@@ -250,7 +246,7 @@ fun RoomsList(
                         } else {
                             UserList(data) { user ->
                                 scope.launch {
-                                    context?.toast(user.sentTo)
+                                    //context?.toast(user.sentTo)
                                     if (user.queryStatus) {
                                         navController.navigate(
                                             AppScreen.ExpertChathistoryViaLoadRoomForClosedQuery.buildRoute(
@@ -397,7 +393,7 @@ fun BotCard(
 
                 )
                 Toast.makeText(
-                    context, "Clicked on Bot", Toast.LENGTH_LONG
+                    context, "Opening Bot", Toast.LENGTH_LONG
                 ).show()
 
             }) {

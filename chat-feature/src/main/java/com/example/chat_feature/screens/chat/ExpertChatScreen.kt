@@ -229,6 +229,7 @@ fun ExpertChatScreen(
                                 } else {
                                     CardSelfMessage(
                                         message = data.message ?: "",
+                                    timestamp = data.timestamp?: getCurrentTime()
                                     )
                                 }
                             } else {
@@ -535,6 +536,7 @@ fun ExpertChatScreenForClosedQuery(
                                 } else {
                                     CardSelfMessage(
                                         message = data.message ?: "",
+                                    timestamp = data.timestamp ?: getCurrentTime()
                                     )
                                 }
                             } else {

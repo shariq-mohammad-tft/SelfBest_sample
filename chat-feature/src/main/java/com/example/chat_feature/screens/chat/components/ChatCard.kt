@@ -1,5 +1,7 @@
 package com.example.chat_feature.screens.chat.components
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -21,13 +23,12 @@ import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.example.chat_feature.LinkifyText
 import com.example.chat_feature.navigation.AppScreen
-import com.example.chat_feature.screens.chat.cardShapeFor
 import com.example.chat_feature.utils.extractTime
-import java.sql.Timestamp
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun CardSelfMessage(message: String) {
+fun CardSelfMessage(message: String, timestamp: String) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -47,7 +48,7 @@ fun CardSelfMessage(message: String) {
                 modifier = Modifier
                     .padding(end = 2.dp)
                     .align(Alignment.Bottom),
-                text = "12:52 AM",
+                text = String().extractTime(timestamp)!!,
                 fontSize = 10.sp,
                 style = MaterialTheme.typography.caption,
                 color = Color(0xFF707070)
@@ -71,7 +72,7 @@ fun CardSelfMessage(message: String) {
 @Composable
 @Preview(showBackground = true)
 fun CardSelfMessagePreview() {
-    CardSelfMessage("Cool")
+    CardSelfMessage("Cool","12:52")
 }
 
 
@@ -197,7 +198,7 @@ fun CardErrorMessage(message: String) {
             ) {
                 Text(
                     modifier = Modifier.padding(8.dp),
-                    text = message,
+                    text = message.replace("<br>", "\n"),
                     style = MaterialTheme.typography.caption,
                     color = MaterialTheme.colors.error,
                 )

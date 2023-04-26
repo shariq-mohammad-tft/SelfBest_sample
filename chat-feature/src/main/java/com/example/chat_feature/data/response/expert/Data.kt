@@ -52,6 +52,7 @@ data class Data(
             message = message,
             buttons = buttons,
             isButtonEnabled = true,
+            isDropDownEnabled = true,
             senderId = sentBy,
             receiverId = channelId ?: Constants.EXPERT_ID,
             queryId = queryId,

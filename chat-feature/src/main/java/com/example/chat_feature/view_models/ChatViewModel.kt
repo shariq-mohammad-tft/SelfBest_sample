@@ -2,7 +2,9 @@ package com.example.chat_feature.view_models
 
 import android.app.Application
 import android.content.Context
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -10,19 +12,14 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.chat_feature.data.InteractiveMessageRequest
-import com.example.chat_feature.data.Message
-import com.example.chat_feature.data.PlainMessageRequest
-import com.example.chat_feature.data.SocketUpdate
+import com.example.chat_feature.data.*
 import com.example.chat_feature.data.experts.BotSeenRequest
+import com.example.chat_feature.data.response.UploadPhotoResponse
 import com.example.chat_feature.data.response.expert.SocketResponseByBot
 import com.example.chat_feature.network.Api
 import com.example.chat_feature.network.web_socket.EasyWS
 import com.example.chat_feature.network.web_socket.easyWebSocket
-import com.example.chat_feature.utils.Constants
-import com.example.chat_feature.utils.Resource
-import com.example.chat_feature.utils.SafeApiCall
-import com.example.chat_feature.utils.getUserId
+import com.example.chat_feature.utils.*
 import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -30,7 +27,9 @@ import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
+import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 import javax.inject.Inject
 
@@ -47,10 +46,11 @@ class ChatViewModel @Inject constructor(
     }
 
 
-    val userId:String
+    val userId: String
+
     init {
-        userId=application.applicationContext.getUserId().toString()
-        Log.d("checkUserId",application.applicationContext.getUserId().toString())
+        userId = application.applicationContext.getUserId().toString()
+        Log.d("checkUserId", application.applicationContext.getUserId().toString())
     }
 
 
@@ -73,19 +73,55 @@ class ChatViewModel @Inject constructor(
         message = newValue
     }
 
+    var isImageBoxEnabled by mutableStateOf(false)
+
+    var imageUploadResponse = mutableStateOf<Resource<UploadPhotoResponse>>(Resource.Loading)
+        private set
+    var imageUri by mutableStateOf<String?>(null)
+        private set
+    val imageProgressState = mutableStateOf(0)
+    fun updateUri(newValue: String?) {
+        imageUri = newValue
+    }
+
 
     fun <T> sendMessageToServer(data: T) = viewModelScope.launch {
 
         val response: Resource<Message> = when (data) {
             is PlainMessageRequest -> {
 
-                messageList.add(Resource.Success(data.convertToMessage().copy(senderId =userId )))
-                safeApiCall { api.sendPlainMessage(data).convertToMessage().copy(receiverId =userId ) }
+                messageList.add(Resource.Success(data.convertToMessage().copy(senderId = userId)))
+                safeApiCall {
+                    api.sendPlainMessage(data).convertToMessage().copy(receiverId = userId).also {
+                      isImageBoxEnabled = it.message.contains("exact query")
+                    }
+                }
+            }
+            is InteractiveMessageRequest -> {
+                messageList.add(Resource.Success(data.convertToMessage().copy(senderId = userId)))
+                safeApiCall {
+                    api.sendInteractiveMessage(data).convertToMessage().copy(receiverId = userId)
+                        .also {
+                            isImageBoxEnabled = it.message.contains("exact query")
+                        }
+                }
             }
 
-            is InteractiveMessageRequest -> {
-                messageList.add(Resource.Success(data.convertToMessage().copy(senderId =userId )))
-                safeApiCall { api.sendInteractiveMessage(data).convertToMessage().copy(receiverId =userId ) }
+            is ImgShareOnBotRequest -> {
+                messageList.add(Resource.Success(data.convertToMessage().copy(senderId = userId)))
+                val multipartBody = MultipartBody.Builder()
+                    .setType(MultipartBody.FORM)
+                    .addFormDataPart("event_message", data.event_message)
+                    .addFormDataPart("sender_id", data.sender_id)
+                    .addFormDataPart("event_type", data.event_type)
+                    .addFormDataPart("file", data.file.name, data.file.toRequestBody {
+                        Log.d("Progress ",it.toString())
+                    })
+                    .build()
+
+                safeApiCall {
+                    api.imgShareOnBot(multipartBody).convertToMessage().copy(receiverId = userId)
+                }
             }
 
             else -> safeApiCall {
@@ -95,7 +131,6 @@ class ChatViewModel @Inject constructor(
 
         messageList.add(response)
     }
-
 
 
     /*----------------------------------- Load Chats Between Bot and User --------------------------------*/
@@ -117,37 +152,40 @@ class ChatViewModel @Inject constructor(
 
                 is Resource.Success -> {
                     val chatList = response.value.chatMessages
-                    Log.d("chatlist",chatList.toString())
+                    Log.d("chatlist", chatList.toString())
 
                     chatList.forEach {
-                        Log.d("chatlist_internal",it.convertToMessage().toString())
+                        Log.d("chatlist_internal", it.convertToMessage().toString())
                         messageList.add(Resource.Success(it.convertToMessage()))
                     }
-                    val lastmsg=messageList.last() as Resource.Success
-                    if(!lastmsg.value.buttons.isNullOrEmpty()){
-                        lastmsg.value.isButtonEnabled=true
+                    val lastmsg = messageList.last() as Resource.Success
+                    if (!lastmsg.value.buttons.isNullOrEmpty()) {
+                        lastmsg.value.isButtonEnabled = true
                         messageList.removeLast()
                         messageList.add(lastmsg)
                     }
-                    else if(lastmsg.value.message=="Please select a valid skill from this dropdown"){
-                        val secondLastmsg=messageList[messageList.size-2] as? Resource.Success
-                        if(secondLastmsg!=null){
-                            _secondLastMsgText.value= secondLastmsg.value.eventMessage!!
-                            secondLastmsg.value.wrongskill=secondLastmsg.value.eventMessage
-                           // Log.d("secondLastmsgvale",_secondLastMsgText.value.toString())
-                        }
-                        Log.d("secondLastmsg",secondLastmsg.toString())
-                        Log.d("secondLastmsg", secondLastmsg?.value?.wrongskill.toString())
-
-
+                    if (lastmsg.value.message.contains("Please select a valid skill from this dropdown")) {
+                        Log.d("lastMessageSelect", "called")
+                        lastmsg.value.isDropDownEnabled = true
+                        messageList.removeLast()
+                        messageList.add(lastmsg)
+                        Log.d("lastMessageSelect", "called +$lastmsg")
                     }
-
                 }
             }
 
         }
 
-    fun seenBotMessage(){
+    fun imgOnBot(data:MultipartBody){
+        viewModelScope.launch {
+            safeApiCall {
+                api.imgShareOnBot(data)
+            }
+        }
+
+    }
+
+    fun seenBotMessage() {
         viewModelScope.launch {
             safeApiCall {
                 api.botMessageSeenRequest(BotSeenRequest(userId))
@@ -160,9 +198,7 @@ class ChatViewModel @Inject constructor(
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-//            listenUpdates()
-            Log.d("userIDD","$userId")
-            // todo change the ID from static to dynamic (using shared pref)
+            Log.d("userIDD", "$userId")
             loadChatBetweenUserAndBot(userId)
 
         }
@@ -170,6 +206,7 @@ class ChatViewModel @Inject constructor(
     }
 
 
+    @RequiresApi(Build.VERSION_CODES.M)
     fun connectSocket(socketUrl: String = Constants.SELF_BEST_SOCKET_URL) =
         viewModelScope.launch(Dispatchers.IO) {
             // /chat/676/
@@ -196,11 +233,10 @@ class ChatViewModel @Inject constructor(
                     if (jsonObject.has("chat_messages")) return@consumeEach
 
                     val response = gson.fromJson(text, SocketResponseByBot::class.java)
-                    if(response.data.type=="query" || response.data.type=="create_chat_box"){
+                    if (response.data.type == "query" || response.data.type == "create_chat_box") {
                         Log.d(TAG, "onMessage: $response")
                         messageList.add(Resource.Success(response.data.convertToMessage()))
                     }
-
 
 
                 }
@@ -211,7 +247,7 @@ class ChatViewModel @Inject constructor(
     }
 
 
-     fun closeConnection() {
+    fun closeConnection() {
         easyWs?.webSocket?.close(1001, "Closing manually")
         Log.d(TAG, "closeConnection: CONNECTION CLOSED!")
     }

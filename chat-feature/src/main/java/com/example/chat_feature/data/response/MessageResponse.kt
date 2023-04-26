@@ -27,6 +27,7 @@ data class MessageResponse(
         message = message,
         buttons = buttons,
         isButtonEnabled = true,
+        isDropDownEnabled = true,
         channelId = channelId,
         queryId = queryId,//TODO add this
         name = fullName,

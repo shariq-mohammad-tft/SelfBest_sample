@@ -26,8 +26,9 @@ fun ChatBoxEditText(
     onChange: (message: String) -> Unit,
     onSend: (message: String) -> Unit,
     onImageIconClicked: () -> Unit = {},
-) {
+    isImgButtonEnable:Boolean=true
 
+) {
 
     Column() {
 
@@ -38,12 +39,23 @@ fun ChatBoxEditText(
                 Button(
                     onClick = {
                         // launcher.launch("image/*")
-                        onImageIconClicked.invoke()
+
+                        if(isImgButtonEnable){
+                            onImageIconClicked.invoke()
+                        }
+
                     },
                     modifier = Modifier.size(40.dp),
                     shape = CircleShape,
                     contentPadding = PaddingValues(0.dp),
-                    colors = buttonColors(Color(0XFF1D71D4))
+                    colors = buttonColors(
+                        if (isImgButtonEnable) {
+                            Color(0XFF1D71D4) // set blue color when enable
+                        } else {
+                            Color(0XFFC8C8C8) // set grey color when disable
+                        }
+                    ),
+                    //enabled = isImgButtonEnable
                 ) {
                     Icon(
                         Icons.Filled.AttachFile,
@@ -96,9 +108,10 @@ fun ChatBoxEditText(
 @Composable
 fun ChatBoxEditTextForBot(
     message: String,
+    isImgButtonEnable:Boolean=false,
     onChange: (message: String) -> Unit,
     onSend: (message: String) -> Unit,
-    onImageIconClicked: () -> Unit = {},
+
 ) {
 
 
@@ -111,12 +124,19 @@ fun ChatBoxEditTextForBot(
                 Button(
                     onClick = {
                         // launcher.launch("image/*")
-                        onImageIconClicked.invoke()
+                      //  onImageIconClicked.invoke()
                     },
                     modifier = Modifier.size(40.dp),
                     shape = CircleShape,
                     contentPadding = PaddingValues(0.dp),
-                    colors = buttonColors(Color(0XFFC8C8C8)),
+                    //colors = buttonColors(Color(0XFFC8C8C8)),
+                    colors = buttonColors(
+                        if (isImgButtonEnable) {
+                            Color(0XFF1D71D4) // set blue color when enable
+                        } else {
+                            Color(0XFFC8C8C8) // set grey color when disable
+                        }
+                    ),
 
                 ) {
                     Icon(
