@@ -26,11 +26,14 @@ data class Message(
         Button("1002", "No", "No", "No"),
     ),
     var isButtonEnabled: Boolean = false,
+    var isImgButtonEnabled: Boolean = false,
+    var isDropDownEnabled: Boolean = false,
     val queryName: String? = null,
     val name: String? = null,
     var links:ArrayList<String>?= arrayListOf(),
     val timeStamp:String?=null,
-    var wrongskill:String?=null
+    var wrongskill:String?=null,
+
 
 
     )

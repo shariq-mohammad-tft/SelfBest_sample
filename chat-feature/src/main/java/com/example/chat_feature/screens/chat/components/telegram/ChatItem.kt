@@ -153,7 +153,7 @@ fun ChatItem(user: Expert? = null, onClick: (user: Expert) -> Unit = {}) {
                 .padding(5.dp, 0.dp, 0.dp, 0.dp)
         ) {
             val formatter=DateTimeFormatter.ofPattern("yyyy-MM-dd")
-            val updateAt= LocalDate.parse(user.updatedAt.substring(0,10),formatter)
+            val updateAt= LocalDate.parse(user.createdAt.substring(0,10),formatter)
             val displayFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy")
             val displayDate = updateAt.format(displayFormat)
             if (user.unSeenCount==0) {

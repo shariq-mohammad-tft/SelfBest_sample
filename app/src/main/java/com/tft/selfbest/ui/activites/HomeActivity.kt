@@ -154,7 +154,7 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,HomeActivityCalle
         binding.profile.setOnClickListener(this)
 
 
-         viewmodel2.getTotalUnseenCount(TotalUnseenCountRequest(sentBy = preferences.getLoginData?.id.toString()))
+        /* viewmodel2.getTotalUnseenCount(TotalUnseenCountRequest(sentBy = preferences.getLoginData?.id.toString()))
 
         viewmodel2.unseenMessageCount.observe(this, Observer {
             val itemView: BottomNavigationItemView = bottomNavigation.findViewById(R.id.eventsFragment)
@@ -170,7 +170,30 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,HomeActivityCalle
                     LayoutInflater.from(this).inflate(R.layout.component_tabbar_badge, itemView, true)
                 notificationBadge.isVisible=true
             }
-        })
+        })*/
+        val itemView: BottomNavigationItemView =
+            bottomNavigation.findViewById(R.id.eventsFragment)
+        val notificationBadge: View =
+            LayoutInflater.from(this).inflate(R.layout.component_tabbar_badge, itemView, false)
+
+        viewmodel2.getTotalUnseenCount(TotalUnseenCountRequest(sentBy = preferences.getLoginData?.id.toString()))
+        viewmodel2.unseenMessageCount.observe(this) {
+            if (it > 0) {
+                Log.d("unseenTotalCount", it.toString())
+                if (notificationBadge.parent == null) {
+                    Log.e("View", "Added")
+                    itemView.addView(notificationBadge)
+                }
+                val badgeTextView =
+                    notificationBadge.findViewById<TextView>(R.id.notification_badge_text)
+                badgeTextView.text = java.lang.String.valueOf(it)
+            } else {
+                if (notificationBadge.parent != null) {
+                    Log.e("View", "Removed")
+                    itemView.removeView(notificationBadge)
+                }
+            }
+        }
 
 
 

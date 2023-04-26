@@ -145,6 +145,19 @@ class ExpertListViewModel @Inject constructor(
         experts.value = response
     }
 
+    fun BotUnseenCount()=viewModelScope.launch {
+        val response=safeApiCall {
+            api.botUnseenCount(senderId = userId)
+        }
+        when(response){
+            is Resource.Success ->{
+                unseenMessageCount= response.value.bot_unseen_count!!
+            }
+            is Resource.Failure -> Unit
+            Resource.Loading -> Unit
+        }
+    }
+
     fun loadBotHistory(data: ChatJson) = viewModelScope.launch {
         val response = safeApiCall {
             api.loadChatBetweenUserAndExpert(
@@ -205,7 +218,7 @@ class ExpertListViewModel @Inject constructor(
                 }
                 is SocketUpdate.Success -> {
                     val text = it.text
-                    Log.d("unseenPayloadText", "onMessage: $text")
+                   // Log.d("unseenPayloadText", "onMessage: $text")
                     val jsonObject = JSONObject(text)
                     var responseObj = text!!
 
@@ -269,10 +282,10 @@ class ExpertListViewModel @Inject constructor(
                     }
                     else if(response.type=="query"){
                         Log.d("response.type", "count $response")
-                        botMessageCount+=1
+                        unseenMessageCount+=1
                     }
 
-                    unseenMessageCount=botMessageCount
+                    unseenMessageCount=unseenMessageCount
 
 
 

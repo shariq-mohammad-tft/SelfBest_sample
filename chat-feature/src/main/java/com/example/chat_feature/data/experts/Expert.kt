@@ -26,7 +26,9 @@ data class Expert(
     @SerializedName("receiver_name")
     val receiverName: String,
     @SerializedName("updated_at")
-    val updatedAt:String
+    val updatedAt:String,
+    @SerializedName("created_at")
+    val createdAt:String
 
 )
 

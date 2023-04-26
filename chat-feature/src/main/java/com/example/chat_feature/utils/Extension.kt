@@ -14,13 +14,12 @@ import okio.source
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
+import java.text.DateFormat
+import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.time.LocalDateTime
-import java.time.OffsetDateTime
-import java.time.ZoneId
-import java.time.ZoneOffset
+import java.time.*
 import java.time.format.DateTimeFormatter
-import java.util.Locale
+import java.util.*
 
 private const val TAG = "Extension"
 
@@ -162,4 +161,13 @@ fun String.extractTime(timeString: String): String? {
     val amPm = if (hour < 12) "AM" else "PM"
     val formattedHour = if (hour == 0 || hour == 12) 12 else hour % 12
     return String.format("%02d:%02d %s", formattedHour, minute, amPm)
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+fun getCurrentTime(): String {
+    val currentTimeMillis = System.currentTimeMillis()
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSSxxx")
+        .withZone(ZoneOffset.UTC)
+    val instant = Instant.ofEpochMilli(currentTimeMillis)
+    return formatter.format(instant)
 }
