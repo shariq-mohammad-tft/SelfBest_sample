@@ -35,5 +35,7 @@ data class ChatJson(
 
     @SerializedName("timestamp") val timestamp: String?=null,
 
-    @SerializedName("type") val type: String?=null
+    @SerializedName("type") val type: String?=null,
+
+    @SerializedName("file")  val file:String?=null
 )

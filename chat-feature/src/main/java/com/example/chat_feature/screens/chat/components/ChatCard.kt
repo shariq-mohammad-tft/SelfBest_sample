@@ -60,7 +60,15 @@ fun CardSelfMessage(message: String, timestamp: String) {
             ) {
                 Text(
                     modifier = Modifier.padding(8.dp),
-                    text = if(message.contains("yes help", ignoreCase = true)) "Yes" else if(message.contains("Can't help", ignoreCase = true)) "No" else message,
+                    text = if (message.contains(
+                            "yes help",
+                            ignoreCase = true
+                        )
+                    ) "Yes" else if (message.contains(
+                            "Can't help",
+                            ignoreCase = true
+                        )
+                    ) "No" else message,
                     style = MaterialTheme.typography.caption,
                     color = Color(0xFFFFFFFF)
                 )
@@ -72,7 +80,9 @@ fun CardSelfMessage(message: String, timestamp: String) {
 @Composable
 @Preview(showBackground = true)
 fun CardSelfMessagePreview() {
-    CardSelfMessage("Cool","12:52")
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        CardSelfMessage("Cool", "12:52")
+    }
 }
 
 
@@ -107,15 +117,17 @@ fun CardReceiverMessage(message: String, timestamp: String) {
                     color = Color(0xFF3E3E3E)
                 )
             }
-            Text(
-                modifier = Modifier
-                    .padding(start = 2.dp)
-                    .align(Alignment.Bottom),
-                text = String().extractTime(timestamp)!!,
-                fontSize = 10.sp,
-                style = MaterialTheme.typography.caption,
-                color = Color(0xFF707070)
-            )
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                Text(
+                    modifier = Modifier
+                        .padding(start = 2.dp)
+                        .align(Alignment.Bottom),
+                    text = String().extractTime(timestamp)!!,
+                    fontSize = 10.sp,
+                    style = MaterialTheme.typography.caption,
+                    color = Color(0xFF707070)
+                )
+            }
         }
 
     }
@@ -169,7 +181,7 @@ fun CardlinksMessage(message: ArrayList<String>) {
 @Composable
 @Preview(showBackground = true)
 fun CardReceiverMessagePreview() {
-    CardReceiverMessage("Cool","time")
+    CardReceiverMessage("Cool", "time")
 }
 
 @Composable
@@ -323,6 +335,62 @@ fun PhotoSenderCardPreview() {
     )
 }
 
+@Composable
+fun PhotoSenderCardForBot(
+    imageLink: String, message: String, navController: NavController
+) {
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp), horizontalAlignment = Alignment.End
+    ) {
+        Card(
+            modifier = Modifier.widthIn(max = 220.dp),
+            shape = RoundedCornerShape(12.dp).copy(bottomEnd = CornerSize(0)),
+            backgroundColor = Color(0xFFF8F8F8)
+        ) {
+            Column {
+                AsyncImage(model = imageLink,
+                    contentDescription = "Image from photo picker",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .size(200.dp, 200.dp)
+                        .clickable() {
+                            navController.navigate(
+                                AppScreen.PhotoPreview.buildRoute(
+                                    imageUri = imageLink
+                                )
+                            )
+                        })
+                if (message.isNotEmpty()) {
+                    Text(
+                        text = message,
+                        color = Color(0xFFF8F8F8),
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .width(200.dp)
+                            .background(Color(0xFF1D71D4))
+                            .padding(8.dp),
+                        fontSize = 10.sp,
+                        style = MaterialTheme.typography.caption,
+                    )
+                }
+                /* if (progress !in listOf(0f, 1f)) {
+                     LinearProgressIndicator(
+                         progress = progress,
+                         modifier = Modifier
+                             .width(200.dp)
+                             .height(8.dp),
+                         color = MaterialTheme.colors.secondaryVariant
+                     )
+                 }*/
+
+            }
+        }
+    }
+}
+
 
 @Composable
 fun PhotoReceiverCard(imageLink: String, message: String, navController: NavController) {
@@ -377,10 +445,58 @@ fun PhotoReceiverCard(imageLink: String, message: String, navController: NavCont
 @Preview
 fun PhotoReceiverCardPreview() {
     PhotoReceiverCard(
-        imageLink = "https://selfbest-chatbot-image.s3.amazonaws.com/images/edcf733e-b100-4f12-8b83-471358e4a980",
+        imageLink = "https://selfbest-chatbot-image.s3.amazonaws.com/images/0d4af042-100c-4db1-bdf4-25f4c60cd180",
         "Cool Caption",
         rememberNavController()
     )
+}
+
+@Composable
+fun PhotoReceiverCardForBot(imageLink: String, message: String, navController: NavController) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 8.dp, vertical = 4.dp),
+        horizontalAlignment = Alignment.Start
+    ) {
+
+        Card(
+            modifier = Modifier.widthIn(max = 220.dp), shape = RoundedCornerShape(12.dp).copy(
+                bottomStart = CornerSize(0)
+            ), backgroundColor = Color(0xFFF8F8F8)
+        ) {
+
+            Column {
+                AsyncImage(model = imageLink,
+                    contentDescription = "Image from photo picker",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .size(200.dp, 200.dp)
+                        .clickable() {
+                            navController.navigate(
+                                AppScreen.PhotoPreview.buildRoute(
+                                    imageUri = imageLink
+                                )
+                            )
+                        })
+                if (message.isNotEmpty()) {
+                    Text(
+                        text = message.replace("<br>", "\n\n"),
+                        color = Color(0xFF3E3E3E),
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .width(200.dp)
+                            .background(Color(0xFFC8C8C8))
+                            .padding(8.dp),
+                        fontSize = 10.sp,
+                        style = MaterialTheme.typography.caption,
+                    )
+                }
+            }
+        }
+
+
+    }
 }
 
 @Composable
@@ -410,5 +526,50 @@ fun ImageProgress(progress: Int) {
 fun ImageProgressPreview() {
     ImageProgress(progress = 50)
 
+}
+
+@Composable
+fun PhotoCardForBot(
+    imageLink: String,
+) {
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp), horizontalAlignment = Alignment.End
+    ) {
+        Card(
+            modifier = Modifier.widthIn(max = 220.dp),
+            shape = RoundedCornerShape(12.dp).copy(bottomEnd = CornerSize(0)),
+            backgroundColor = Color(0xFFF8F8F8)
+        ) {
+            Column {
+                AsyncImage(model = imageLink,
+                    contentDescription = "Image from photo picker",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .size(200.dp, 200.dp)
+                        .clickable() {
+                            /*navController.navigate(
+                                AppScreen.PhotoPreview.buildRoute(
+                                    imageUri = imageLink
+                                )
+                            )*/
+                        })
+
+
+                /* if (progress !in listOf(0f, 1f)) {
+                     LinearProgressIndicator(
+                         progress = progress,
+                         modifier = Modifier
+                             .width(200.dp)
+                             .height(8.dp),
+                         color = MaterialTheme.colors.secondaryVariant
+                     )
+                 }*/
+
+            }
+        }
+    }
 }
 

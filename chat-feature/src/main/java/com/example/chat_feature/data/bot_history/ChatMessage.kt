@@ -23,7 +23,8 @@ data class ChatMessage(
                 buttons = chatMap.buttons,
                 eventMessage = chatMap.event_message.toString(),
                 timeStamp = chatMap.timestamp,
-                links = chatMap.links
+                links = chatMap.links,
+                file = chatMap.file
             )
         }
 

@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.chat_feature.data.*
 import com.example.chat_feature.navigation.AppScreen
 import com.example.chat_feature.navigation.ROUTE_ROOM
@@ -174,7 +175,7 @@ fun ChatScreen(
                             Log.i(TAG, "ChatScreen: $message")
                             if (message.errorCode == 500) {
                                 //ErrorMessage("Server is down please try after sometime")
-                                CardErrorMessage(message = "Server is down please try after sometime <br>or try to type Reset in chat box")
+                                CardErrorMessage(message = "Server is down please try after sometime <br>or try to type 'Reset' in chat box")
                             }
                         }
 
@@ -222,7 +223,9 @@ fun ChatScreen(
 
                             } else {
                                 MessageCard(
-                                    message = message.value, senderId = userId
+                                    message = message.value,
+                                    senderId = userId,
+                                    navController = navController
                                 ) { messageRequest ->
                                     viewModel.sendMessageToServer(messageRequest)
                                 }
@@ -332,14 +335,12 @@ private fun buildInteractiveMessage(
 }
 
 
-
-
-
 /*--------------------------------------- Message Card ----------------------------------------*/
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MessageCard(
+    navController: NavController,
     message: Message? = null,
     senderId: String? = null,
     viewModel: ChatViewModel = hiltViewModel(),
@@ -832,11 +833,28 @@ fun MessageCard(
 
 
         if (message.senderId == senderId) {
-            if (message.eventMessage != null) {
+            if ((message.eventMessage != null) && (message.file == null)) {
                 CardSelfMessage(
                     message = message.eventMessage,
                     timestamp = message.timeStamp ?: getCurrentTime()
                 )
+            } else if (message.file != null) {
+                if (message.eventMessage != null) {
+                    PhotoSenderCardForBot(
+                        imageLink = message.file,
+                        message = message.eventMessage!!,
+                        navController = navController
+                    )
+                } else {
+                    PhotoSenderCardForBot(
+                        imageLink = message.file,
+                        message = message.message,
+                        navController = navController
+                    )
+                }
+                Log.d("PhotoSenderCardForBots", message.file)
+
+                //PhotoCardForBot(imageLink = message.file)
             } else {
                 CardSelfMessage(
                     message = message.message, timestamp = message.timeStamp ?: getCurrentTime()
@@ -844,12 +862,18 @@ fun MessageCard(
             }
 
         } else {
-            if (message.message != "") {
+            if ((message.message != "") && (message.file.isNullOrEmpty())) {
                 CardReceiverMessage(
                     message = message.message,
                     timestamp = message.timeStamp ?: "2023-04-19 20:25:13.218301+00:00"
                 )
 
+            } else if (message.file != null) {
+                PhotoReceiverCardForBot(
+                    imageLink = message.file,
+                    message = message.message,
+                    navController = navController
+                )
             } else {
                 CardReceiverMessage(
                     message = "Here is something I found",
@@ -858,6 +882,8 @@ fun MessageCard(
             }
 
         }
+
+
         if (message.message == "Please select a valid skill from this dropdown") {
             DialogExample(options, isDropDownEnabled) {
                 Log.d("selectedOptionTitle", "$it")
@@ -901,11 +927,11 @@ fun cardShapeFor(isMine: Boolean = true): Shape {
 @Composable
 @Preview(showBackground = true)
 fun MessageCardPreview() {
-    MessageCard(
-        message = Message(
-            senderId = Constants.BOT_ID, receiverId = Constants.USER_ID, message = "Hello"
-        )
-    ) {}
+    /* MessageCard(
+         message = Message(
+             senderId = Constants.BOT_ID, receiverId = Constants.USER_ID, message = "Hello",
+         )
+     ) {}*/
 }
 
 

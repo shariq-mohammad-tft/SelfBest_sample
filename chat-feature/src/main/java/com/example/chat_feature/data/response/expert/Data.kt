@@ -44,6 +44,9 @@ data class Data(
     @SerializedName("query_name")
     val queryName: String?,
 
+    @SerializedName("file")
+    val file:String?
+
     ) {
 
     fun convertToMessage(): Message {
@@ -58,6 +61,7 @@ data class Data(
             queryId = queryId,
             name = fullName,
             queryName = queryName,
+            file = file
         )
     }
 }

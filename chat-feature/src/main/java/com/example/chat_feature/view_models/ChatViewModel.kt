@@ -114,9 +114,7 @@ class ChatViewModel @Inject constructor(
                     .addFormDataPart("event_message", data.event_message)
                     .addFormDataPart("sender_id", data.sender_id)
                     .addFormDataPart("event_type", data.event_type)
-                    .addFormDataPart("file", data.file.name, data.file.toRequestBody {
-                        Log.d("Progress ",it.toString())
-                    })
+                    .addFormDataPart("file", data.file.name, data.file.toRequestBody {  })
                     .build()
 
                 safeApiCall {

@@ -3,6 +3,7 @@ package com.example.chat_feature.data
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.navigation.NavController
 import com.example.chat_feature.data.response.Button
 import java.util.*
 import kotlin.collections.ArrayList
@@ -33,6 +34,8 @@ data class Message(
     var links:ArrayList<String>?= arrayListOf(),
     val timeStamp:String?=null,
     var wrongskill:String?=null,
+    val file:String?=null,
+
 
 
 
