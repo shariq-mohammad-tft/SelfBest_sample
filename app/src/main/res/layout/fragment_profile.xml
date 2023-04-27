@@ -370,6 +370,7 @@
                         android:layout_marginTop="10dp"
                         android:fontFamily="@font/roboto_medium_new"
                         android:text="Work Time"
+
                         android:textColor="@color/privacy_bg_colour"
                         android:textSize="12dp" />
 

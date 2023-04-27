@@ -548,6 +548,7 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
                 profileSkills.forEach {
                     skills[it.key] = it.value.toInt()
                 }
+
                 pendingSkills.forEach{
                     skills[it.key] = 1
                 }
