@@ -865,7 +865,7 @@ fun MessageCard(
             if ((message.message != "") && (message.file.isNullOrEmpty())) {
                 CardReceiverMessage(
                     message = message.message,
-                    timestamp = message.timeStamp ?: "2023-04-19 20:25:13.218301+00:00"
+                    timestamp = message.timeStamp ?: getCurrentTime()
                 )
 
             } else if (message.file != null) {
@@ -877,7 +877,7 @@ fun MessageCard(
             } else {
                 CardReceiverMessage(
                     message = "Here is something I found",
-                    timestamp = message.timeStamp ?: "2023-04-19 20:25:13.218301+00:00"
+                    timestamp = message.timeStamp ?: getCurrentTime()
                 )
             }
 
