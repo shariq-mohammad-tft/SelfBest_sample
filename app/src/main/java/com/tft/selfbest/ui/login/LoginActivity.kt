@@ -1,7 +1,6 @@
 package com.tft.selfbest.ui.login
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.DialogInterface
@@ -17,9 +16,7 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.LinearLayout
 import android.widget.Toast
-import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.example.chat_feature.utils.SharedPrefManager
@@ -40,6 +37,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
+
 @AndroidEntryPoint
 class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
@@ -56,13 +54,15 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
     private val SCOPE = "r_liteprofile+r_emailaddress"
 
     val AUTHURL = "https://www.linkedin.com/oauth/v2/authorization"
+
     //val TOKENURL = "https://www.linkedin.com/oauth/v2/accessToken"
     lateinit var linkedinAuthURLFull: String
     lateinit var linkedIndialog: Dialog
     lateinit var linkedinCode: String
     private var isUserType: Boolean = true
     private var isSignUp: Boolean = false
-    val SERVER_CLIENT_ID = "446007361957-vmbmbuivs1r8f0e53q0piridcheo2g8j.apps.googleusercontent.com"
+    val SERVER_CLIENT_ID =
+        "446007361957-vmbmbuivs1r8f0e53q0piridcheo2g8j.apps.googleusercontent.com"
 
     lateinit var someActivityResultLauncher: ActivityResultLauncher<Intent>
     var isReactivate = false
@@ -94,15 +94,15 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         viewModel.loginApiObserver.observe(this) { response ->
             when (response) {
                 is NetworkResponse.Error -> {
-                    if(response.msg.equals("Account not active")){
+                    if (response.msg.equals("Account not active")) {
                         val dialogClickListener =
                             DialogInterface.OnClickListener { dialog, which ->
                                 when (which) {
                                     DialogInterface.BUTTON_POSITIVE -> {
                                         isReactivate = true
-                                        if(isLinkedinLogin)
+                                        if (isLinkedinLogin)
                                             linkedInLogin()
-                                        else if(isGoogleLogin)
+                                        else if (isGoogleLogin)
                                             googleLogin()
                                     }
                                     DialogInterface.BUTTON_NEGATIVE -> {
@@ -112,10 +112,11 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                             }
 
                         val builder: AlertDialog.Builder = AlertDialog.Builder(this)
-                        builder.setMessage("To reactivate your account click on continue. Reactivating your account will help you to restore your data and account settings").setPositiveButton("Continue", dialogClickListener)
+                        builder.setMessage("To reactivate your account click on continue. Reactivating your account will help you to restore your data and account settings")
+                            .setPositiveButton("Continue", dialogClickListener)
                             .setNegativeButton("Cancel", dialogClickListener).show()
 
-                    }else {
+                    } else {
                         Toast.makeText(this, response.msg, Toast.LENGTH_LONG).show()
                         sharedPrefManager.clear()
                     }
@@ -128,7 +129,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
 //                    Log.e("LinkedIn 2", "Success")
 //                    Log.e("New User : ","" + response.data!!.isNewUser)
 
-                    if (response.data!!.isNewUser && response.data.approved == 1) {
+                    if (response.data!!.redirect.equals("user") && response.data.approved == 1) {
                         //Log.e("LinkedIn 3", "Success")
                         viewModel.savedLoginData(response.data)
                         saveUserData(response.data)
@@ -136,20 +137,31 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                         finish()
                     } else {
                         //Log.e("LinkedIn 3", "Error")
-                        if (!response.data.isNewUser) {
+                        if (response.data.redirect.equals("buildProfile") && response.data.approved == 1) {
                             viewModel.savedLoginData(response.data)
-                            startActivity(Intent(this, Signup::class.java))
+                            val builder = AlertDialog.Builder(this)
+                            builder.setTitle("")
+                                .setMessage("Your Organisation is Registered with us. Continue to access your organisation account.")
+                                .setPositiveButton("Continue") { dialog, which ->
+                                    // handle selection
+                                    startActivity(Intent(this, Signup::class.java))
+                                    dialog.dismiss()
+
+                                }.setNegativeButton("Sign-in with another account"){ dialog, which ->
+                                    dialog.dismiss()
+                                }
+                            val dialog = builder.create()
+                            dialog.show()
 //                            binding.loginScreen.setBackgroundResource(R.drawable.my_gradient)
 //                            SignUpProfileDialog().show(
 //                                supportFragmentManager,
 //                                "SignUpProfileDialog"
 //                            )
-                        }
-                        else
+                        } else
                             Toast.makeText(
                                 this,
                                 "You are not authorized :-(",
-                                Toast.LENGTH_SHORT
+                                Toast.LENGTH_LONG
                             ).show()
                     }
                 }
@@ -163,10 +175,10 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun saveUserData(data: LogedInData) {
-        sharedPrefManager.setInt("id",data.id!!)
-        sharedPrefManager.setString("token",data.accessToken)
-        sharedPrefManager.setString("name",data.fullName)
-        sharedPrefManager.setString("refresh_token",data.refreshToken)
+        sharedPrefManager.setInt("id", data.id!!)
+        sharedPrefManager.setString("token", data.accessToken)
+        sharedPrefManager.setString("name", data.fullName)
+        sharedPrefManager.setString("refresh_token", data.refreshToken)
     }
 
     override fun onClick(view: View?) {
@@ -176,7 +188,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                     return
                 isUserType = true
                 binding.individual.setBackgroundResource(R.drawable.left_organisation_round)
-                    //resources.getDrawable(R.drawable.left_organisation_round)
+                //resources.getDrawable(R.drawable.left_organisation_round)
                 binding.individual.setTextColor(Color.WHITE)
                 binding.organisation.setBackgroundColor(Color.TRANSPARENT)
                 binding.organisation.setTextColor(Color.BLACK)
@@ -186,7 +198,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                     return
                 isUserType = false
                 binding.organisation.setBackgroundResource(R.drawable.right_organisation_round)
-                    //resources.getDrawable(R.drawable.right_organisation_round)
+                //resources.getDrawable(R.drawable.right_organisation_round)
                 binding.organisation.setTextColor(Color.WHITE)
                 binding.individual.setBackgroundColor(Color.TRANSPARENT)
                 binding.individual.setTextColor(Color.BLACK)
@@ -287,7 +299,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                 completedTask.getResult(ApiException::class.java)
             if (account != null) {
                 Log.e("Google ", "handleSignInResult")
-                if(!isReactivate)
+                if (!isReactivate)
                     viewModel.googleLogin(account, if (isUserType) "Android" else "company")
                 else
                     viewModel.googleLogin(account, if (isUserType) "Android" else "company", true)
@@ -324,7 +336,11 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                 linkedinCode = uri.getQueryParameter("code") ?: ""
                 Log.e("Linkedin", linkedinCode)
                 linkedIndialog.dismiss()
-                viewModel.linkedInLogin(linkedinCode, if (isUserType) "Android" else "company", isReactivate)
+                viewModel.linkedInLogin(
+                    linkedinCode,
+                    if (isUserType) "Android" else "company",
+                    isReactivate
+                )
                 //  linkedInRequestForAccessToken()
             } else if (url.contains("error")) {
                 Log.e("Linkedin", "Error")

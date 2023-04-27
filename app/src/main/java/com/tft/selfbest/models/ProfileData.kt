@@ -54,7 +54,7 @@ data class ProfileData(
     @SerializedName("linkedin_profile_url")
     val linkedinProfileUrl: String?,
     @SerializedName("NoOfExperience")
-    val noOfExperience: Int,
+    val noOfExperience: Number?,
     @SerializedName("Occupation")
     val occupation: String?,
     @SerializedName("Password")

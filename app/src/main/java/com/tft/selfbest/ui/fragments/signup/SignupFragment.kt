@@ -220,14 +220,14 @@ class SignupFragment : Fragment(), View.OnClickListener,
         when (view?.id) {
             R.id.skill -> {
                 binding.skill.requestFocus()
-                if (binding.skill.text.isEmpty()) {
-                    Toast.makeText(
-                        binding.root.context,
-                        "Skill must be not null",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    return
-                }
+//                if (binding.skill.text.isEmpty()) {
+//                    Toast.makeText(
+//                        binding.root.context,
+//                        "Skill must be not null",
+//                        Toast.LENGTH_LONG
+//                    ).show()
+//                    return
+//                }
                 //binding.emptyList.visibility = View.GONE
                 binding.skillListContainer.visibility = View.VISIBLE
                 currentSkills.add(binding.skill.text.toString())
