@@ -17,6 +17,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tft.selfbest.R
+import com.tft.selfbest.data.SelfBestPreference
 import com.tft.selfbest.databinding.FragmentActivityLogFiltersDialogBinding
 import com.tft.selfbest.models.SelectedCategory
 import com.tft.selfbest.ui.activites.HomeActivity
@@ -27,6 +28,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
+import javax.inject.Inject
 import kotlin.collections.ArrayList
 
 
@@ -35,9 +37,13 @@ class ActivityLogFiltersDialog(
     private val applyFilterListener: FilterListener,
     private val categories: List<SelectedCategory>,
 ) : Fragment(), View.OnClickListener, SelectCategoryAdapter.SelectionOfCategories {
+
+    @Inject
+    lateinit var preference: SelfBestPreference
+
     lateinit var binding: FragmentActivityLogFiltersDialogBinding
     private val platforms = listOf("Mobile", "Web", "Desktop")
-    private val durations = listOf("daily", "weekly", "monthly", "yearly", "custom")
+    private val durations = listOf("daily", "weekly", "monthly", "custom")
     var selectedPlatform = "Mobile"
     var selectedDuration = "daily"
     var startDate = ""
@@ -53,6 +59,8 @@ class ActivityLogFiltersDialog(
         // Inflate the layout for this fragment
         (activity as HomeActivity?)?.hideForFullScreen()
         binding = FragmentActivityLogFiltersDialogBinding.inflate(inflater)
+        selectedPlatform = preference.selectedPlatform!!
+        selectedDuration = preference.selectedDuration!!
         val sortedList = categories.sortedByDescending { it.duration }
         for(cat in sortedList.take(3)){
             selectedCategories.add(cat.category)
@@ -70,17 +78,21 @@ class ActivityLogFiltersDialog(
             R.layout.spinner_main_item_style,
             platforms
         )
-        Log.e("Spinner", "Settled")
         spinAdapter.setDropDownViewResource(R.layout.spinner_dropdown_style)
         binding.platform.adapter = spinAdapter
+        val index = spinAdapter.getPosition(selectedPlatform)
+        Log.e("Spinner", index.toString())
+        binding.platform.setSelection(index)
         val spinAdapter1 = ArrayAdapter(
             binding.root.context,
             R.layout.spinner_main_item_style,
             durations
         )
         spinAdapter1.setDropDownViewResource(R.layout.spinner_dropdown_style)
-        Log.e("Spinner2", "Settled")
         binding.duration.adapter = spinAdapter1
+        val index1 = spinAdapter1.getPosition(selectedDuration)
+        Log.e("Spinner2", index1.toString())
+        binding.duration.setSelection(index1)
 
         binding.platform.onItemSelectedListener =
             object : AdapterView.OnItemSelectedListener {
@@ -193,13 +205,14 @@ class ActivityLogFiltersDialog(
             }
             R.id.apply_filter -> {
                 Log.e("Filters", selectedPlatform + " " + selectedDuration)
+                preference.setFilters(selectedDuration, selectedPlatform)
                 val fragmentManager: FragmentManager = requireActivity().supportFragmentManager
                 fragmentManager.popBackStack()
                 val transaction = fragmentManager.beginTransaction()
                 if (custom_selected) {
                     val bundle = Bundle()
                     bundle.putSerializable("Categories", ArrayList(selectedCategories))
-                    val ALFragment = ActivityLogFragment(selectedPlatform, selectedDuration, startDate, endDate)
+                    val ALFragment = ActivityLogFragment(selectedPlatform!!, selectedDuration!!, startDate, endDate)
                     ALFragment.arguments = bundle
                     transaction.replace(
                         R.id.fragmentContainerView,
@@ -216,7 +229,7 @@ class ActivityLogFiltersDialog(
                 else{
                     val bundle = Bundle()
                     bundle.putSerializable("Categories", ArrayList(selectedCategories))
-                    val ALFragment = ActivityLogFragment(selectedPlatform, selectedDuration, "", "")
+                    val ALFragment = ActivityLogFragment(selectedPlatform!!, selectedDuration!!, "", "")
                     ALFragment.arguments = bundle
                     transaction.replace(
                         R.id.fragmentContainerView,

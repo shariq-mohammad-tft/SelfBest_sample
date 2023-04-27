@@ -93,7 +93,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="5dp"
                         android:fontFamily="@font/roboto_medium_new"
-                        android:text="Hour Saved"
+                        android:text="Time Saved"
                         android:textColor="@color/white"
                         android:textSize="14sp" />
 

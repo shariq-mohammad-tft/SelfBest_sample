@@ -1,6 +1,7 @@
 package com.tft.selfbest.ui.adapter
 
 import android.content.Context
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,6 +29,16 @@ class BarGraphListAdapter(
         holder.title.text = entry.url
         holder.category.text = entry.category
         holder.time.text = getTimeInFormat(entry.duration)
+        if(entry.category.equals("Break")){
+            holder.title.setTextColor(Color.parseColor("#7630F2"))
+            holder.category.setTextColor(Color.parseColor("#7630F2"))
+            holder.time.setTextColor(Color.parseColor("#7630F2"))
+        }
+        if(entry.category.equals("Distraction")){
+            holder.title.setTextColor(Color.parseColor("#E20404"))
+            holder.category.setTextColor(Color.parseColor("#E20404"))
+            holder.time.setTextColor(Color.parseColor("#E20404"))
+        }
     }
 
     override fun getItemCount(): Int {

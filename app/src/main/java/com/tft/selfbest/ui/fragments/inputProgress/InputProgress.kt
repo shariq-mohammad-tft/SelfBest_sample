@@ -39,6 +39,7 @@ class InputProgress : Fragment(),View.OnClickListener {
     lateinit var observationsData: ObservationsResponse
     private var observationDetail= mutableListOf<Observations>()
     private val overviewViewModel by viewModels<OverviewViewModel>()
+    var categories = mutableListOf<String>()
 
     private val gghViewModel by viewModels<GetGoHourViewModel>()
     lateinit var activities: List<ActivitySingleResponse>
@@ -73,10 +74,14 @@ class InputProgress : Fragment(),View.OnClickListener {
                 }
                 else if (it.data.activities.isNotEmpty()) {
                     activities = it.data.activities
+                    if(it.data.categoryList != null){
+                        for (cat in it.data.categoryList as Map<String, String>)
+                            categories.add(cat.value)
+                    }
                     for(activity in activities){
                         observationDetail.add(Observations(activity.category, activity.duration, activity.type, activity.url))
                     }
-                    binding.recycleInputProgress.adapter = InputProgressAdapter(activities, requireContext())
+                    binding.recycleInputProgress.adapter = InputProgressAdapter(activities, categories,requireContext())
                 }
             }
         }

@@ -11,6 +11,7 @@ import com.tft.selfbest.models.ActivitySingleResponse
 
 class InputProgressAdapter(
     val list: List<ActivitySingleResponse>,
+    val categories: List<String>,
     val context: Context
 ) : RecyclerView.Adapter<InputProgressViewHolder>() {
     val category = listOf("Documentation", "Course", "Code", "Others")
@@ -28,7 +29,7 @@ class InputProgressAdapter(
         val spinAdapter = ArrayAdapter(
             context,
             R.layout.relevance_spinner_style,
-            category
+            categories.ifEmpty { category }
         )
         spinAdapter.setDropDownViewResource(R.layout.spinner_dropdown_style)
         holder.category.adapter = spinAdapter
