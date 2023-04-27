@@ -14,7 +14,8 @@ import javax.inject.Inject
 class GetGoHourViewModel @Inject constructor(
     private val getGoHourRepository: GetGoHourRepository,
     //private val selfBestRepository: SelfBestRepository,
-    val preference : SelfBestPreference) : ViewModel(),LifecycleObserver{
+    val preference: SelfBestPreference
+) : ViewModel(), LifecycleObserver {
 
     private val startGetGoHour = MutableLiveData<NetworkResponse<Unit>>()
     val startGetGoHourObserver: LiveData<NetworkResponse<Unit>> = startGetGoHour
@@ -37,28 +38,30 @@ class GetGoHourViewModel @Inject constructor(
     private val activityLog = MutableLiveData<NetworkResponse<ActivityResponse>>()
     val activityLogObserver: LiveData<NetworkResponse<ActivityResponse>> = activityLog
 
-    private val activityTimeline = MutableLiveData<NetworkResponse<List<ActivityTimelineResponse>?>>()
-    val activityTimelineObserver: LiveData<NetworkResponse<List<ActivityTimelineResponse>?>> = activityTimeline
+    private val activityTimeline =
+        MutableLiveData<NetworkResponse<List<ActivityTimelineResponse>?>>()
+    val activityTimelineObserver: LiveData<NetworkResponse<List<ActivityTimelineResponse>?>> =
+        activityTimeline
 
 
     //private val selfBestRep = MutableLiveData<NetworkResponse<GoHourResponse>>()
     //val selfBestRepositoryObserver: LiveData<NetworkResponse<GoHourResponse>> = selfBestRep
 
-    fun start(startStatus : StartBody){
+    fun start(startStatus: StartBody) {
         viewModelScope.launch {
             val id = preference.getLoginData?.id ?: return@launch
             getGoHourRepository.start(id, startStatus).collect {
-                if(it is NetworkResponse.Success)
+                if (it is NetworkResponse.Success)
                     startGetGoHour.postValue(it)
             }
         }
     }
 
-    fun pause(startTime : StartTime){
+    fun pause(startTime: StartTime) {
         viewModelScope.launch {
             val id = preference.getLoginData?.id ?: return@launch
             getGoHourRepository.pause(id, startTime).collect {
-                if(it is NetworkResponse.Success)
+                if (it is NetworkResponse.Success)
                     pauseGetGoHour.postValue(it)
                 else
                     Log.e("Timer: Pause", "$it")
@@ -66,12 +69,12 @@ class GetGoHourViewModel @Inject constructor(
         }
     }
 
-    fun reset(startTime : StartTime){
+    fun reset(startTime: StartTime) {
         viewModelScope.launch {
             val id = preference.getLoginData?.id ?: return@launch
             getGoHourRepository.reset(id, startTime).collect {
                 Log.e("Timer: ", "$it")
-                if(it is NetworkResponse.Success)
+                if (it is NetworkResponse.Success)
                     resetGetGoHour.postValue(it)
                 else
                     Log.e("Timer: ", "$it")
@@ -79,25 +82,24 @@ class GetGoHourViewModel @Inject constructor(
         }
     }
 
-    fun resume(endTime : EndTime){
+    fun resume(endTime: EndTime) {
         viewModelScope.launch {
             val id = preference.getLoginData?.id ?: return@launch
             getGoHourRepository.resume(id, endTime).collect {
-                if(it is NetworkResponse.Success) {
+                if (it is NetworkResponse.Success) {
                     resumeGetGoHour.postValue(it)
                     Log.e("Timer: Resume Success", "$it")
-                }
-                else
+                } else
                     Log.e("Timer: Resume", "$it")
             }
         }
     }
 
-    fun end(endTime : EndTime){
+    fun end(endTime: EndTime) {
         viewModelScope.launch {
             val id = preference.getLoginData?.id ?: return@launch
             getGoHourRepository.end(id, endTime).collect {
-                if(it is NetworkResponse.Success)
+                if (it is NetworkResponse.Success)
                     endGetGoHour.postValue(it)
                 else
                     Log.e("Timer: ", "$it")
@@ -105,11 +107,11 @@ class GetGoHourViewModel @Inject constructor(
         }
     }
 
-    fun timeInterval(timeInterval: TimeInterval){
+    fun timeInterval(timeInterval: TimeInterval) {
         viewModelScope.launch {
             val id = preference.getLoginData?.id ?: return@launch
             getGoHourRepository.timeInterval(id, timeInterval).collect {
-                if(it is NetworkResponse.Success)
+                if (it is NetworkResponse.Success)
                     timeCInterval.postValue(it)
                 else
                     Log.e("Timer: ", "$it")
@@ -117,14 +119,11 @@ class GetGoHourViewModel @Inject constructor(
         }
     }
 
-    fun getActivity(){
+    fun getActivity() {
         viewModelScope.launch {
             val id = preference.getLoginData?.id ?: return@launch
             getGoHourRepository.getActivity(id).collect {
-                if(it is NetworkResponse.Success)
-                    activityLog.postValue(it)
-                else
-                    Log.e("Timer: ", "$it")
+                activityLog.postValue(it)
             }
         }
     }
@@ -141,11 +140,11 @@ class GetGoHourViewModel @Inject constructor(
 //        }
 //    }
 
-    fun getTimeline(){
+    fun getTimeline() {
         viewModelScope.launch {
-            val id = preference.getLoginData?.id?: return@launch
+            val id = preference.getLoginData?.id ?: return@launch
             getGoHourRepository.getTimeline(id).collect {
-                if(it is NetworkResponse.Success)
+                if (it is NetworkResponse.Success)
                     activityTimeline.postValue(it)
                 else
                     Log.e("Timeline", it.toString())

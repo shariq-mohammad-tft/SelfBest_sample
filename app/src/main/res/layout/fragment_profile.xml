@@ -255,7 +255,7 @@
                         android:textColor="@color/privacy_bg_colour"
                         android:textSize="12dp" />
 
-                    <EditText
+                    <AutoCompleteTextView
                         android:id="@+id/job_position"
                         android:layout_width="match_parent"
                         android:layout_height="32dp"

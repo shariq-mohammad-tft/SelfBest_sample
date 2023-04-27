@@ -145,7 +145,8 @@ class GetGoHour : Fragment(), View.OnClickListener {
                     pauseTimer()
                     binding.pause.setImageResource(R.drawable.ic_play_fill)
                 }
-            }
+            }else if(it is NetworkResponse.Error)
+                Toast.makeText(requireContext(), "Something went wrong", Toast.LENGTH_LONG).show()
         }
 
         overviewViewModel.getGoHour()
@@ -273,7 +274,8 @@ class GetGoHour : Fragment(), View.OnClickListener {
                     transaction.disallowAddToBackStack()
                     transaction.commit()
                 }
-            }
+            }else if(it is NetworkResponse.Error)
+                Toast.makeText(requireContext(), "Something went wrong", Toast.LENGTH_LONG).show()
         }
         ipViewModel.ratinObserver.observe(viewLifecycleOwner) {
             val transaction =

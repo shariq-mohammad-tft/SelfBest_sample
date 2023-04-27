@@ -3,6 +3,7 @@ package com.tft.selfbest.ui.fragments.profile
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AlertDialog
 import android.app.Dialog
 import android.app.TimePickerDialog
 import android.content.Intent
@@ -58,6 +59,7 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
     lateinit var binding: FragmentProfileBinding
     val viewModel by viewModels<ProfileViewModel>()
     private lateinit var profileData: ProfileData
+    private lateinit var personalityTypes: ArrayList<String>
     private var workingDaysTemp= arrayListOf<RecursiveDays>()
     lateinit var linkedIndialog: Dialog
     var deactivated = false
@@ -166,6 +168,38 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
             }
         }
 
+        val suggestions = arrayOf("Computer Scientist",
+                "IT Professional",
+                "UX Designer",
+                "UI Developer",
+                "SQL Developer",
+                "Web Designer",
+                "Web Developer",
+                "Help Desk Worker/Desktop Support",
+                "Software Engineer",
+                "Data Entry",
+                "DevOps Engineer",
+                "Computer Programmer",
+                "Network Administrator",
+                "Information Security Analyst",
+                "Artificial Intelligence Engineer",
+                "Cloud Architect",
+                "IT Manager",
+                "Technical Specialist",
+                "Application Developer",
+                "Chief Technology Officer (CTO)",
+                "Chief Information Officer (CIO)"
+        )
+        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, suggestions)
+        binding.jobPosition.threshold = 0
+        binding.jobPosition.setAdapter(adapter)
+
+        binding.jobPosition.setOnFocusChangeListener { view, hasFocus ->
+            if (hasFocus) {
+                binding.jobPosition.showDropDown()
+            }
+        }
+
         viewModel.accountSettingObserver.observe(viewLifecycleOwner) {
             if(it is NetworkResponse.Success){
                 Toast.makeText(context, "Data updated successfully", Toast.LENGTH_LONG).show()
@@ -192,6 +226,14 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
                 //pref.setProfileData(it.data.profileData)
                 //customPersonlityList = profileData.customPersonality
                 setData()
+            }else if(it is NetworkResponse.Error){
+                binding.progress.visibility = View.GONE
+                Toast.makeText(context, "Check your internet connection", Toast.LENGTH_SHORT).show()
+//                preferences.clear()
+//                val loginScreen = Intent(activity, LoginActivity::class.java)
+//                loginScreen.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+//                startActivity(loginScreen)
+//                activity?.finish()
             }
         }
         viewModel.rSkillsObserver.observe(viewLifecycleOwner) {
@@ -348,7 +390,9 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
 
 
     private fun setData() {
-        setBackendTime()
+        if(profileData.working != null) {
+            setBackendTime()
+        }
         //binding.userIcon.setImageURI(Uri.parse(profileData.firstName))
 //        Log.e("Image : ",""+profileData.image)
         if (profileData.image != "")
@@ -357,11 +401,10 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
         binding.userName.text = name
         binding.userProfession.text = profileData.occupation
         binding.firstName.setText(profileData.firstName)
-
         binding.lastName.setText(profileData.lastName)
         binding.organisation.text = profileData.organisationName
         binding.jobPosition.setText(profileData.occupation)
-        binding.experience.setText(profileData.noOfExperience.toString())
+        binding.experience.setText(profileData.noOfExperience?.toString() ?: "0")
         binding.startTime.text = setTimeInLocalFormat(startHour, startMinute)
         binding.endTime.text = setTimeInLocalFormat(endHour, endMinute)
         binding.googleCalBtn.text =
@@ -404,7 +447,11 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
             )
         binding.workDays.layoutManager =
             SpanningLinearLayoutManager(binding.root.context, LinearLayoutManager.HORIZONTAL, false)
-        workingDaysTemp = setWorkingDays(profileData.working)
+        workingDaysTemp = if(profileData.working == null) {
+            setWorkingDays(listOf())
+        }else{
+            setWorkingDays(profileData.working)
+        }
         binding.workDays.adapter =
             RecursiveDaysAdapter(binding.root.context, workingDaysTemp)
         binding.recommendedSkills.layoutManager =
@@ -507,26 +554,36 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
                 (activity as DetailActivity).finish()
             }
             R.id.save_profile -> {
+                var isReady = true
                 val experience = if(binding.experience.text.toString().isEmpty()) {
                     binding.experience.error="field can't be empty"
-                    0
+                    isReady = false
+                    0.0f
                 } else {
-                    binding.experience.text.toString().toInt()
+                    binding.experience.text.toString().toFloatOrNull() ?: 0.0f
                 }
                 val firstName = if(binding.firstName.text.toString().isEmpty()) {
                     binding.firstName.error="field can't be empty"
+                    isReady = false
                     ""
                 } else {
                     binding.firstName.text.toString()
                 }
                 val gender = genderCategory[binding.genderSpinner.selectedItemPosition]
-                val lastName = binding.lastName.text.toString()
-                //val occupation = binding.userProfession.text.toString()
-                val occupation: String = if(binding.userProfession.text.toString().isEmpty()) {
-                    binding.userProfession.error="field can't be empty"
+                val lastName = if(binding.lastName.text.toString().isEmpty()) {
+                    binding.lastName.error="field can't be empty"
+                    isReady = false
                     ""
                 } else {
-                    binding.userProfession.text.toString()
+                    binding.lastName.text.toString()
+                }
+                //val occupation = binding.userProfession.text.toString()
+                val occupation = if(binding.jobPosition.text.toString().isEmpty()) {
+                    binding.jobPosition.error="field can't be empty"
+                    isReady = false
+                    ""
+                } else {
+                    binding.jobPosition.text.toString()
                 }
 //                val personalityType =
 //                    personalityTypes[binding.personalityTypeSpinner.selectedItemPosition]
@@ -536,36 +593,45 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
                 profileSkills.forEach {
                     skills[it.key] = it.value.toInt()
                 }
-
                 pendingSkills.forEach{
                     skills[it.key] = 1
                 }
+                workingDays.clear()
                 for(day in workingDaysTemp){
                     if(day.isSelected)
                         workingDays.add(day.recursiveDate)
                 }
-                val profileChangesData = ProfileChangesData(
-                    "",
-                    "",
-                    listOf(),
-                    //FinalPersonality.distinct(),//custom personality
-                    experience,
-                    firstName,
-                    gender,
-                    listOf(),
-                    false,
-                    lastName,
-                    "Asia/Calcutta",
-                    occupation,
-                    "",
-                    false,
-                    skills,
-                    endWorkingTime,
-                    startWorkingTime,
-                    workingDays,
-                    //listOf("Monday", "Tuesday", "Wednesday", "Thursday", "Saturday"),
-                    ""
-                )
+                if(workingDays.isEmpty()) {
+                    isReady = false
+                    Toast.makeText(
+                        requireContext(),
+                        "Select atleast 1 working day",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+                    val profileChangesData = ProfileChangesData(
+                        "",
+                        "",
+                        listOf(),
+                        //FinalPersonality.distinct(),//custom personality
+                        experience as Float,
+                        firstName,
+                        gender,
+                        listOf(),
+                        false,
+                        lastName,
+                        "Asia/Calcutta",
+                        occupation,
+                        "",
+                        false,
+                        skills,
+                        endWorkingTime,
+                        startWorkingTime,
+                        workingDays,
+                        //listOf("Monday", "Tuesday", "Wednesday", "Thursday", "Saturday"),
+                        ""
+                    )
 //                pref.setProfileData(
 //                    ProfileData(
 //                        pref.getProfileData?.contact,
@@ -608,19 +674,20 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
 //                        pref.getProfileData?.customPersonality!!
 //                    )
 //                )
-                viewModel.saveProfileChangesData(profileChangesData)
+                if(isReady)
+                    viewModel.saveProfileChangesData(profileChangesData)
 
             }
             R.id.skill_search -> {
                 binding.skillSearch.requestFocus()
-                if (binding.skillSearch.text.isEmpty()) {
-                    Toast.makeText(
-                        binding.root.context,
-                        "",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    return
-                }
+//                if (binding.skillSearch.text.isEmpty()) {
+//                    Toast.makeText(
+//                        binding.root.context,
+//                        "Skill must be not null",
+//                        Toast.LENGTH_LONG
+//                    ).show()
+//                    return
+//                }
                 binding.skillListScroll.visibility = View.VISIBLE
                 //currentSkills.add(binding.skill.text.toString())
                 if (isPresentSkill(binding.skillSearch.text.toString())) {
@@ -752,15 +819,48 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
             }
 
             R.id.daty -> {
-                deactivated = true
-                viewModel.accountSetting("DeactivateAccount")
+                val builder = AlertDialog.Builder(context)
+                builder.setTitle("")
+                    .setMessage("Are you sure you want to deactivate your account ?")
+                    .setPositiveButton("Yes") { dialog, which ->
+                        deactivated = true
+                        viewModel.accountSetting("DeactivateAccount")
+                        dialog.dismiss()
+                    }
+                    .setNegativeButton("No") { dialog, which ->
+                        dialog.dismiss()
+                    }
+                val dialog = builder.create()
+                dialog.show()
             }
             R.id.dapy -> {
-                deactivated = true
-                viewModel.accountSetting("DeleteAccount")
+                val builder = AlertDialog.Builder(context)
+                builder.setTitle("")
+                    .setMessage("Are you sure you want to delete your account ?")
+                    .setPositiveButton("Yes") { dialog, which ->
+                        deactivated = true
+                        viewModel.accountSetting("DeleteAccount")
+                        dialog.dismiss()
+                    }
+                    .setNegativeButton("No") { dialog, which ->
+                        dialog.dismiss()
+                    }
+                val dialog = builder.create()
+                dialog.show()
             }
             R.id.ddy -> {
-                viewModel.accountSetting("DeleteData")
+                val builder = AlertDialog.Builder(context)
+                builder.setTitle("")
+                    .setMessage("Are you sure you want to delete your account data ?")
+                    .setPositiveButton("Yes") { dialog, which ->
+                        viewModel.accountSetting("DeleteData")
+                        dialog.dismiss()
+                    }
+                    .setNegativeButton("No") { dialog, which ->
+                        dialog.dismiss()
+                    }
+                val dialog = builder.create()
+                dialog.show()
             }
         }
     }

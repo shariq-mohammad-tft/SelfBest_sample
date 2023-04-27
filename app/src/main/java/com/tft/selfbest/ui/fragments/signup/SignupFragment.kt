@@ -50,8 +50,6 @@ class SignupFragment : Fragment(), View.OnClickListener,
     private var resumeSkills = LinkedTreeMap<String, Int>()
     private lateinit var allSkills: List<String>
     private var currentSkills = mutableListOf<String>()
-    val emailRegex = Regex("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}")
-
     var rSkills = listOf(
         "python",
         "angular",
@@ -222,14 +220,14 @@ class SignupFragment : Fragment(), View.OnClickListener,
         when (view?.id) {
             R.id.skill -> {
                 binding.skill.requestFocus()
-                if (binding.skill.text.isEmpty()) {
-                    Toast.makeText(
-                        binding.root.context,
-                        "Skill must be not null",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    return
-                }
+//                if (binding.skill.text.isEmpty()) {
+//                    Toast.makeText(
+//                        binding.root.context,
+//                        "Skill must be not null",
+//                        Toast.LENGTH_LONG
+//                    ).show()
+//                    return
+//                }
                 //binding.emptyList.visibility = View.GONE
                 binding.skillListContainer.visibility = View.VISIBLE
                 currentSkills.add(binding.skill.text.toString())
@@ -256,10 +254,11 @@ class SignupFragment : Fragment(), View.OnClickListener,
                 openResumerChooser()
             }
             R.id.save -> {
-                if (emailRegex.matches(binding.linkedin.text.toString())) {
-                    Toast.makeText(activity, "Please add the valid LinkedIn URL", Toast.LENGTH_SHORT)
-                        .show()
+                val linkedin = if(binding.linkedin.text.toString().isEmpty()) {
+                    binding.linkedin.error="field can't be empty"
                     return
+                } else {
+                    binding.linkedin.text.toString()
                 }
                 if (profileSkills.isEmpty()) {
                     Toast.makeText(activity, "Please add at least one skill", Toast.LENGTH_SHORT)
@@ -269,7 +268,7 @@ class SignupFragment : Fragment(), View.OnClickListener,
                 viewModel.saveData(
                     SignUpDetail(
                         //0,
-                        binding.linkedin.text.toString(),
+                        linkedin,
                         "Asia/Calcutta",
                         //"",
                         profileSkills,

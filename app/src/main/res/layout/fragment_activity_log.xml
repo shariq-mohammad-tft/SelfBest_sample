@@ -176,7 +176,7 @@
                                 android:layout_marginStart="5dp"
                                 android:drawablePadding="10dp"
                                 android:fontFamily="@font/roboto_medium_new"
-                                android:text="Time Saved"
+                                android:text="Focused Time"
                                 android:textColor="#3E3E3E"
                                 android:textSize="12sp"
                                 app:drawableLeftCompat="@drawable/ic_icon_awesome_user_check" />
@@ -207,7 +207,7 @@
                                 android:layout_marginStart="5dp"
                                 android:drawablePadding="10dp"
                                 android:fontFamily="@font/roboto_medium_new"
-                                android:text="Time Distracted"
+                                android:text="Distracted Time"
                                 android:textColor="#3E3E3E"
                                 android:textSize="12sp"
                                 app:drawableLeftCompat="@drawable/ic_clock_cross" />
