@@ -254,10 +254,11 @@ class SignupFragment : Fragment(), View.OnClickListener,
                 openResumerChooser()
             }
             R.id.save -> {
-                if (binding.linkedin.text.toString() == "") {
-                    Toast.makeText(activity, "Please add the LinkedIn URL", Toast.LENGTH_SHORT)
-                        .show()
+                val linkedin = if(binding.linkedin.text.toString().isEmpty()) {
+                    binding.linkedin.error="field can't be empty"
                     return
+                } else {
+                    binding.linkedin.text.toString()
                 }
                 if (profileSkills.isEmpty()) {
                     Toast.makeText(activity, "Please add at least one skill", Toast.LENGTH_SHORT)
@@ -267,7 +268,7 @@ class SignupFragment : Fragment(), View.OnClickListener,
                 viewModel.saveData(
                     SignUpDetail(
                         //0,
-                        binding.linkedin.text.toString(),
+                        linkedin,
                         "Asia/Calcutta",
                         //"",
                         profileSkills,

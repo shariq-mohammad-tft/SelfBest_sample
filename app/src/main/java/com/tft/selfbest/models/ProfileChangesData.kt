@@ -11,7 +11,7 @@ data class ProfileChangesData(
     @SerializedName("CustomPersonalities")
     var customPersonalities: List<Any>,
     @SerializedName("Experience")
-    var experience: Int,
+    var experience: Float,
     @SerializedName("Firstname")
     var firstname: String,
     @SerializedName("Gender")

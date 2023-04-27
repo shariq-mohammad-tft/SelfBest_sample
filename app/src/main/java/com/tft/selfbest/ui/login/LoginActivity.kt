@@ -116,7 +116,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                             .setNegativeButton("Cancel", dialogClickListener).show()
 
                     }else {
-                        Toast.makeText(this, response.msg, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, response.msg, Toast.LENGTH_LONG).show()
                         sharedPrefManager.clear()
                     }
                 }
@@ -128,7 +128,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
 //                    Log.e("LinkedIn 2", "Success")
 //                    Log.e("New User : ","" + response.data!!.isNewUser)
 
-                    if (!response.data!!.isNewUser && response.data.approved == 1) {
+                    if (response.data!!.isNewUser && response.data.approved == 1) {
                         //Log.e("LinkedIn 3", "Success")
                         viewModel.savedLoginData(response.data)
                         saveUserData(response.data)
@@ -136,7 +136,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                         finish()
                     } else {
                         //Log.e("LinkedIn 3", "Error")
-                        if (response.data.isNewUser) {
+                        if (!response.data.isNewUser) {
                             viewModel.savedLoginData(response.data)
                             startActivity(Intent(this, Signup::class.java))
 //                            binding.loginScreen.setBackgroundResource(R.drawable.my_gradient)
@@ -292,7 +292,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                 else
                     viewModel.googleLogin(account, if (isUserType) "Android" else "company", true)
             }
-            Toast.makeText(this, account.email.toString(), Toast.LENGTH_LONG).show()
+//            Toast.makeText(this, account.email.toString(), Toast.LENGTH_LONG).show()
             mGoogleSignInClient.signOut()
             //  viewModel.googleLogin(account);
             // Logger.d(account)

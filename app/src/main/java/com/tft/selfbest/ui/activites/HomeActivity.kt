@@ -196,15 +196,6 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,HomeActivityCalle
         }
 
 
-
-
-
-
-
-
-
-
-
         bottomNavigation.setOnItemSelectedListener { it ->
             when (it.itemId) {
                 R.id.overviewFragment -> {
