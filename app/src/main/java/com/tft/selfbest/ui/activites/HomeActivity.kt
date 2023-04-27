@@ -403,6 +403,7 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,HomeActivityCalle
                 openDetailPage("Notifications", "notifications")
             }
             R.id.profile -> {
+
                 openDetailPage("Profile", "profile")
             }
         }

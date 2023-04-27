@@ -1,5 +1,6 @@
 package com.example.chat_feature.utils
 
+import android.app.Application
 import android.content.Context
 import android.net.Uri
 import android.os.Build
@@ -142,8 +143,8 @@ fun File.toRequestBody(progressCallback: ((progress: Int) -> Unit)?): RequestBod
         }
     }
 }
-fun Context.getUserId():  Int{
-    val sharedPrefManager=SharedPrefManager(this)
+fun Context.getUserId(application: Application):  Int{
+    val sharedPrefManager=SharedPrefManager(this, application = application)
     return sharedPrefManager.getInt("id")
 }
 

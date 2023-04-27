@@ -1,5 +1,6 @@
     package com.example.chat_feature.utils
 
+    import android.app.Application
     import android.content.Context
     import android.content.SharedPreferences
     import dagger.hilt.android.qualifiers.ApplicationContext
@@ -7,14 +8,14 @@
     import javax.inject.Singleton
 
     @Singleton
-    class SharedPrefManager @Inject constructor(@ApplicationContext val context: Context) {
+    class SharedPrefManager @Inject constructor(@ApplicationContext val context: Context, application: Application) {
 
         private val PREFS_NAME = "login"
         private val editor: SharedPreferences.Editor
 
 
         init {
-            val prefs = context.getSharedPreferences(PREFS_NAME, 0)
+            val prefs = application.getSharedPreferences(PREFS_NAME, 0)
             editor = prefs.edit()
         }
 

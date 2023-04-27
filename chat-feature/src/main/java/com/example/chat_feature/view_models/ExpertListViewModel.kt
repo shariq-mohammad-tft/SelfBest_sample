@@ -56,7 +56,7 @@ class ExpertListViewModel @Inject constructor(
     val userId: String
 
     init {
-        userId = application.applicationContext.getUserId().toString()
+        userId = application.applicationContext.getUserId(application = application).toString()
 
 
 

@@ -1,5 +1,6 @@
 package com.tft.selfbest.ui.fragments.userManagement
 
+import android.app.AlertDialog
 import android.graphics.Color
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -10,7 +11,10 @@ import androidx.fragment.app.viewModels
 import com.tft.selfbest.R
 import com.tft.selfbest.databinding.FragmentUserManagementBinding
 import com.tft.selfbest.ui.adapter.ViewPagerAdapter
+import com.tft.selfbest.ui.fragments.profile.ProfileFragment
+import com.tft.selfbest.ui.fragments.settings.SettingFragment
 import com.tft.selfbest.ui.fragments.userManagement.request.UserManagementRequest
+import com.tft.selfbest.utils.isInternetAvailable
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -27,6 +31,7 @@ class UserManagement : Fragment(), View.OnClickListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        checkNetworkConnectivity()
         // Inflate the layout for this fragment
         binding= FragmentUserManagementBinding.inflate(layoutInflater)
         loadFragment(UserManagementRequest())
@@ -161,4 +166,21 @@ class UserManagement : Fragment(), View.OnClickListener {
         transaction.commit()
     }
 
+    private fun loadFragmentWhenInternetIsNotAvailable(fragment: Fragment) {
+        // load fragment
+        val transaction = requireActivity().supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.fragmentContainerView, fragment)
+        transaction.commit()
+    }
+    private fun checkNetworkConnectivity(){
+        if(!requireContext().isInternetAvailable()){
+            val builder = AlertDialog.Builder(context)
+            builder.setMessage("Please check your internet connection and try again.")
+                .setPositiveButton("OK") { dialog, _ ->
+                    dialog.dismiss()
+                    loadFragmentWhenInternetIsNotAvailable(SettingFragment())
+                }
+            builder.create().show()
+        }
+    }
 }

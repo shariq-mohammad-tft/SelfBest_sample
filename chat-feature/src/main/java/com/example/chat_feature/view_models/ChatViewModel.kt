@@ -49,8 +49,8 @@ class ChatViewModel @Inject constructor(
     val userId: String
 
     init {
-        userId = application.applicationContext.getUserId().toString()
-        Log.d("checkUserId", application.applicationContext.getUserId().toString())
+        userId = application.applicationContext.getUserId(application).toString()
+        Log.d("checkUserId", application.applicationContext.getUserId(application).toString())
     }
 
 

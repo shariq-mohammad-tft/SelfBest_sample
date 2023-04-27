@@ -34,6 +34,7 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.chat_feature.network.web_socket.isNetworkConnected
 import com.google.gson.internal.LinkedTreeMap
 import com.tft.selfbest.R
 import com.tft.selfbest.data.SelfBestPreference
@@ -46,7 +47,10 @@ import com.tft.selfbest.network.NetworkResponse
 import com.tft.selfbest.ui.activites.*
 import com.tft.selfbest.ui.adapter.*
 import com.tft.selfbest.ui.login.LoginActivity
+import com.tft.selfbest.utils.isInternetAvailable
+import com.tft.selfbest.utils.isOnline
 import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
 import java.net.URL
 import javax.inject.Inject
@@ -60,10 +64,10 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
     val viewModel by viewModels<ProfileViewModel>()
     private lateinit var profileData: ProfileData
     private lateinit var personalityTypes: ArrayList<String>
-    private var workingDaysTemp= arrayListOf<RecursiveDays>()
+    private var workingDaysTemp = arrayListOf<RecursiveDays>()
     lateinit var linkedIndialog: Dialog
     var deactivated = false
-    private var workingDays= mutableListOf<String>()
+    private var workingDays = mutableListOf<String>()
     private var currentSkills = mutableListOf<String>()
     private val genderCategory = listOf("Male", "Female", "Others")
     private val dayNameInWeek =
@@ -112,7 +116,8 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
     private var isIntegrationView = false
     lateinit var calendarType: String
     lateinit var someActivityResultLauncher: ActivityResultLauncher<Intent>
-//    var isSkillAvailableForSave = false
+
+    //    var isSkillAvailableForSave = false
     private lateinit var allSkills: List<String>
 
     companion object {
@@ -156,7 +161,7 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
 
         }
 
-        someActivityResultLauncher= registerForActivityResult(
+        someActivityResultLauncher = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
@@ -168,29 +173,31 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
             }
         }
 
-        val suggestions = arrayOf("Computer Scientist",
-                "IT Professional",
-                "UX Designer",
-                "UI Developer",
-                "SQL Developer",
-                "Web Designer",
-                "Web Developer",
-                "Help Desk Worker/Desktop Support",
-                "Software Engineer",
-                "Data Entry",
-                "DevOps Engineer",
-                "Computer Programmer",
-                "Network Administrator",
-                "Information Security Analyst",
-                "Artificial Intelligence Engineer",
-                "Cloud Architect",
-                "IT Manager",
-                "Technical Specialist",
-                "Application Developer",
-                "Chief Technology Officer (CTO)",
-                "Chief Information Officer (CIO)"
+        val suggestions = arrayOf(
+            "Computer Scientist",
+            "IT Professional",
+            "UX Designer",
+            "UI Developer",
+            "SQL Developer",
+            "Web Designer",
+            "Web Developer",
+            "Help Desk Worker/Desktop Support",
+            "Software Engineer",
+            "Data Entry",
+            "DevOps Engineer",
+            "Computer Programmer",
+            "Network Administrator",
+            "Information Security Analyst",
+            "Artificial Intelligence Engineer",
+            "Cloud Architect",
+            "IT Manager",
+            "Technical Specialist",
+            "Application Developer",
+            "Chief Technology Officer (CTO)",
+            "Chief Information Officer (CIO)"
         )
-        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, suggestions)
+        val adapter =
+            ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, suggestions)
         binding.jobPosition.threshold = 0
         binding.jobPosition.setAdapter(adapter)
 
@@ -201,14 +208,15 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
         }
 
         viewModel.accountSettingObserver.observe(viewLifecycleOwner) {
-            if(it is NetworkResponse.Success){
+            if (it is NetworkResponse.Success) {
                 Toast.makeText(context, "Data updated successfully", Toast.LENGTH_LONG).show()
-                if(deactivated){
+                if (deactivated) {
                     deactivated = false
                     pref.clear()
                     val loginScreen = Intent(activity, LoginActivity::class.java)
                     loginScreen.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                    loginScreen.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    loginScreen.flags =
+                        Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     activity?.finish()
                     startActivity(loginScreen)
                 }
@@ -226,7 +234,7 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
                 //pref.setProfileData(it.data.profileData)
                 //customPersonlityList = profileData.customPersonality
                 setData()
-            }else if(it is NetworkResponse.Error){
+            } else if (it is NetworkResponse.Error) {
                 binding.progress.visibility = View.GONE
                 Toast.makeText(context, "Check your internet connection", Toast.LENGTH_SHORT).show()
 //                preferences.clear()
@@ -246,82 +254,82 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
                 )
             }
         }
-       /* viewModel.personalityTypeObserver.observe(viewLifecycleOwner) {
-            if (it is NetworkResponse.Success) {
-                personalityTypes = it.data as ArrayList<String>
-                Log.e("Personality List", "" + personalityTypes.size)
-                val personalityAdapter = ArrayAdapter(
-                    binding.root.context,
-                    R.layout.spinner_main_item_style,
-                    personalityTypes
-                )
-                //personalityTypes.add("Choose Personality Attribute")
-//                personalityAdapter.setDropDownViewResource(R.layout.spinner_dropdown_style)
-//                binding.personalityTypeSpinner.adapter = personalityAdapter
-//                binding.personalityTypeSpinner.setSelection(personalityTypes.indexOf(profileData.personalityType))
-////                binding.personalityTypeSpinner.onItemSelectedListener =
-//                    object : AdapterView.OnItemSelectedListener {
-//                        override fun onNothingSelected(parent: AdapterView<*>?) {}
-//                        override fun onItemSelected(
-//                            parent: AdapterView<*>?,
-//                            view: View?,
-//                            position: Int,
-//                            id: Long
-//                        ) {
-//                            if (binding.personalityTypeSpinner.selectedItem.toString() == "Choose Personality Attribute") {
-//                                val builder: AlertDialog.Builder = AlertDialog.Builder(activity)
-//                                builder.setCancelable(false)
-//
-//                                builder.setMultiChoiceItems(personalities, personalityBoolean,
-//                                    OnMultiChoiceClickListener { _, i, b ->
-//                                        if (b) {
-//                                            personalityList.add(i)
-//                                            personalityList.sort()
-//                                        } else {
-//                                            personalityList.remove(Integer.valueOf(i))
-//                                        }
-//                                    })
-//
-//                                builder.setPositiveButton(
-//                                    "OK"
-//                                ) { _, _ ->
-//                                    val stringBuilder = StringBuilder()
-//                                    for (j in 0 until personalityList.size) {
-//                                        FinalPersonality.add(personalities[personalityList[j]])
-//                                        stringBuilder.append(personalities[personalityList[j]])
-//                                        if (j != personalityList.size - 1) {
-//                                            stringBuilder.append(", ")
-//                                        }
-//                                    }
-//                                    binding.personalityTypeSpinner.setSelection(
-//                                        personalityTypes.indexOf(
-//                                            profileData.personalityType
-//                                        )
-//                                    )
-//                                }
-//
-//                                builder.setNegativeButton(
-//                                    "Cancel"
-//                                ) { dialogInterface, _ ->
-//                                    dialogInterface.dismiss()
-//                                    binding.personalityTypeSpinner.setSelection(
-//                                        personalityTypes.indexOf(
-//                                            profileData.personalityType
-//                                        )
-//                                    )
-//                                }
-//                                builder.show()
-//                            }
-//                        }
-//                    }
+        /* viewModel.personalityTypeObserver.observe(viewLifecycleOwner) {
+             if (it is NetworkResponse.Success) {
+                 personalityTypes = it.data as ArrayList<String>
+                 Log.e("Personality List", "" + personalityTypes.size)
+                 val personalityAdapter = ArrayAdapter(
+                     binding.root.context,
+                     R.layout.spinner_main_item_style,
+                     personalityTypes
+                 )
+                 //personalityTypes.add("Choose Personality Attribute")
+ //                personalityAdapter.setDropDownViewResource(R.layout.spinner_dropdown_style)
+ //                binding.personalityTypeSpinner.adapter = personalityAdapter
+ //                binding.personalityTypeSpinner.setSelection(personalityTypes.indexOf(profileData.personalityType))
+ ////                binding.personalityTypeSpinner.onItemSelectedListener =
+ //                    object : AdapterView.OnItemSelectedListener {
+ //                        override fun onNothingSelected(parent: AdapterView<*>?) {}
+ //                        override fun onItemSelected(
+ //                            parent: AdapterView<*>?,
+ //                            view: View?,
+ //                            position: Int,
+ //                            id: Long
+ //                        ) {
+ //                            if (binding.personalityTypeSpinner.selectedItem.toString() == "Choose Personality Attribute") {
+ //                                val builder: AlertDialog.Builder = AlertDialog.Builder(activity)
+ //                                builder.setCancelable(false)
+ //
+ //                                builder.setMultiChoiceItems(personalities, personalityBoolean,
+ //                                    OnMultiChoiceClickListener { _, i, b ->
+ //                                        if (b) {
+ //                                            personalityList.add(i)
+ //                                            personalityList.sort()
+ //                                        } else {
+ //                                            personalityList.remove(Integer.valueOf(i))
+ //                                        }
+ //                                    })
+ //
+ //                                builder.setPositiveButton(
+ //                                    "OK"
+ //                                ) { _, _ ->
+ //                                    val stringBuilder = StringBuilder()
+ //                                    for (j in 0 until personalityList.size) {
+ //                                        FinalPersonality.add(personalities[personalityList[j]])
+ //                                        stringBuilder.append(personalities[personalityList[j]])
+ //                                        if (j != personalityList.size - 1) {
+ //                                            stringBuilder.append(", ")
+ //                                        }
+ //                                    }
+ //                                    binding.personalityTypeSpinner.setSelection(
+ //                                        personalityTypes.indexOf(
+ //                                            profileData.personalityType
+ //                                        )
+ //                                    )
+ //                                }
+ //
+ //                                builder.setNegativeButton(
+ //                                    "Cancel"
+ //                                ) { dialogInterface, _ ->
+ //                                    dialogInterface.dismiss()
+ //                                    binding.personalityTypeSpinner.setSelection(
+ //                                        personalityTypes.indexOf(
+ //                                            profileData.personalityType
+ //                                        )
+ //                                    )
+ //                                }
+ //                                builder.show()
+ //                            }
+ //                        }
+ //                    }
 
-            }
-        }*/
+             }
+         }*/
         viewModel.profileImageObserver.observe(viewLifecycleOwner) {
             if (it is NetworkResponse.Success) {
                 Toast.makeText(context, "Image updated successfully", Toast.LENGTH_SHORT).show()
                 Glide.with(binding.root.context).load(URL(it.data?.imageUrl)).into(binding.userIcon)
-            }else if(it is NetworkResponse.Error)
+            } else if (it is NetworkResponse.Error)
                 Toast.makeText(context, it.msg, Toast.LENGTH_SHORT).show()
         }
         viewModel.skillsObserver.observe(viewLifecycleOwner) {
@@ -390,13 +398,15 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
 
 
     private fun setData() {
-        if(profileData.working != null) {
+        if (profileData.working != null) {
             setBackendTime()
         }
         //binding.userIcon.setImageURI(Uri.parse(profileData.firstName))
 //        Log.e("Image : ",""+profileData.image)
         if (profileData.image != "")
-            activity?.let { Glide.with(it.applicationContext).load(profileData.image).into(binding.userIcon) }
+            activity?.let {
+                Glide.with(it.applicationContext).load(profileData.image).into(binding.userIcon)
+            }
         val name = "${profileData.firstName} ${profileData.lastName}"
         binding.userName.text = name
         binding.userProfession.text = profileData.occupation
@@ -411,8 +421,12 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
             if (profileData.importGoogleCalendar!!) "Connected" else "Connect"
         binding.microsoftCalBtn.text =
             if (profileData.importOutlookCalendar!!) "Connected" else "Connect"
-        binding.googleCalBtn.setTextColor(if(profileData.importGoogleCalendar!!) Color.parseColor("#1D71D4") else Color.WHITE)
-        binding.microsoftCalBtn.setTextColor(if (profileData.importOutlookCalendar!!) Color.parseColor("#1D71D4") else Color.WHITE)
+        binding.googleCalBtn.setTextColor(if (profileData.importGoogleCalendar!!) Color.parseColor("#1D71D4") else Color.WHITE)
+        binding.microsoftCalBtn.setTextColor(
+            if (profileData.importOutlookCalendar!!) Color.parseColor(
+                "#1D71D4"
+            ) else Color.WHITE
+        )
         binding.googleCalBtn.setBackgroundResource(if (profileData.importGoogleCalendar!!) R.drawable.cal_connected_bg else R.drawable.done_bg)
         binding.microsoftCalBtn.setBackgroundResource(if (profileData.importOutlookCalendar!!) R.drawable.cal_connected_bg else R.drawable.done_bg)
         binding.genderSpinner.onItemSelectedListener = this
@@ -447,9 +461,9 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
             )
         binding.workDays.layoutManager =
             SpanningLinearLayoutManager(binding.root.context, LinearLayoutManager.HORIZONTAL, false)
-        workingDaysTemp = if(profileData.working == null) {
+        workingDaysTemp = if (profileData.working == null) {
             setWorkingDays(listOf())
-        }else{
+        } else {
             setWorkingDays(profileData.working)
         }
         binding.workDays.adapter =
@@ -545,7 +559,8 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
                         Log.e("image", "2 else")
                         ActivityCompat.requestPermissions(
                             activity as DetailActivity, arrayOf(
-                                Manifest.permission.READ_EXTERNAL_STORAGE), 1
+                                Manifest.permission.READ_EXTERNAL_STORAGE
+                            ), 1
                         )
                     }
                 }
@@ -554,61 +569,68 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
                 (activity as DetailActivity).finish()
             }
             R.id.save_profile -> {
-                var isReady = true
-                val experience = if(binding.experience.text.toString().isEmpty()) {
-                    binding.experience.error="field can't be empty"
-                    isReady = false
-                    0.0f
-                } else {
-                    binding.experience.text.toString().toFloatOrNull() ?: 0.0f
-                }
-                val firstName = if(binding.firstName.text.toString().isEmpty()) {
-                    binding.firstName.error="field can't be empty"
-                    isReady = false
-                    ""
-                } else {
-                    binding.firstName.text.toString()
-                }
-                val gender = genderCategory[binding.genderSpinner.selectedItemPosition]
-                val lastName = if(binding.lastName.text.toString().isEmpty()) {
-                    binding.lastName.error="field can't be empty"
-                    isReady = false
-                    ""
-                } else {
-                    binding.lastName.text.toString()
-                }
-                //val occupation = binding.userProfession.text.toString()
-                val occupation = if(binding.jobPosition.text.toString().isEmpty()) {
-                    binding.jobPosition.error="field can't be empty"
-                    isReady = false
-                    ""
-                } else {
-                    binding.jobPosition.text.toString()
-                }
-//                val personalityType =
-//                    personalityTypes[binding.personalityTypeSpinner.selectedItemPosition]
-                val startWorkingTime = timeInString(startHour, startMinute)
-                val endWorkingTime = timeInString(endHour, endMinute)
-                val skills: LinkedTreeMap<String, Int> = LinkedTreeMap()
-                profileSkills.forEach {
-                    skills[it.key] = it.value.toInt()
-                }
-                pendingSkills.forEach{
-                    skills[it.key] = 1
-                }
-                workingDays.clear()
-                for(day in workingDaysTemp){
-                    if(day.isSelected)
-                        workingDays.add(day.recursiveDate)
-                }
-                if(workingDays.isEmpty()) {
-                    isReady = false
+                if (!requireContext().isInternetAvailable()) {
                     Toast.makeText(
                         requireContext(),
-                        "Select atleast 1 working day",
+                        "You dont have connectivity",
                         Toast.LENGTH_SHORT
                     ).show()
-                }
+                } else {
+                    var isReady = true
+                    val experience = if (binding.experience.text.toString().isEmpty()) {
+                        binding.experience.error = "field can't be empty"
+                        isReady = false
+                        0.0f
+                    } else {
+                        binding.experience.text.toString().toFloatOrNull() ?: 0.0f
+                    }
+                    val firstName = if (binding.firstName.text.toString().isEmpty()) {
+                        binding.firstName.error = "field can't be empty"
+                        isReady = false
+                        ""
+                    } else {
+                        binding.firstName.text.toString()
+                    }
+                    val gender = genderCategory[binding.genderSpinner.selectedItemPosition]
+                    val lastName = if (binding.lastName.text.toString().isEmpty()) {
+                        binding.lastName.error = "field can't be empty"
+                        isReady = false
+                        ""
+                    } else {
+                        binding.lastName.text.toString()
+                    }
+                    //val occupation = binding.userProfession.text.toString()
+                    val occupation = if (binding.jobPosition.text.toString().isEmpty()) {
+                        binding.jobPosition.error = "field can't be empty"
+                        isReady = false
+                        ""
+                    } else {
+                        binding.jobPosition.text.toString()
+                    }
+//                val personalityType =
+//                    personalityTypes[binding.personalityTypeSpinner.selectedItemPosition]
+                    val startWorkingTime = timeInString(startHour, startMinute)
+                    val endWorkingTime = timeInString(endHour, endMinute)
+                    val skills: LinkedTreeMap<String, Int> = LinkedTreeMap()
+                    profileSkills.forEach {
+                        skills[it.key] = it.value.toInt()
+                    }
+                    pendingSkills.forEach {
+                        skills[it.key] = 1
+                    }
+                    workingDays.clear()
+                    for (day in workingDaysTemp) {
+                        if (day.isSelected)
+                            workingDays.add(day.recursiveDate)
+                    }
+                    if (workingDays.isEmpty()) {
+                        isReady = false
+                        Toast.makeText(
+                            requireContext(),
+                            "Select atleast 1 working day",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
 
                     val profileChangesData = ProfileChangesData(
                         "",
@@ -674,12 +696,22 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
 //                        pref.getProfileData?.customPersonality!!
 //                    )
 //                )
-                if(isReady)
-                    viewModel.saveProfileChangesData(profileChangesData)
+                    if (isReady)
+                        viewModel.saveProfileChangesData(profileChangesData)
+                }
+
 
             }
             R.id.skill_search -> {
-                binding.skillSearch.requestFocus()
+                if(!requireContext().isInternetAvailable()){
+                    Toast.makeText(
+                        requireContext(),
+                        "You dont have connectivity",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                else{
+                    binding.skillSearch.requestFocus()
 //                if (binding.skillSearch.text.isEmpty()) {
 //                    Toast.makeText(
 //                        binding.root.context,
@@ -688,25 +720,25 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
 //                    ).show()
 //                    return
 //                }
-                binding.skillListScroll.visibility = View.VISIBLE
-                //currentSkills.add(binding.skill.text.toString())
-                if (isPresentSkill(binding.skillSearch.text.toString())) {
-                    currentSkills.add(binding.skillSearch.text.toString())
-                    profileSkills[binding.skillSearch.text.toString()] = 1
-                    (binding.skillList.adapter as ProfileSkillsAdapter).addSkill(
-                        binding.skillSearch.text.toString(),
-                        1
-                    )
-                    viewModel.getRecommendation(binding.skillSearch.text.toString())
-                    Toast.makeText(context, "Skill added successfully", Toast.LENGTH_SHORT).show()
-                }else{
-                    pendingSkills[binding.skillSearch.text.toString()] = 1
-                    (binding.pendingSkillList.adapter as PendingSkillAdapter).addSkill(
-                        binding.skillSearch.text.toString(),
-                        1
-                    )
-                }
-                binding.skillSearch.text.clear()
+                    binding.skillListScroll.visibility = View.VISIBLE
+                    //currentSkills.add(binding.skill.text.toString())
+                    if (isPresentSkill(binding.skillSearch.text.toString())) {
+                        currentSkills.add(binding.skillSearch.text.toString())
+                        profileSkills[binding.skillSearch.text.toString()] = 1
+                        (binding.skillList.adapter as ProfileSkillsAdapter).addSkill(
+                            binding.skillSearch.text.toString(),
+                            1
+                        )
+                        viewModel.getRecommendation(binding.skillSearch.text.toString())
+                        Toast.makeText(context, "Skill added successfully", Toast.LENGTH_SHORT).show()
+                    } else {
+                        pendingSkills[binding.skillSearch.text.toString()] = 1
+                        (binding.pendingSkillList.adapter as PendingSkillAdapter).addSkill(
+                            binding.skillSearch.text.toString(),
+                            1
+                        )
+                    }
+                    binding.skillSearch.text.clear()
 //                isSkillAvailableForSave = !isSkillAvailableForSave
 //                if (isSkillAvailableForSave) {
 //                    binding.skill.requestFocus()
@@ -731,6 +763,7 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
 //                    binding.addSkillContainer.visibility = View.GONE
 //                    binding.skillSaveBtn.text = "Add new"
 //                }
+                }
 
             }
 //            R.id.delete_skill -> {
@@ -745,7 +778,7 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
                 isIntegrationView = false
                 binding.personalDetailText.text = "Edit your Personal Details"
                 binding.personal.setBackgroundResource(R.drawable.left_organisation_round)
-                    //ContextCompat.getDrawable(requireContext(),R.drawable.left_organisation_round)
+                //ContextCompat.getDrawable(requireContext(),R.drawable.left_organisation_round)
                 binding.personal.setTextColor(Color.WHITE)
                 binding.integrations.setBackgroundColor(Color.TRANSPARENT)
                 binding.integrations.setTextColor(Color.parseColor("#707070"))
@@ -766,20 +799,38 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
                 binding.integrationsDetail.visibility = View.VISIBLE
             }
             R.id.google_cal_btn -> {
-                if (profileData.importGoogleCalendar!!)
-                    viewModel.disconnectAllCalendar()
-                else {
-                    calendarType = "Google"
-                    //setCalendarPermissionWebViewDialog("https://accounts.google.com/o/oauth2/auth?approval_prompt=force&access_type=offline&client_id=446007361957-ml80obi46ep9ulquiov4cujljk49c1u8.apps.googleusercontent.com&redirect_uri=https://staging.self.best/user/profile&response_type=code&scope=https://www.googleapis.com/auth/calendar&state=state-token&flowName=GeneralOAuthFlow")
-                    setCalendarPermissionWebViewDialog("https://accounts.google.com/o/oauth2/auth?approval_prompt=force&access_type=offline&client_id=446007361957-vmbmbuivs1r8f0e53q0piridcheo2g8j.apps.googleusercontent.com&redirect_uri=https://self.best/user/profile&response_type=code&scope=https://www.googleapis.com/auth/calendar&state=state-token&flowName=GeneralOAuthFlow")
+                if (!requireContext().isInternetAvailable()) {
+                    Toast.makeText(
+                        requireContext(),
+                        "You dont have connectivity",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } else {
+                    if (profileData.importGoogleCalendar!!)
+                        viewModel.disconnectAllCalendar()
+                    else {
+                        calendarType = "Google"
+                        //setCalendarPermissionWebViewDialog("https://accounts.google.com/o/oauth2/auth?approval_prompt=force&access_type=offline&client_id=446007361957-ml80obi46ep9ulquiov4cujljk49c1u8.apps.googleusercontent.com&redirect_uri=https://staging.self.best/user/profile&response_type=code&scope=https://www.googleapis.com/auth/calendar&state=state-token&flowName=GeneralOAuthFlow")
+                        setCalendarPermissionWebViewDialog("https://accounts.google.com/o/oauth2/auth?approval_prompt=force&access_type=offline&client_id=446007361957-vmbmbuivs1r8f0e53q0piridcheo2g8j.apps.googleusercontent.com&redirect_uri=https://self.best/user/profile&response_type=code&scope=https://www.googleapis.com/auth/calendar&state=state-token&flowName=GeneralOAuthFlow")
+                    }
                 }
+
+
             }
             R.id.microsoft_cal_btn -> {
-                if (profileData.importOutlookCalendar!!)
-                    viewModel.disconnectAllCalendar()
-                else {
-                    calendarType = "Outlook"
-                    setCalendarPermissionWebViewDialog("https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=f2d04265-c5b8-414c-83f6-1f38d8f139cb&response_type=code&redirect_uri=https://self.best/user/profile&response_mode=query&scope=openid%20offline_access%20https%3A%2F%2Fgraph.microsoft.com%2FCalendars.ReadWrite&state=12345")
+                if (!requireContext().isInternetAvailable()) {
+                    Toast.makeText(
+                        requireContext(),
+                        "You dont have connectivity",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } else {
+                    if (profileData.importOutlookCalendar!!)
+                        viewModel.disconnectAllCalendar()
+                    else {
+                        calendarType = "Outlook"
+                        setCalendarPermissionWebViewDialog("https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=f2d04265-c5b8-414c-83f6-1f38d8f139cb&response_type=code&redirect_uri=https://self.best/user/profile&response_mode=query&scope=openid%20offline_access%20https%3A%2F%2Fgraph.microsoft.com%2FCalendars.ReadWrite&state=12345")
+                    }
                 }
             }
             R.id.start_time_container -> {
@@ -819,50 +870,76 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
             }
 
             R.id.daty -> {
-                val builder = AlertDialog.Builder(context)
-                builder.setTitle("")
-                    .setMessage("Are you sure you want to deactivate your account ?")
-                    .setPositiveButton("Yes") { dialog, which ->
-                        deactivated = true
-                        viewModel.accountSetting("DeactivateAccount")
-                        dialog.dismiss()
-                    }
-                    .setNegativeButton("No") { dialog, which ->
-                        dialog.dismiss()
-                    }
-                val dialog = builder.create()
-                dialog.show()
+                if (!requireContext().isInternetAvailable()) {
+                    Toast.makeText(
+                        requireContext(),
+                        "You dont have connectivity",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } else {
+                    val builder = AlertDialog.Builder(context)
+                    builder.setTitle("")
+                        .setMessage("Are you sure you want to deactivate your account ?")
+                        .setPositiveButton("Yes") { dialog, which ->
+                            deactivated = true
+                            viewModel.accountSetting("DeactivateAccount")
+                            dialog.dismiss()
+                        }
+                        .setNegativeButton("No") { dialog, which ->
+                            dialog.dismiss()
+                        }
+                    val dialog = builder.create()
+                    dialog.show()
+                }
+
             }
             R.id.dapy -> {
-                val builder = AlertDialog.Builder(context)
-                builder.setTitle("")
-                    .setMessage("Are you sure you want to delete your account ?")
-                    .setPositiveButton("Yes") { dialog, which ->
-                        deactivated = true
-                        viewModel.accountSetting("DeleteAccount")
-                        dialog.dismiss()
-                    }
-                    .setNegativeButton("No") { dialog, which ->
-                        dialog.dismiss()
-                    }
-                val dialog = builder.create()
-                dialog.show()
+                if (!requireContext().isInternetAvailable()) {
+                    Toast.makeText(
+                        requireContext(),
+                        "You dont have connectivity",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } else {
+                    val builder = AlertDialog.Builder(context)
+                    builder.setTitle("")
+                        .setMessage("Are you sure you want to delete your account ?")
+                        .setPositiveButton("Yes") { dialog, which ->
+                            deactivated = true
+                            viewModel.accountSetting("DeleteAccount")
+                            dialog.dismiss()
+                        }
+                        .setNegativeButton("No") { dialog, which ->
+                            dialog.dismiss()
+                        }
+                    val dialog = builder.create()
+                    dialog.show()
+                }
             }
             R.id.ddy -> {
-                val builder = AlertDialog.Builder(context)
-                builder.setTitle("")
-                    .setMessage("Are you sure you want to delete your account data ?")
-                    .setPositiveButton("Yes") { dialog, which ->
-                        viewModel.accountSetting("DeleteData")
-                        dialog.dismiss()
-                    }
-                    .setNegativeButton("No") { dialog, which ->
-                        dialog.dismiss()
-                    }
-                val dialog = builder.create()
-                dialog.show()
+                if (!requireContext().isInternetAvailable()) {
+                    Toast.makeText(
+                        requireContext(),
+                        "You dont have connectivity",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } else {
+                    val builder = AlertDialog.Builder(context)
+                    builder.setTitle("")
+                        .setMessage("Are you sure you want to delete your account data ?")
+                        .setPositiveButton("Yes") { dialog, which ->
+                            viewModel.accountSetting("DeleteData")
+                            dialog.dismiss()
+                        }
+                        .setNegativeButton("No") { dialog, which ->
+                            dialog.dismiss()
+                        }
+                    val dialog = builder.create()
+                    dialog.show()
+                }
             }
         }
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -1019,9 +1096,9 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
         TODO("Not yet implemented")
     }
 
-    private fun isPresentSkill(enteredSkill: String): Boolean{
-        for(s in allSkills){
-            if(s.equals(enteredSkill)){
+    private fun isPresentSkill(enteredSkill: String): Boolean {
+        for (s in allSkills) {
+            if (s.equals(enteredSkill)) {
                 return true
             }
         }

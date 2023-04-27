@@ -139,6 +139,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                         //Log.e("LinkedIn 3", "Error")
                         if (response.data.redirect.equals("buildProfile") && response.data.approved == 1) {
                             viewModel.savedLoginData(response.data)
+                            saveUserData(response.data)
                             val builder = AlertDialog.Builder(this)
                             builder.setTitle("")
                                 .setMessage("Your Organisation is Registered with us. Continue to access your organisation account.")
