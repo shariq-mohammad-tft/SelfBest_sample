@@ -61,7 +61,6 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
     lateinit var binding: FragmentProfileBinding
     val viewModel by viewModels<ProfileViewModel>()
     private lateinit var profileData: ProfileData
-    private lateinit var personalityTypes: ArrayList<String>
     private var workingDaysTemp= arrayListOf<RecursiveDays>()
     lateinit var linkedIndialog: Dialog
     var deactivated = false
@@ -360,6 +359,7 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
         binding.userName.text = name
         binding.userProfession.text = profileData.occupation
         binding.firstName.setText(profileData.firstName)
+
         binding.lastName.setText(profileData.lastName)
         binding.organisation.text = profileData.organisationName
         binding.jobPosition.setText(profileData.occupation)
@@ -519,15 +519,27 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
                 (activity as DetailActivity).finish()
             }
             R.id.save_profile -> {
-                val experience = binding.experience.text.toString().toInt()
-                val firstName = binding.firstName.text.toString()
+                val experience = if(binding.experience.text.toString().isEmpty()) {
+                    binding.experience.error="field can't be empty"
+                    0
+                } else {
+                    binding.experience.text.toString().toInt()
+                }
+                val firstName = if(binding.firstName.text.toString().isEmpty()) {
+                    binding.firstName.error="field can't be empty"
+                    ""
+                } else {
+                    binding.firstName.text.toString()
+                }
                 val gender = genderCategory[binding.genderSpinner.selectedItemPosition]
                 val lastName = binding.lastName.text.toString()
                 //val occupation = binding.userProfession.text.toString()
-                val occupation: String = if (binding.userProfession.text.toString() != "")
+                val occupation: String = if(binding.userProfession.text.toString().isEmpty()) {
+                    binding.userProfession.error="field can't be empty"
+                    ""
+                } else {
                     binding.userProfession.text.toString()
-                else
-                    "Software Engineer"
+                }
 //                val personalityType =
 //                    personalityTypes[binding.personalityTypeSpinner.selectedItemPosition]
                 val startWorkingTime = timeInString(startHour, startMinute)
@@ -615,7 +627,7 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
                 if (binding.skillSearch.text.isEmpty()) {
                     Toast.makeText(
                         binding.root.context,
-                        "Skill must be not null",
+                        "",
                         Toast.LENGTH_LONG
                     ).show()
                     return
