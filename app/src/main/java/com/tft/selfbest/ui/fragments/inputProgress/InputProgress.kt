@@ -30,7 +30,7 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 @AndroidEntryPoint
-class InputProgress : Fragment(),View.OnClickListener {
+class InputProgress : Fragment(),View.OnClickListener, InputProgressAdapter.ChangeCategory {
 
     @Inject
     lateinit var preferences: SelfBestPreference
@@ -81,7 +81,7 @@ class InputProgress : Fragment(),View.OnClickListener {
                     for(activity in activities){
                         observationDetail.add(Observations(activity.category, activity.duration, activity.type, activity.url))
                     }
-                    binding.recycleInputProgress.adapter = InputProgressAdapter(activities, categories,requireContext())
+                    binding.recycleInputProgress.adapter = InputProgressAdapter(activities, categories,requireContext(), this)
                 }
             }
         }
@@ -144,4 +144,13 @@ class InputProgress : Fragment(),View.OnClickListener {
 
         }
     }
+
+    override fun changeCategory(activity: ActivitySingleResponse, selectedCategory: String) {
+        for(entity in observationDetail){
+            if(entity.url.equals(activity.url))
+                entity.category = selectedCategory
+        }
+    }
+
+
 }
