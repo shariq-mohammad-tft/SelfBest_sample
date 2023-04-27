@@ -862,19 +862,13 @@ fun MessageCard(
             }
 
         } else {
-            if ((message.message != "") && (message.file.isNullOrEmpty())) {
+            if ((message.message != "")) {
                 CardReceiverMessage(
                     message = message.message,
                     timestamp = message.timeStamp ?: getCurrentTime()
                 )
-
-            } else if (message.file != null) {
-                PhotoReceiverCardForBot(
-                    imageLink = message.file,
-                    message = message.message,
-                    navController = navController
-                )
-            } else {
+            }
+            else {
                 CardReceiverMessage(
                     message = "Here is something I found",
                     timestamp = message.timeStamp ?: getCurrentTime()

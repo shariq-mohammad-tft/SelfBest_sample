@@ -1,6 +1,7 @@
 package com.example.chat_feature.view_models
 
 import android.content.Context
+import android.os.Build
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -201,7 +202,9 @@ class ExpertChatViewModel @Inject constructor(
     fun connectSocket(socketUrl: String = Constants.SELF_BEST_SOCKET_URL) =
         viewModelScope.launch(Dispatchers.IO) {
             // /chat/676/
-            easyWs = OkHttpClient().easyWebSocket(socketUrl,context)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                easyWs = OkHttpClient().easyWebSocket(socketUrl,context)
+            }
             Log.d(TAG, "connectSocket: Called Listen Channel")
             listenUpdates()
         }

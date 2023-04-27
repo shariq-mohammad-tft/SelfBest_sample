@@ -50,6 +50,8 @@ class SignupFragment : Fragment(), View.OnClickListener,
     private var resumeSkills = LinkedTreeMap<String, Int>()
     private lateinit var allSkills: List<String>
     private var currentSkills = mutableListOf<String>()
+    val emailRegex = Regex("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}")
+
     var rSkills = listOf(
         "python",
         "angular",
@@ -254,8 +256,8 @@ class SignupFragment : Fragment(), View.OnClickListener,
                 openResumerChooser()
             }
             R.id.save -> {
-                if (binding.linkedin.text.toString() == "") {
-                    Toast.makeText(activity, "Please add the LinkedIn URL", Toast.LENGTH_SHORT)
+                if (emailRegex.matches(binding.linkedin.text.toString())) {
+                    Toast.makeText(activity, "Please add the valid LinkedIn URL", Toast.LENGTH_SHORT)
                         .show()
                     return
                 }

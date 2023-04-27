@@ -3,6 +3,7 @@ package com.tft.selfbest.ui.login
 
 import android.util.Log
 import androidx.lifecycle.*
+import com.example.chat_feature.utils.SharedPrefManager
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.tft.selfbest.data.SelfBestPreference
 import com.tft.selfbest.models.GoogleLoginRequest
@@ -25,6 +26,9 @@ class LoginViewModel @Inject constructor(
 
     private val loginLiveData = MutableLiveData<NetworkResponse<LogedInData>>()
     val loginApiObserver: LiveData<NetworkResponse<LogedInData>> = loginLiveData
+
+    @Inject
+    lateinit var sharedPrefManager: SharedPrefManager
 
     /* fun login(loginRequest: LoginRequest) {
          if (loginLiveData.value is Loading) {
@@ -83,6 +87,14 @@ class LoginViewModel @Inject constructor(
 
     fun savedLoginData(data: LogedInData) {
         pref.setLoginData(data)
+    }
+
+    fun saveUserData(data: LogedInData) {
+        sharedPrefManager.setInt("id",data.id!!)
+        Log.d("sharedPrefMan.setInt",data.id.toString())
+        sharedPrefManager.setString("token",data.accessToken)
+        sharedPrefManager.setString("name",data.fullName)
+        sharedPrefManager.setString("refresh_token",data.refreshToken)
     }
 }
 

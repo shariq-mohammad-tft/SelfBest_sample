@@ -131,7 +131,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                     if (!response.data!!.isNewUser && response.data.approved == 1) {
                         //Log.e("LinkedIn 3", "Success")
                         viewModel.savedLoginData(response.data)
-                        saveUserData(response.data)
+                        viewModel.saveUserData(response.data)
                         startActivity(Intent(this, HomeActivity::class.java))
                         finish()
                     } else {
@@ -162,13 +162,14 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         binding.organisation.setOnClickListener(this)
     }
 
-    private fun saveUserData(data: LogedInData) {
+   /* private fun saveUserData(data: LogedInData) {
         sharedPrefManager.setInt("id",data.id!!)
+        Log.d("sharedPrefMan.setInt",data.id.toString())
         sharedPrefManager.setString("token",data.accessToken)
         sharedPrefManager.setString("name",data.fullName)
         sharedPrefManager.setString("refresh_token",data.refreshToken)
     }
-
+*/
     override fun onClick(view: View?) {
         when (view?.id) {
             R.id.individual -> {
