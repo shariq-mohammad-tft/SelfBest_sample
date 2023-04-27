@@ -24,10 +24,12 @@ class SelfBestPreference @Inject constructor(application: Application) {
         const val LOGIN_DATA = "_login_data"
         const val OFFLINE_TIME = "_offline_time"
         const val PROFILE_PICTURE = "profile_picture"
-        const val GetGoId="getGoHourId"
+        const val GetGoId = "getGoHourId"
         const val PROFILE_DATA = "_profile_data"
-        const val FIRST_TIME="_first_time"
-        const val IS_ORG_ADMIN="_is_org_admin"
+        const val FIRST_TIME = "_first_time"
+        const val IS_ORG_ADMIN = "_is_org_admin"
+        const val SEL_DURATION = "_sel_duration"
+        const val SEL_PLATFORM = "_sel_platform"
     }
 
     val getLoginData: LogedInData?
@@ -51,11 +53,12 @@ class SelfBestPreference @Inject constructor(application: Application) {
         PreferenceUtil.setString(_pref, Key.PROFILE_PICTURE, profileImageUrl)
     }
 
-    val getGetHourId:Int
-        get()=PreferenceUtil.getInt(_pref,Key.GetGoId,1)
-    fun setGetGoHourId(getGoHourId: Int){
+    val getGetHourId: Int
+        get() = PreferenceUtil.getInt(_pref, Key.GetGoId, 1)
+
+    fun setGetGoHourId(getGoHourId: Int) {
         Log.e("msgtype", "Preference Success")
-        PreferenceUtil.setInt(_pref,Key.GetGoId,getGoHourId)
+        PreferenceUtil.setInt(_pref, Key.GetGoId, getGoHourId)
     }
 
     fun clear() {
@@ -81,14 +84,26 @@ class SelfBestPreference @Inject constructor(application: Application) {
         get() = PreferenceUtil.getBoolean(_pref, Key.FIRST_TIME, false)
 
     fun setFirstTime(data: Boolean) {
-        PreferenceUtil.setBoolean(_pref, Key.FIRST_TIME, true)
+        PreferenceUtil.setBoolean(_pref, Key.FIRST_TIME, data)
     }
 
     val isOrgAdmin: Boolean
         get() = PreferenceUtil.getBoolean(_pref, Key.IS_ORG_ADMIN, false)
 
-    fun setOrgAdmin(data: Boolean){
+    fun setOrgAdmin(data: Boolean) {
         PreferenceUtil.setBoolean(_pref, Key.IS_ORG_ADMIN, data)
     }
+
+    fun setFilters(duration: String, platform: String) {
+        Log.e("SP", "$duration $platform")
+        PreferenceUtil.setString(_pref, Key.SEL_DURATION, duration)
+        PreferenceUtil.setString(_pref, Key.SEL_PLATFORM, platform)
+    }
+
+    val selectedDuration: String?
+        get() = PreferenceUtil.getString(_pref, Key.SEL_DURATION, "daily")
+
+    val selectedPlatform: String?
+        get() = PreferenceUtil.getString(_pref, Key.SEL_PLATFORM, "Mobile")
 
 }

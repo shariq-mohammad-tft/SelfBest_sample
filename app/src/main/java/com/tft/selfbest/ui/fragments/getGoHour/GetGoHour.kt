@@ -130,6 +130,7 @@ class GetGoHour : Fragment(), View.OnClickListener {
                             labels.add(entry.value)
                     }
                 }
+                Log.e("ActivityLog: ", labels.toString())
                 if(it.data!!.activities != null) {
                     activities = it.data.activities
                     setBarChart(activities)
@@ -916,7 +917,7 @@ class GetGoHour : Fragment(), View.OnClickListener {
         for(activity in activities) {
             if (activity.category in barEntries.keys) {
                 barEntries[activity.category] = barEntries[activity.category]!! + activity.duration
-            } else {
+            } else if(activity.category in labels){
                 barEntries[activity.category] = activity.duration
             }
         }
@@ -926,7 +927,7 @@ class GetGoHour : Fragment(), View.OnClickListener {
         Log.e("BarChart", barEntries.toString())
         for(entry in barEntries.keys){
             barEntriesList.add(BarEntry(x, getTimeForBarChart(barEntries[entry]!!)))
-            Log.e("BarChart X = ", "$x")
+            Log.e(" X = ", "$x")
             x += 1f
         }
         Log.e("BarChart", labels.toString())

@@ -23,6 +23,7 @@ import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.tft.selfbest.R
+import com.tft.selfbest.data.SelfBestPreference
 import com.tft.selfbest.databinding.FragmentActivityLogBinding
 import com.tft.selfbest.models.QueryAnsweredResponse
 import com.tft.selfbest.models.QueryResponse
@@ -35,6 +36,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class ActivityLogFragment(
@@ -42,10 +44,13 @@ class ActivityLogFragment(
     var selectedDuration: String,
     var startDate1: String,
     var endDate1: String,
-) :
-    Fragment(), View.OnClickListener,
+) : Fragment(), View.OnClickListener,
     QueryResponseAdapter.ChangeStatusListener, ActivityLogFiltersDialog.FilterListener,
     AnsweredQueryAdapter.ChangeStatusListener {
+
+    @Inject
+    lateinit var pref: SelfBestPreference
+
     lateinit var binding: FragmentActivityLogBinding
     val viewModel by viewModels<StatisticsViewModel>()
     var categories: List<SelectedCategory> = listOf()
@@ -174,8 +179,10 @@ class ActivityLogFragment(
                 binding.progress.visibility = View.GONE
                 val list: ArrayList<RadarEntry> = ArrayList()
                 val labels: MutableList<String> = mutableListOf()
-                binding.hoursSaved.text = getTimeInFormat(it.data!!.focusTime)
-                binding.timeSaved.text = getTimeInFormat(it.data.timeSaved)
+                binding.hoursSaved.text = getTimeInFormat(it.data!!.timeSaved)
+                binding.timeSaved.text = getTimeInFormat(it.data.focusTime)
+                Log.e("Focus Time 1", it.data.focusTime.toString())
+                Log.e("Focus Time", getTimeInFormat(it.data.focusTime))
                 binding.distractedTime.text = getTimeInFormat(it.data.distractedTime)
 
                 binding.breakTime.text = getTimeInFormat(it.data.defaultList.breakTime)
@@ -404,7 +411,7 @@ class ActivityLogFragment(
     private fun getTimeInFormat(time: Double): String {
         val ans: String
         val hours = time.toInt() / 3600
-        val remainder = time.toInt() - hours * 3600
+        val remainder = time.toInt() - (hours * 3600)
         val mins = remainder / 60
         val formatter = DecimalFormat("00");
         ans = "${formatter.format(hours)}h : ${formatter.format(mins)}m"

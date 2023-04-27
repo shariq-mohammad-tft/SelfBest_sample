@@ -42,10 +42,7 @@ import com.tft.selfbest.models.ProfileData
 import com.tft.selfbest.models.ProfileWorkingData
 import com.tft.selfbest.models.calendarEvents.RecursiveDays
 import com.tft.selfbest.network.NetworkResponse
-import com.tft.selfbest.ui.activites.DetailActivity
-import com.tft.selfbest.ui.activites.MyButton
-import com.tft.selfbest.ui.activites.MyButtonListener
-import com.tft.selfbest.ui.activites.MySwipeHelper
+import com.tft.selfbest.ui.activites.*
 import com.tft.selfbest.ui.adapter.*
 import com.tft.selfbest.ui.login.LoginActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -282,7 +279,8 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
             if (it is NetworkResponse.Success) {
                 Toast.makeText(context, "Image updated successfully", Toast.LENGTH_SHORT).show()
                 Glide.with(binding.root.context).load(URL(it.data?.imageUrl)).into(binding.userIcon)
-            }
+            }else if(it is NetworkResponse.Error)
+                Toast.makeText(context, it.msg, Toast.LENGTH_SHORT).show()
         }
         viewModel.skillsObserver.observe(viewLifecycleOwner) {
             if (it is NetworkResponse.Success) {
@@ -309,7 +307,7 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
 //            setData()
 //        }
         viewModel.getAllSkills()
-        viewModel.getPersonalityList()
+//        viewModel.getPersonalityList()
 
         binding.skillSearch.onItemClickListener =
             AdapterView.OnItemClickListener { arg0, _, position, _ ->
@@ -480,21 +478,13 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
                             binding.root.context,
                             Manifest.permission.READ_EXTERNAL_STORAGE
                         ) == PackageManager.PERMISSION_GRANTED
-                                && ContextCompat.checkSelfPermission(
-                            binding.root.context,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE
-                        ) == PackageManager.PERMISSION_GRANTED
                     }
                 ) {
                     val intent = Intent(Intent.ACTION_PICK)
                     intent.type = "image/*"
                     Log.e("image", "1 if")
                     someActivityResultLauncher.launch(intent)
-//                    val intent = Intent(Intent.ACTION_PICK)
-//                    intent.type = "image/*"
-//                    Log.e("image", "1 if")
-//                    someActivityResultLauncher.launch(intent)
-//                    startActivityForResult(intent, IMAGE_PICK_CODE)
+
                 } else {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                         Log.e("image", "2 if")
@@ -508,9 +498,7 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
                         Log.e("image", "2 else")
                         ActivityCompat.requestPermissions(
                             activity as DetailActivity, arrayOf(
-                                Manifest.permission.READ_EXTERNAL_STORAGE,
-                                Manifest.permission.MANAGE_EXTERNAL_STORAGE
-                            ), 1
+                                Manifest.permission.READ_EXTERNAL_STORAGE), 1
                         )
                     }
                 }

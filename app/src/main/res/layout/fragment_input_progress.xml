@@ -18,6 +18,7 @@
             android:background="@android:color/transparent"
             android:src="@drawable/back_arrow"
             android:textAlignment="center"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@id/inputProgress"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/inputProgress" />

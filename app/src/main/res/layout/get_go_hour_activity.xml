@@ -444,7 +444,7 @@
                             android:text="Current Task"
                             android:textColor="@color/black"
                             android:textSize="10dp"
-                            app:drawableStartCompat="@drawable/ic_circle" />
+                            app:drawableStartCompat="@drawable/ic_circle_current_task" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -464,7 +464,7 @@
                             android:text="Distraction"
                             android:textColor="@color/black"
                             android:textSize="10dp"
-                            app:drawableStartCompat="@drawable/ic_circle" />
+                            app:drawableStartCompat="@drawable/ic_circle_red" />
 
                     </LinearLayout>
 

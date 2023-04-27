@@ -115,7 +115,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/heading_add_skills" />
 
-
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recommended_skills"
                 android:layout_width="wrap_content"
@@ -126,6 +125,7 @@
                 android:scrollbars="horizontal"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/skill" />
+
 
             <LinearLayout
                 android:id="@+id/resume_container"
@@ -177,19 +177,28 @@
             <!--                app:layout_constraintTop_toBottomOf="@id/skill" />-->
 
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/skill_list"
-                android:layout_width="match_parent"
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/skill_list_container"
+                android:layout_width="wrap_content"
                 android:layout_height="160dp"
                 android:layout_marginHorizontal="5dp"
-                android:scrollbarSize="5dp"
                 android:layout_marginTop="10dp"
-                android:scrollbars="vertical"
                 android:visibility="gone"
+                android:scrollbars="vertical"
+                android:fadeScrollbars="false"
+                android:scrollbarAlwaysDrawVerticalTrack="true"
                 app:layout_constraintBottom_toTopOf="@id/end_section"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/resume_container" />
+                app:layout_constraintTop_toBottomOf="@id/resume_container">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/skill_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scrollbarSize="5dp"
+                    android:scrollbars="vertical"/>
+            </androidx.core.widget.NestedScrollView>
 
             <LinearLayout
                 android:id="@+id/end_section"
@@ -199,7 +208,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/skill_list">
+                app:layout_constraintTop_toBottomOf="@id/skill_list_container">
 
                 <TextView
                     android:id="@+id/cancel_event"
