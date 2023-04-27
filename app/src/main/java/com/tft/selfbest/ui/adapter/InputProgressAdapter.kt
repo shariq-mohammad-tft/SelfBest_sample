@@ -12,7 +12,8 @@ import com.tft.selfbest.models.ActivitySingleResponse
 class InputProgressAdapter(
     val list: List<ActivitySingleResponse>,
     val categories: List<String>,
-    val context: Context
+    val context: Context,
+    private val changeCategoryListener: ChangeCategory
 ) : RecyclerView.Adapter<InputProgressViewHolder>() {
     val category = listOf("Documentation", "Course", "Code", "Others")
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InputProgressViewHolder {
@@ -34,10 +35,27 @@ class InputProgressAdapter(
         spinAdapter.setDropDownViewResource(R.layout.spinner_dropdown_style)
         holder.category.adapter = spinAdapter
         holder.category.setSelection(category.indexOf("Others"))
+        holder.category.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onNothingSelected(parent: AdapterView<*>?) {}
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    pos: Int,
+                    id: Long
+                ) {
+                    val selectedItem = holder.category.selectedItem as String
+                    changeCategoryListener.changeCategory(activity, selectedItem)
+                }
+            }
     }
 
     override fun getItemCount(): Int {
         return list.size
+    }
+
+    interface ChangeCategory{
+        fun changeCategory(activity: ActivitySingleResponse, selectedCategory: String)
     }
 
     private fun getTimeInFormat(time: Double): String {
