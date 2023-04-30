@@ -19,16 +19,17 @@ import java.util.*
 class SelectCategoryAdapter(
     val context: Context,
     val list: List<SelectedCategory>,
+    val selectedCategory: MutableList<String>,
     val selectionOfcategoriesListener: SelectionOfCategories) :
     RecyclerView.Adapter<SelectCategoryAdapter.SelectCategoryViewHolder>() {
     var numberOfSelectedCategories = 3
-    val selectedCategories = mutableListOf<String>()
+    val selectedCategories = selectedCategory
 
-    init {
-        for (cat in list.sortedByDescending { it.duration }.take(3)){
-            selectedCategories.add(cat.category)
-        }
-    }
+//    init {
+//        for (cat in list.sortedByDescending { it.duration }.take(3)){
+//            selectedCategories.add(cat.category)
+//        }
+//    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SelectCategoryViewHolder {
         return SelectCategoryViewHolder(
@@ -41,9 +42,7 @@ class SelectCategoryAdapter(
 
         val category = list[position]
         holder.state.isChecked = category.category in selectedCategories
-        val rnd = Random()
-        val color: Int = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256))
-        holder.circleImage.setColorFilter(color)
+        holder.circleImage.setColorFilter(Color.rgb(0, 255, 0))
         holder.categoryName.text = category.category
         holder.duration.text = getTimeInFormat(category.duration)
         Log.e("Activity Log 0", holder.state.isChecked.toString())

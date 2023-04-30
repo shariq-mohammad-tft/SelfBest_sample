@@ -23,15 +23,22 @@ class NotificationAdapter(val list: List<NotificationDetail>,
 
     override fun onBindViewHolder(holder: NotificationViewHolder, position: Int) {
         val item = list[position]
-        holder.title.text = getTitle(item.type, item.time)
+        val df = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ENGLISH)
+        df.timeZone = TimeZone.getTimeZone("UTC")
+        val date = df.parse(item.time)
+        val formatter =
+            SimpleDateFormat("dd-MM-yyyy '|' hh:mm a", Locale.ENGLISH)
+        formatter.timeZone = TimeZone.getDefault()
+        val dateStr = formatter.format(date!!)
+        holder.title.text = dateStr
         holder.content.text = item.content
     }
 
-    private fun getTitle(type: String, time: String): String? {
-        val date =
-            SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'", Locale.getDefault()).parse(time)
-        return date?.let { SimpleDateFormat("dd-MM-yyyy' | 'HH:mm", Locale.getDefault()).format(it) }
-    }
+//    private fun getTitle(type: String, time: String): String? {
+//        val date =
+//            SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'", Locale.getDefault()).parse(time)
+//        return date?.let { SimpleDateFormat("dd-MM-yyyy' | 'HH:mm", Locale.getDefault()).format(it) }
+//    }
 
     override fun getItemCount(): Int {
         return list.size

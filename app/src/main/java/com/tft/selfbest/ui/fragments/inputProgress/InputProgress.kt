@@ -81,7 +81,7 @@ class InputProgress : Fragment(),View.OnClickListener, InputProgressAdapter.Chan
                     for(activity in activities){
                         observationDetail.add(Observations(activity.category, activity.duration, activity.type, activity.url))
                     }
-                    binding.recycleInputProgress.adapter = InputProgressAdapter(activities, categories,requireContext(), this)
+                    binding.recycleInputProgress.adapter = InputProgressAdapter(activities, categories.ifEmpty { listOf("Break", "Distraction", "Others") },requireContext(), this)
                 }
             }
         }

@@ -64,7 +64,7 @@ suspend fun OkHttpClient.easyWebSocket(url: String, context: Context)= suspendCo
                 else{
                     println("onFailure: $t $response ${t.cause}")
                     GlobalScope.launch { easyWs!!.textChannel.send(Failure(exception = t)) }
-                   // it.resumeWithException(t)
+                    //it.resumeWithException(t)
                 }
             }
 

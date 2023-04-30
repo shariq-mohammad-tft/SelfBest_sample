@@ -35,11 +35,11 @@ class QueryResponseAdapter(
         holder.queryHeading.text = query.subject
         holder.descriptiveText.text = query.question
         //Log.e("TimeStamp", query.timestamp)
-        val df = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
+        val df = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ENGLISH)
         df.timeZone = TimeZone.getTimeZone("UTC")
         val date = df.parse(query.timestamp)
         val formatter =
-            SimpleDateFormat("dd-MM-yyyy '|' hh:mm a", Locale.getDefault())
+            SimpleDateFormat("dd-MM-yyyy '|' hh:mm a", Locale.ENGLISH)
         formatter.timeZone = TimeZone.getDefault()
         val dateStr = formatter.format(date!!)
         holder.time.text = dateStr

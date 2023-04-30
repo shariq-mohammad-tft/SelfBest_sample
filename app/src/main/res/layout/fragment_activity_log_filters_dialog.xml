@@ -86,7 +86,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/duration_title">
 
-        <Spinner
+        <com.tft.selfbest.ui.dialog.CustomSpinner
             android:id="@+id/duration"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
@@ -133,7 +133,7 @@
     <LinearLayout
         android:id="@+id/categories"
         android:layout_width="match_parent"
-        android:layout_height="250dp"
+        android:layout_height="wrap_content"
         android:background="@drawable/upcoming_event_bg"
         android:orientation="vertical"
         android:paddingHorizontal="15dp"

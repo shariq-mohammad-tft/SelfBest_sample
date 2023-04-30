@@ -15,7 +15,6 @@ class InputProgressAdapter(
     val context: Context,
     private val changeCategoryListener: ChangeCategory
 ) : RecyclerView.Adapter<InputProgressViewHolder>() {
-    val category = listOf("Documentation", "Course", "Code", "Others")
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InputProgressViewHolder {
         return InputProgressViewHolder(
             LayoutInflater.from(parent.context).inflate(R.layout.input_progress, parent, false)
@@ -30,11 +29,15 @@ class InputProgressAdapter(
         val spinAdapter = ArrayAdapter(
             context,
             R.layout.relevance_spinner_style,
-            categories.ifEmpty { category }
+            categories
         )
         spinAdapter.setDropDownViewResource(R.layout.spinner_dropdown_style)
         holder.category.adapter = spinAdapter
-        holder.category.setSelection(category.indexOf("Others"))
+        val index = if (categories.indexOf(activity.category) == -1)
+            0
+        else
+            categories.indexOf(activity.category)
+        holder.category.setSelection(index)
         holder.category.onItemSelectedListener =
             object : AdapterView.OnItemSelectedListener {
                 override fun onNothingSelected(parent: AdapterView<*>?) {}
@@ -54,7 +57,7 @@ class InputProgressAdapter(
         return list.size
     }
 
-    interface ChangeCategory{
+    interface ChangeCategory {
         fun changeCategory(activity: ActivitySingleResponse, selectedCategory: String)
     }
 
