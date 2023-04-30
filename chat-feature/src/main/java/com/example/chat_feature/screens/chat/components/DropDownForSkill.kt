@@ -210,10 +210,9 @@ fun DropdownExample(
 }*/
 
 
-
 /*---------------------------code is working fine for dialog box case--------------------*/
-@Composable
-fun DialogExample(
+/*@Composable
+fun DialogForSkill(
     options: List<String>,
     isDropDownEnabled:Boolean=true,
     selectedOption: (title: String) -> Unit,
@@ -269,7 +268,8 @@ fun DialogExample(
                     ) {
                         Text(
                             text = "Choose skill",
-                            style = MaterialTheme.typography.h6,
+                            textAlign = TextAlign.Center,
+                            style = MaterialTheme.typography.h3,
                             modifier = Modifier.padding(bottom = 8.dp)
                         )
 
@@ -294,6 +294,11 @@ fun DialogExample(
                                             vertical = 8.dp
                                         ),
                                         color = Color.Black
+                                    )
+                                    Divider(
+                                        color = Color(0xFFE2E2E2),
+                                        thickness = 1.dp,
+                                        modifier = Modifier.padding(15.dp, 0.dp, 15.dp, 0.dp)
                                     )
                                 }
                             }
@@ -329,7 +334,7 @@ fun DialogExample(
             }
         }
     }
-}
+}*/
 
 /*@Composable
 fun DialogExample(
@@ -451,6 +456,362 @@ fun DialogExample(
         }
     }
 }*/
+
+/*---------------------shows complete list skills on single page------------------------*/
+/*@Composable
+fun DialogForSkill(
+    options: List<String>,
+    isDropDownEnabled:Boolean=true,
+    selectedOption: (title: String) -> Unit,
+) {
+    var allOptions = remember { mutableStateOf(options) }
+    var displayedOptions by remember { mutableStateOf(allOptions.value) }
+    var showDialog by remember { mutableStateOf(false) }
+    var isSelected by rememberSaveable { mutableStateOf(false) }
+
+    Column {
+        Box ( modifier = Modifier
+            .width(200.dp)
+            .padding(horizontal = 10.dp)
+            .wrapContentHeight()){
+            TextButton(
+                onClick = { showDialog = true
+                    isSelected=true},
+                shape = RoundedCornerShape(19),
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = Color(0xFF1D71D4),
+                    contentColor = Color.White,
+                    disabledContentColor = Color.Black.copy(alpha = 0.8f),
+                    disabledBackgroundColor =Color.LightGray.copy(alpha = 0.6f)
+                ),
+                enabled = isDropDownEnabled
+            ) {
+                Text(
+                    text = "Choose skill",
+                    style = MaterialTheme.typography.caption,
+                    modifier = Modifier.padding(2.dp),
+                )
+            }
+        }
+        if (showDialog) {
+            Dialog(
+                onDismissRequest = {showDialog=false},
+                properties = DialogProperties(
+                    dismissOnBackPress = true,
+                    dismissOnClickOutside = true
+                )
+            ) {
+                Surface(
+                    shape = RoundedCornerShape(16.dp),
+                    modifier = Modifier.width(280.dp)
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(500.dp)
+                            .padding(8.dp)
+                    ) {
+                        Text(
+                            text = "Choose skill",
+                            textAlign = TextAlign.Center,
+                            style = MaterialTheme.typography.body2,
+                            modifier = Modifier.padding(bottom = 8.dp),
+                            color = Color.Black
+                        )
+
+                        LazyColumn {
+                            items(displayedOptions) { option ->
+                                Box(
+                                    modifier = Modifier
+                                        .padding(vertical = 4.dp)
+                                        .clickable(
+                                            onClick = {
+                                                val selectedOptions = option
+                                                selectedOption.invoke(option)
+                                                showDialog = false
+                                            }
+                                        )
+                                ) {
+                                    Text(
+                                        text = option,
+                                        style = MaterialTheme.typography.subtitle2,
+                                        modifier = Modifier.padding(
+                                            horizontal = 16.dp,
+                                            vertical = 8.dp
+                                        ),
+                                        //color = Color.Black
+                                    )
+                                    Divider(
+                                        color = Color(0xFFE2E2E2),
+                                        thickness = 1.dp,
+                                        modifier = Modifier.padding(15.dp, 0.dp, 15.dp, 0.dp)
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}*/
+
+/*---------------------shows complete list skills on single page with 50 enteries at a time------------------------*/
+/*
+@Composable
+fun DialogForSkill(
+    options: List<String>,
+    isDropDownEnabled: Boolean = true,
+    selectedOption: (title: String) -> Unit,
+) {
+    val pageSize = 50 // Set the number of items to load per page
+    var currentPage = 0
+    var allOptions = remember { mutableStateOf(options) }
+    var displayedOptions by remember { mutableStateOf(allOptions.value.take(pageSize)) }
+    var showDialog by remember { mutableStateOf(false) }
+    var isSelected by rememberSaveable { mutableStateOf(false) }
+
+    Column {
+        Box(
+            modifier = Modifier
+                .width(200.dp)
+                .padding(horizontal = 10.dp)
+                .wrapContentHeight()
+        ) {
+            TextButton(
+                onClick = {
+                    showDialog = true
+                    isSelected = true
+                },
+                shape = RoundedCornerShape(19),
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = Color(0xFF1D71D4),
+                    contentColor = Color.White,
+                    disabledContentColor = Color.Black.copy(alpha = 0.8f),
+                    disabledBackgroundColor = Color.LightGray.copy(alpha = 0.6f)
+                ),
+                enabled = isDropDownEnabled
+            ) {
+                Text(
+                    text = "Choose skill",
+                    style = MaterialTheme.typography.caption,
+                    modifier = Modifier.padding(2.dp),
+                )
+            }
+        }
+        if (showDialog) {
+            Dialog(
+                onDismissRequest = { showDialog = false },
+                properties = DialogProperties(
+                    dismissOnBackPress = true,
+                    dismissOnClickOutside = true
+                )
+            ) {
+                Surface(
+                    shape = RoundedCornerShape(16.dp),
+                    modifier = Modifier.width(280.dp)
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .heightIn(max = 450.dp)
+                            //.padding(8.dp)
+                    ) {
+                        Text(
+                            text = "Choose skill",
+                            textAlign = TextAlign.Center,
+                            style = MaterialTheme.typography.body2,
+                            modifier = Modifier
+                                //.align(Alignment.CenterHorizontally)
+                                .background(color = Color(0xFF1D71D4))
+                                .fillMaxWidth().height(30.dp),
+                            color = Color.White,
+                            fontWeight = FontWeight.SemiBold
+
+                        )
+
+                        LazyColumn {
+                            items(displayedOptions) { option ->
+                                Box(
+                                    modifier = Modifier
+                                        .padding(vertical = 0.dp)
+                                        .clickable(
+                                            onClick = {
+                                                val selectedOptions = option
+                                                selectedOption.invoke(option)
+                                                showDialog = false
+                                            }
+                                        )
+                                ) {
+                                    Text(
+                                        text = option,
+                                        style = MaterialTheme.typography.caption,
+                                        modifier = Modifier.padding(
+                                            horizontal = 16.dp,
+                                            vertical = 8.dp
+                                        ),
+                                        color = Color.DarkGray
+                                    )
+
+                                }
+                                Divider(
+                                    color = Color(0xFFE2E2E2),
+                                    thickness = 1.dp,
+                                    modifier = Modifier.padding(7.dp, 0.dp, 7.dp, 0.dp)
+                                )
+                            }
+
+                            val remainingOptions = allOptions.value.drop(displayedOptions.size)
+                            if (remainingOptions.isNotEmpty()) {
+                                item {
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(8.dp)
+                                            .clickable(
+                                                onClick = {
+                                                    currentPage++
+                                                    val startIndex = currentPage * pageSize
+                                                    val endIndex = minOf(
+                                                        startIndex + pageSize,
+                                                        allOptions.value.size
+                                                    )
+                                                    displayedOptions += allOptions.value.slice(
+                                                        startIndex until endIndex
+                                                    )
+                                                }
+                                            )
+                                    ) {
+                                        Text(
+                                            text = "More options",
+                                            style = MaterialTheme.typography.caption,
+                                            color = Color(0xFF1D71D4),
+                                            modifier = Modifier.padding(8.dp, 10.dp, 0.dp, 0.dp)
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+*/
+@Composable
+fun DialogForSkill(
+    options: List<String>,
+    isDropDownEnabled: Boolean = true,
+    selectedOption: (title: String) -> Unit,
+) {
+    val pageSize = 50 // Set the number of items to load per page
+    val searchQuery = remember { mutableStateOf("") }
+    val filteredOptions = remember {
+        derivedStateOf {
+            options.filter { it.contains(searchQuery.value, ignoreCase = true) }
+        }
+    }
+    var showDialog by remember { mutableStateOf(false) }
+    var isSelected by rememberSaveable { mutableStateOf(false) }
+
+    Column {
+        Box(
+            modifier = Modifier
+                .width(200.dp)
+                .padding(horizontal = 10.dp)
+                .wrapContentHeight()
+        ) {
+            TextButton(
+                onClick = {
+                    showDialog = true
+                    isSelected = true
+                },
+                shape = RoundedCornerShape(19),
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = Color(0xFF1D71D4),
+                    contentColor = Color.White,
+                    disabledContentColor = Color.Black.copy(alpha = 0.8f),
+                    disabledBackgroundColor = Color.LightGray.copy(alpha = 0.6f)
+                ),
+                enabled = isDropDownEnabled
+            ) {
+                Text(
+                    text = if (searchQuery.value.isNotEmpty()) searchQuery.value else "Choose skill",
+                    style = MaterialTheme.typography.caption,
+                    modifier = Modifier.padding(2.dp),
+                )
+            }
+        }
+        if (showDialog) {
+            Dialog(
+                onDismissRequest = { showDialog = false },
+                properties = DialogProperties(
+                    dismissOnBackPress = true,
+                    dismissOnClickOutside = true
+                )
+            ) {
+                Surface(
+                    shape = RoundedCornerShape(16.dp),
+                    modifier = Modifier.width(280.dp)
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .heightIn(max = 450.dp)
+                    ) {
+                        OutlinedTextField(
+                            value = searchQuery.value,
+                            onValueChange = { searchQuery.value = it },
+                            modifier = Modifier
+                                .padding(horizontal = 16.dp, vertical = 8.dp)
+                                .fillMaxWidth(),
+                            placeholder = { Text("Search") }
+                        )
+                        Divider(color = Color.Gray.copy(alpha = 0.2f))
+                        LazyColumn {
+                            items(filteredOptions.value) { option ->
+                                Box(
+                                    modifier = Modifier
+                                        .padding(vertical = 0.dp)
+                                        .clickable(
+                                            onClick = {
+                                                selectedOption.invoke(option)
+                                                showDialog = false
+                                            }
+                                        )
+                                ) {
+                                    Text(
+                                        text = option,
+                                        style = MaterialTheme.typography.caption,
+                                        modifier = Modifier.padding(
+                                            horizontal = 16.dp,
+                                            vertical = 8.dp
+                                        ),
+                                        color = Color.DarkGray
+                                    )
+                                }
+                                Divider(
+                                    color = Color(0xFFE2E2E2),
+                                    thickness = 1.dp,
+                                    modifier = Modifier.padding(7.dp, 0.dp, 7.dp, 0.dp)
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
+
 
 
 
