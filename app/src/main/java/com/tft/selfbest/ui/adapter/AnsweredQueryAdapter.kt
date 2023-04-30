@@ -1,14 +1,19 @@
 package com.tft.selfbest.ui.adapter
 
 import android.content.Context
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.tft.selfbest.R
 import com.tft.selfbest.models.QueryAnsweredResponse
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 class AnsweredQueryAdapter(
@@ -33,11 +38,11 @@ class AnsweredQueryAdapter(
         holder.queryHeading.text = query.subject
         holder.descriptiveText.text = query.question
         //Log.e("TimeStamp", query.timestamp)
-        val df = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
+        val df = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ENGLISH)
         df.timeZone = TimeZone.getTimeZone("UTC")
         val date = df.parse(query.timestamp)
         val formatter =
-            SimpleDateFormat("dd-MM-yyyy '|' hh:mm a", Locale.getDefault())
+            SimpleDateFormat("dd-MM-yyyy '|' hh:mm a", Locale.ENGLISH)
         formatter.timeZone = TimeZone.getDefault()
         val dateStr = formatter.format(date!!)
         holder.time.text = dateStr

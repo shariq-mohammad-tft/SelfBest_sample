@@ -2,16 +2,15 @@ package com.tft.selfbest.ui.dialog
 
 import android.app.DatePickerDialog
 import android.app.Dialog
+import android.content.Context
 import android.os.Bundle
+import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.Button
-import android.widget.TextView
+import android.widget.*
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -23,7 +22,6 @@ import com.tft.selfbest.models.SelectedCategory
 import com.tft.selfbest.ui.activites.HomeActivity
 import com.tft.selfbest.ui.adapter.SelectCategoryAdapter
 import com.tft.selfbest.ui.fragments.activityLog.ActivityLogFragment
-import com.tft.selfbest.ui.fragments.activityLog.ForCategories
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
@@ -36,6 +34,7 @@ import kotlin.collections.ArrayList
 class ActivityLogFiltersDialog(
     private val applyFilterListener: FilterListener,
     private val categories: List<SelectedCategory>,
+    private val selectedCategories: MutableList<String>
 ) : Fragment(), View.OnClickListener, SelectCategoryAdapter.SelectionOfCategories {
 
     @Inject
@@ -48,9 +47,10 @@ class ActivityLogFiltersDialog(
     var selectedDuration = "daily"
     var startDate = ""
     var endDate = ""
-    val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.US)
+    val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
     var custom_selected = false
-    var selectedCategories = mutableListOf<String>()
+//    var selectedCategories = mutableListOf<String>()
+    var flag = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -62,13 +62,18 @@ class ActivityLogFiltersDialog(
         selectedPlatform = preference.selectedPlatform!!
         selectedDuration = preference.selectedDuration!!
         val sortedList = categories.sortedByDescending { it.duration }
-        for(cat in sortedList.take(3)){
-            selectedCategories.add(cat.category)
-        }
+//        for (cat in sortedList.take(3)) {
+//            selectedCategories.add(cat.category)
+//        }
+        val layoutParams = binding.givenCategories.layoutParams
+        layoutParams.height = if(selectedCategories.isEmpty()) 0 else ViewGroup.LayoutParams.WRAP_CONTENT
+        binding.givenCategories.layoutParams = layoutParams
+        binding.givenCategories.requestLayout()
         binding.givenCategories.layoutManager = LinearLayoutManager(binding.root.context)
         binding.givenCategories.adapter = SelectCategoryAdapter(
             binding.root.context,
             sortedList,
+            selectedCategories,
             this
         )
         setClickListeners()
@@ -81,7 +86,6 @@ class ActivityLogFiltersDialog(
         spinAdapter.setDropDownViewResource(R.layout.spinner_dropdown_style)
         binding.platform.adapter = spinAdapter
         val index = spinAdapter.getPosition(selectedPlatform)
-        Log.e("Spinner", index.toString())
         binding.platform.setSelection(index)
         val spinAdapter1 = ArrayAdapter(
             binding.root.context,
@@ -90,9 +94,12 @@ class ActivityLogFiltersDialog(
         )
         spinAdapter1.setDropDownViewResource(R.layout.spinner_dropdown_style)
         binding.duration.adapter = spinAdapter1
+        flag = true
         val index1 = spinAdapter1.getPosition(selectedDuration)
-        Log.e("Spinner2", index1.toString())
-        binding.duration.setSelection(index1)
+        Log.e("Flag Outside", flag.toString())
+        binding.duration.setSelection(index1, false)
+        flag = false
+        Log.e("Flag Outside 1", flag.toString())
 
         binding.platform.onItemSelectedListener =
             object : AdapterView.OnItemSelectedListener {
@@ -108,27 +115,33 @@ class ActivityLogFiltersDialog(
                 }
             }
 
-        binding.duration.onItemSelectedListener =
-            object : AdapterView.OnItemSelectedListener {
-                override fun onNothingSelected(parent: AdapterView<*>?) {}
-                override fun onItemSelected(
-                    parent: AdapterView<*>?,
-                    view: View?,
-                    pos: Int,
-                    id: Long
-                ) {
+        binding.duration.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                pos: Int,
+                id: Long
+            ) {
+                if (!flag) {
                     val selectedItem = binding.duration.selectedItem as String
                     selectedDuration = selectedItem
                     if (selectedItem.equals("custom")) {
+                        Log.e("Flag Inside", flag.toString())
                         custom_selected = true
                         val dialog = Dialog(binding.root.context)
                         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
                         dialog.setCancelable(false)
                         dialog.setContentView(R.layout.custom_date_dialog_layout)
-                        val startDateContainer = dialog.findViewById(R.id.start_date) as TextView
+                        val startDateContainer =
+                            dialog.findViewById(R.id.start_date) as TextView
                         val endDateContainer = dialog.findViewById(R.id.end_date) as TextView
                         val okBtn = dialog.findViewById(R.id.ok) as TextView
                         val cancelBtn = dialog.findViewById(R.id.cancel) as TextView
+                        if(startDate.isNotEmpty())
+                            startDateContainer.text = startDate
+                        if(endDate.isNotEmpty())
+                            endDateContainer.text = endDate
                         startDateContainer.setOnClickListener {
                             val c = Calendar.getInstance()
 
@@ -140,7 +153,10 @@ class ActivityLogFiltersDialog(
                                 DatePickerDialog(
                                     binding.root.context,
                                     { view, year, monthOfYear, dayOfMonth ->
-                                        startDate = "${year}-${DecimalFormat("00").format(monthOfYear+1)}-${DecimalFormat("00").format(dayOfMonth)}"
+                                        startDate =
+                                            "${year}-${DecimalFormat("00").format(monthOfYear + 1)}-${
+                                                DecimalFormat("00").format(dayOfMonth)
+                                            }"
                                         startDateContainer.text = startDate
                                     },
                                     year, month, day
@@ -158,23 +174,43 @@ class ActivityLogFiltersDialog(
                                 DatePickerDialog(
                                     binding.root.context,
                                     { view, year, monthOfYear, dayOfMonth ->
-                                        endDate = "${year}-${DecimalFormat("00").format(monthOfYear+1)}-${DecimalFormat("00").format(dayOfMonth)}"
+                                        endDate =
+                                            "${year}-${DecimalFormat("00").format(monthOfYear + 1)}-${
+                                                DecimalFormat("00").format(dayOfMonth)
+                                            }"
                                         endDateContainer.setText(endDate)
                                     },
                                     year, month, day
                                 )
                             datePickerDialog.show()
                         }
-                        okBtn.setOnClickListener{
+                        okBtn.setOnClickListener {
+                            if (startDate.isEmpty() || endDate.isEmpty()) {
+                                Toast.makeText(
+                                    requireContext(),
+                                    "Please choose valid dates",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                binding.duration.setSelection(spinAdapter1.getPosition("daily"))
+                            }else if(dateFormat.parse(endDate)?.before(dateFormat.parse(startDate)) == true){
+                                Toast.makeText(
+                                    requireContext(),
+                                    "Start date can't be more than end date",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                binding.duration.setSelection(spinAdapter1.getPosition("daily"))
+                            }
                             dialog.dismiss()
                         }
-                        cancelBtn.setOnClickListener{
+                        cancelBtn.setOnClickListener {
+                            binding.duration.setSelection(spinAdapter1.getPosition("daily"))
                             dialog.dismiss()
                         }
                         dialog.show()
                     }
                 }
             }
+        }
 
         return binding.root
     }
@@ -212,7 +248,12 @@ class ActivityLogFiltersDialog(
                 if (custom_selected) {
                     val bundle = Bundle()
                     bundle.putSerializable("Categories", ArrayList(selectedCategories))
-                    val ALFragment = ActivityLogFragment(selectedPlatform!!, selectedDuration!!, startDate, endDate)
+                    val ALFragment = ActivityLogFragment(
+                        selectedPlatform,
+                        selectedDuration,
+                        startDate,
+                        endDate
+                    )
                     ALFragment.arguments = bundle
                     transaction.replace(
                         R.id.fragmentContainerView,
@@ -226,10 +267,10 @@ class ActivityLogFiltersDialog(
 //                        startDate,
 //                        endDate
 //                    )
-                else{
+                else {
                     val bundle = Bundle()
                     bundle.putSerializable("Categories", ArrayList(selectedCategories))
-                    val ALFragment = ActivityLogFragment(selectedPlatform!!, selectedDuration!!, "", "")
+                    val ALFragment = ActivityLogFragment(selectedPlatform, selectedDuration, "", "")
                     ALFragment.arguments = bundle
                     transaction.replace(
                         R.id.fragmentContainerView,
@@ -237,8 +278,8 @@ class ActivityLogFiltersDialog(
                         //ActivityLogFragment(getSelectedCategories(), selectedPlatform, selectedDuration, startDate, endDate, false)
                     )
                 }
-                //transaction.addToBackStack(null)
                 transaction.commit()
+                //transaction.addToBackStack(null)
                 //requireActivity().supportFragmentManager.popBackStack()
             }
 
@@ -278,5 +319,27 @@ class ActivityLogFiltersDialog(
 
     override fun deSelectCategory(category: SelectedCategory) {
         selectedCategories.remove(category.category)
+    }
+}
+
+class CustomSpinner(context: Context, attrs: AttributeSet?):androidx.appcompat.widget.AppCompatSpinner(
+    context,
+    attrs
+)
+{
+    var listener: OnItemSelectedListener? = null
+
+    override fun setSelection(position: Int)
+    {
+        super.setSelection(position)
+        if (position == selectedItemPosition)
+        {
+            listener!!.onItemSelected(this, selectedView, position, selectedItemId)
+        }
+    }
+
+    override fun setOnItemSelectedListener(listener: OnItemSelectedListener?)
+    {
+        this.listener = listener
     }
 }

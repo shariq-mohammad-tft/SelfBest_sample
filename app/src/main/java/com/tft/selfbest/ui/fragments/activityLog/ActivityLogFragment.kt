@@ -1,6 +1,5 @@
 package com.tft.selfbest.ui.fragments.activityLog
 
-import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
@@ -11,7 +10,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
@@ -20,8 +18,7 @@ import com.github.mikephil.charting.data.RadarData
 import com.github.mikephil.charting.data.RadarDataSet
 import com.github.mikephil.charting.data.RadarEntry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
-import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayoutMediator
+import com.github.mikephil.charting.highlight.Highlight
 import com.tft.selfbest.R
 import com.tft.selfbest.data.SelfBestPreference
 import com.tft.selfbest.databinding.FragmentActivityLogBinding
@@ -57,6 +54,7 @@ class ActivityLogFragment(
     var categoriesToDisplay: MutableList<SelectedCategory> = mutableListOf()
     var selectedCategories: MutableList<String>? = null
     lateinit var startDate: String
+    var focusTime = 0.0
     val startDateCal = Calendar.getInstance()
     val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
 
@@ -180,7 +178,6 @@ class ActivityLogFragment(
                 val list: ArrayList<RadarEntry> = ArrayList()
                 val labels: MutableList<String> = mutableListOf()
                 binding.hoursSaved.text = getTimeInFormat(it.data!!.timeSaved)
-                binding.timeSaved.text = getTimeInFormat(it.data.focusTime)
                 Log.e("Focus Time 1", it.data.focusTime.toString())
                 Log.e("Focus Time", getTimeInFormat(it.data.focusTime))
                 binding.distractedTime.text = getTimeInFormat(it.data.distractedTime)
@@ -211,6 +208,7 @@ class ActivityLogFragment(
 //                    if (getSelectedCategories().isEmpty() && firstTime) {
 //                        setSelectedCategories(mutableListOf())
 //                    }
+                focusTime = 0.0
                 categoriesToDisplay.clear()
                 if (selectedCategories != null) {
                     for (cat in categories) {
@@ -218,12 +216,15 @@ class ActivityLogFragment(
                             categoriesToDisplay.add(cat)
                     }
                 } else {
+                    selectedCategories = mutableListOf()
                     for (cat in categories.sortedByDescending { it.duration }.take(3)) {
                         categoriesToDisplay.add(cat)
+                        selectedCategories!!.add(cat.category)
                     }
                 }
                 Log.e("Categories to display", categoriesToDisplay.toString())
                     for (cat in categoriesToDisplay) {
+                        focusTime += cat.duration
                         list.add(RadarEntry(cat.duration.toFloat()))
                         labels.add(
                             if (cat.category.length >= 10) cat.category.substring(
@@ -239,6 +240,7 @@ class ActivityLogFragment(
                     binding.root.context,
                     categoriesToDisplay
                 )
+                binding.timeSaved.text = getTimeInFormat(focusTime)
 
             } else if (it is NetworkResponse.Error) {
                 binding.progress.visibility = View.GONE
@@ -295,6 +297,7 @@ class ActivityLogFragment(
 
         binding.RadarChart.data = radarData
         //binding.RadarChart.getAxisLeft().setDrawLabels(false);
+//        binding.RadarChart.highlightValue(Highlight(1f,0, 0))
         binding.RadarChart.yAxis.setDrawLabels(false);
         //binding.RadarChart.getXAxis().setDrawLabels(false);
         binding.RadarChart.description.text = ""
@@ -364,7 +367,7 @@ class ActivityLogFragment(
                 val transaction = fragmentManager.beginTransaction()
                 transaction.replace(
                     R.id.fragmentContainerView,
-                    ActivityLogFiltersDialog(this, categories)
+                    ActivityLogFiltersDialog(this, categories, selectedCategories?: mutableListOf())
                 )
                 transaction.addToBackStack(null)
                 transaction.commit()

@@ -26,9 +26,7 @@ class CategoryAdapter(
     override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {
         val category = list[position]
         //holder.state.isChecked = true
-        val rnd = Random()
-        val color: Int = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256))
-        holder.circleImage.setColorFilter(color)
+        holder.circleImage.setColorFilter(Color.rgb(0, 255, 0))
         holder.categoryName.text = category.category
         holder.duration.text = getTimeInFormat(category.duration)
 

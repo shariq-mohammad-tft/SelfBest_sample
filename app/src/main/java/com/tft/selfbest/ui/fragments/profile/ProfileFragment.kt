@@ -196,6 +196,7 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
             "Chief Technology Officer (CTO)",
             "Chief Information Officer (CIO)"
         )
+
         val adapter =
             ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, suggestions)
         binding.jobPosition.threshold = 0
