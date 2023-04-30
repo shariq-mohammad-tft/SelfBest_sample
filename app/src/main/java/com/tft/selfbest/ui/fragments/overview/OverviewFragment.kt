@@ -21,10 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tft.selfbest.R
 import com.tft.selfbest.data.SelfBestPreference
 import com.tft.selfbest.databinding.FragmentOverviewBinding
-import com.tft.selfbest.models.ActivityTimelineResponse
-import com.tft.selfbest.models.GetGoHourResponse
-import com.tft.selfbest.models.InputData
-import com.tft.selfbest.models.StartTime
+import com.tft.selfbest.models.*
 import com.tft.selfbest.models.overview.CourseDetail
 import com.tft.selfbest.network.NetworkResponse
 import com.tft.selfbest.ui.activites.ChatActivity
@@ -84,7 +81,7 @@ class OverviewFragment : Fragment(), View.OnClickListener {
 //        binding.installedAppList.layoutManager = GridLayoutManager(context, 3)
         binding.taskSummaryList.layoutManager = LinearLayoutManager(context)
         //val activity = activity as HomeActivity
-        preferences.setFilters("daily", "Mobile")
+        preferences.setFilters(DurationFilter("Mobile", "daily", null, null))
 
         gghViewViewModel.activityLogObserver.observe(viewLifecycleOwner){
             if (it is NetworkResponse.Success) {

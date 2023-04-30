@@ -3,6 +3,7 @@ package com.tft.selfbest.data
 import android.app.Application
 import android.content.Context
 import android.util.Log
+import com.tft.selfbest.models.DurationFilter
 import com.tft.selfbest.models.LogedInData
 import com.tft.selfbest.models.ProfileData
 import com.tft.selfbest.utils.JsonUtil.Companion.fromJson
@@ -28,8 +29,7 @@ class SelfBestPreference @Inject constructor(application: Application) {
         const val PROFILE_DATA = "_profile_data"
         const val FIRST_TIME = "_first_time"
         const val IS_ORG_ADMIN = "_is_org_admin"
-        const val SEL_DURATION = "_sel_duration"
-        const val SEL_PLATFORM = "_sel_platform"
+        const val FILTERS = "_filters"
     }
 
     val getLoginData: LogedInData?
@@ -94,16 +94,12 @@ class SelfBestPreference @Inject constructor(application: Application) {
         PreferenceUtil.setBoolean(_pref, Key.IS_ORG_ADMIN, data)
     }
 
-    fun setFilters(duration: String, platform: String) {
-        Log.e("SP", "$duration $platform")
-        PreferenceUtil.setString(_pref, Key.SEL_DURATION, duration)
-        PreferenceUtil.setString(_pref, Key.SEL_PLATFORM, platform)
+
+    val getFilters: DurationFilter?
+        get() = PreferenceUtil.getString(_pref, Key.FILTERS, null)?.fromJson<DurationFilter>()
+
+    fun setFilters(data: DurationFilter?) {
+        PreferenceUtil.setString(_pref, Key.FILTERS, data?.toJson())
     }
-
-    val selectedDuration: String?
-        get() = PreferenceUtil.getString(_pref, Key.SEL_DURATION, "daily")
-
-    val selectedPlatform: String?
-        get() = PreferenceUtil.getString(_pref, Key.SEL_PLATFORM, "Mobile")
 
 }

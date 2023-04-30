@@ -22,7 +22,7 @@ class AnsweredQueryAdapter(
     private val changeStatusListener: ChangeStatusListener
 ) : RecyclerView.Adapter<AnsweredQueryAdapter.AnsweredQueryViewHolder>() {
     //val status = listOf("Done", "In Progress")
-    val relevance = listOf("Easy", "Medium", "High")
+    val relevance = listOf("Low", "Medium", "High")
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AnsweredQueryViewHolder {
         return AnsweredQueryViewHolder(
             LayoutInflater.from(parent.context).inflate(R.layout.answered_query_entry, parent, false)
@@ -99,7 +99,7 @@ class AnsweredQueryAdapter(
         spinAdapter2.setDropDownViewResource(R.layout.spinner_dropdown_style)
         holder.rSpinner.adapter = spinAdapter2
         if(query.relevance == "") {
-            holder.rSpinner.setSelection(1)
+            holder.rSpinner.setSelection(0)
         }else{
             holder.rSpinner.setSelection(relevance.indexOf(query.relevance))
         }

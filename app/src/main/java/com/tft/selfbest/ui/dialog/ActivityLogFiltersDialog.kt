@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tft.selfbest.R
 import com.tft.selfbest.data.SelfBestPreference
 import com.tft.selfbest.databinding.FragmentActivityLogFiltersDialogBinding
+import com.tft.selfbest.models.DurationFilter
 import com.tft.selfbest.models.SelectedCategory
 import com.tft.selfbest.ui.activites.HomeActivity
 import com.tft.selfbest.ui.adapter.SelectCategoryAdapter
@@ -59,8 +60,17 @@ class ActivityLogFiltersDialog(
         // Inflate the layout for this fragment
         (activity as HomeActivity?)?.hideForFullScreen()
         binding = FragmentActivityLogFiltersDialogBinding.inflate(inflater)
-        selectedPlatform = preference.selectedPlatform!!
-        selectedDuration = preference.selectedDuration!!
+        val filters = preference.getFilters
+        Log.e("Shared Preference", filters.toString())
+        if(filters != null){
+            selectedPlatform = filters.platform
+            selectedDuration = filters.duration
+            if(selectedDuration.equals("custom"))
+                custom_selected = true
+            startDate = filters.startDate ?: ""
+            endDate = filters.endDate ?: ""
+
+        }
         val sortedList = categories.sortedByDescending { it.duration }
 //        for (cat in sortedList.take(3)) {
 //            selectedCategories.add(cat.category)
@@ -240,12 +250,11 @@ class ActivityLogFiltersDialog(
 
             }
             R.id.apply_filter -> {
-                Log.e("Filters", selectedPlatform + " " + selectedDuration)
-                preference.setFilters(selectedDuration, selectedPlatform)
                 val fragmentManager: FragmentManager = requireActivity().supportFragmentManager
                 fragmentManager.popBackStack()
                 val transaction = fragmentManager.beginTransaction()
                 if (custom_selected) {
+                    preference.setFilters(DurationFilter(selectedDuration, selectedPlatform, startDate, endDate))
                     val bundle = Bundle()
                     bundle.putSerializable("Categories", ArrayList(selectedCategories))
                     val ALFragment = ActivityLogFragment(
@@ -268,6 +277,7 @@ class ActivityLogFiltersDialog(
 //                        endDate
 //                    )
                 else {
+                    preference.setFilters(DurationFilter(selectedDuration, selectedPlatform, null, null))
                     val bundle = Bundle()
                     bundle.putSerializable("Categories", ArrayList(selectedCategories))
                     val ALFragment = ActivityLogFragment(selectedPlatform, selectedDuration, "", "")
