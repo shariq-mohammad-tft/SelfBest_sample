@@ -557,7 +557,6 @@ fun DialogForSkill(
 }*/
 
 /*---------------------shows complete list skills on single page with 50 enteries at a time------------------------*/
-/*
 @Composable
 fun DialogForSkill(
     options: List<String>,
@@ -624,7 +623,7 @@ fun DialogForSkill(
                             modifier = Modifier
                                 //.align(Alignment.CenterHorizontally)
                                 .background(color = Color(0xFF1D71D4))
-                                .fillMaxWidth().height(30.dp),
+                                .fillMaxWidth().height(30.dp).padding(0.dp,4.dp,0.dp,0.dp),
                             color = Color.White,
                             fontWeight = FontWeight.SemiBold
 
@@ -698,7 +697,7 @@ fun DialogForSkill(
         }
     }
 }
-*/
+/*
 @Composable
 fun DialogForSkill(
     options: List<String>,
@@ -804,6 +803,7 @@ fun DialogForSkill(
         }
     }
 }
+*/
 
 
 

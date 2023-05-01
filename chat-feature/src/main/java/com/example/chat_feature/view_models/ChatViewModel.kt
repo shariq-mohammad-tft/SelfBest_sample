@@ -156,6 +156,7 @@ class ChatViewModel @Inject constructor(
                         Log.d("chatlist_internal", it.convertToMessage().toString())
                         messageList.add(Resource.Success(it.convertToMessage()))
                     }
+
                     val lastmsg = messageList.last() as Resource.Success
                     if (!lastmsg.value.buttons.isNullOrEmpty()) {
                         lastmsg.value.isButtonEnabled = true
@@ -186,7 +187,7 @@ class ChatViewModel @Inject constructor(
     fun seenBotMessage() {
         viewModelScope.launch {
             safeApiCall {
-                api.botMessageSeenRequest(BotSeenRequest(userId))
+                api.botMessageSeenRequest(BotSeenRequest(userId,""))
             }
         }
     }

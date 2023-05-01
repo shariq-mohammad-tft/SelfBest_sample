@@ -2,6 +2,7 @@ package com.example.chat_feature.screens.chat
 
 
 import android.net.Uri
+import android.os.Build
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -38,7 +39,9 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
+import com.example.chat_feature.data.experts.BotSeenRequest
 import com.example.chat_feature.data.experts.ChatBetweenUserAndExpertRequest
 import com.example.chat_feature.data.response.expert_chat.ExpertChatRequest
 import com.example.chat_feature.navigation.AppScreen
@@ -84,6 +87,16 @@ fun ExpertChatScreen(
     Log.d(
         TAG, "ExpertChatScreen: SENDER - $senderId and RECEIVER - $receiverId and QueryId -$queryId"
     )
+    ComposableLifecycle { _, event ->
+        when (event) {
+
+
+            Lifecycle.Event.ON_STOP -> {
+                viewModel.seenBotMessage(BotSeenRequest(sentBy = senderId, queryId = queryId))
+            }
+            else -> Unit
+        }
+    }
 
 
 
@@ -227,10 +240,12 @@ fun ExpertChatScreen(
                                         navController
                                     )
                                 } else {
-                                    CardSelfMessage(
-                                        message = data.message ?: "",
-                                    timestamp = data.timestamp?: getCurrentTime()
-                                    )
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                        CardSelfMessage(
+                                            message = data.message ?: "",
+                                        timestamp = data.timestamp?: getCurrentTime()
+                                        )
+                                    }
                                 }
                             } else {
                                 // Receiver's message
@@ -534,10 +549,12 @@ fun ExpertChatScreenForClosedQuery(
                                         navController
                                     )
                                 } else {
-                                    CardSelfMessage(
-                                        message = data.message ?: "",
-                                    timestamp = data.timestamp ?: getCurrentTime()
-                                    )
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                        CardSelfMessage(
+                                            message = data.message ?: "",
+                                        timestamp = data.timestamp ?: getCurrentTime()
+                                        )
+                                    }
                                 }
                             } else {
                                 // Receiver's message

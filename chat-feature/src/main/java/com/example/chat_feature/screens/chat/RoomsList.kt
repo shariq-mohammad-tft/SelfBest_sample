@@ -392,9 +392,9 @@ fun BotCard(
                     )
 
                 )
-                Toast.makeText(
+                /*Toast.makeText(
                     context, "Opening Bot", Toast.LENGTH_LONG
-                ).show()
+                ).show()*/
 
             }) {
 
