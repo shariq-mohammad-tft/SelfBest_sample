@@ -564,95 +564,7 @@
                             android:scrollbarSize="10dp"
                             android:scrollbars="vertical"/>
                     </androidx.core.widget.NestedScrollView>
-                    <!--                        android:scrollbars="vertical"-->
-                    <!--                        android:scrollbarSize="5dp"/>-->
-
-
-                    <!--                    <androidx.recyclerview.widget.RecyclerView-->
-                    <!--                        android:id="@+id/skill_list"-->
-                    <!--                        android:layout_width="match_parent"-->
-                    <!--                        android:layout_height="wrap_content" />-->
-
-                    <!--                    <androidx.constraintlayout.widget.ConstraintLayout-->
-                    <!--                        android:id="@+id/add_skill_container"-->
-                    <!--                        android:layout_width="match_parent"-->
-                    <!--                        android:layout_height="wrap_content"-->
-                    <!--                        android:layout_marginTop="10dp"-->
-                    <!--                        android:visibility="gone">-->
-
-                    <!--                        <AutoCompleteTextView-->
-                    <!--                            android:id="@+id/skill"-->
-                    <!--                            android:layout_width="0dp"-->
-                    <!--                            android:layout_height="35dp"-->
-                    <!--                            android:layout_marginRight="10dp"-->
-                    <!--                            android:background="@drawable/upcoming_event_bg"-->
-                    <!--                            android:gravity="center_vertical"-->
-                    <!--                            android:inputType="text"-->
-                    <!--                            android:paddingLeft="10dp"-->
-                    <!--                            android:textColor="@color/privacy_bg_colour"-->
-                    <!--                            android:textSize="12dp"-->
-                    <!--                            app:layout_constraintEnd_toStartOf="@id/skill_level_container"-->
-                    <!--                            app:layout_constraintStart_toStartOf="parent"-->
-                    <!--                            app:layout_constraintTop_toTopOf="parent" />-->
-
-                    <!--                        <FrameLayout-->
-                    <!--                            android:id="@+id/skill_level_container"-->
-                    <!--                            android:layout_width="0dp"-->
-                    <!--                            android:layout_height="35dp"-->
-                    <!--                            android:layout_marginLeft="10dp"-->
-                    <!--                            android:background="@drawable/upcoming_event_bg"-->
-                    <!--                            app:layout_constraintEnd_toStartOf="@id/delete_skill"-->
-                    <!--                            app:layout_constraintStart_toEndOf="@id/skill"-->
-                    <!--                            app:layout_constraintTop_toTopOf="parent">-->
-
-                    <!--                            <Spinner-->
-                    <!--                                android:id="@+id/skill_level_spinner"-->
-                    <!--                                android:layout_width="match_parent"-->
-                    <!--                                android:layout_height="match_parent"-->
-                    <!--                                android:padding="5dp" />-->
-                    <!--                        </FrameLayout>-->
-
-                    <!--                        <ImageView-->
-                    <!--                            android:id="@+id/delete_skill"-->
-                    <!--                            android:layout_width="wrap_content"-->
-                    <!--                            android:layout_height="wrap_content"-->
-                    <!--                            android:padding="5dp"-->
-                    <!--                            android:src="@drawable/delete_icon"-->
-                    <!--                            app:layout_constraintEnd_toEndOf="parent"-->
-                    <!--                            app:layout_constraintStart_toEndOf="@id/skill_level_container"-->
-                    <!--                            app:layout_constraintTop_toTopOf="parent" />-->
-
-                    <!--                          </androidx.constraintlayout.widget.ConstraintLayout>-->
-
-
-                    <!--                    <LinearLayout-->
-                    <!--                        android:id="@+id/add_skill_btn"-->
-                    <!--                        android:layout_width="78dp"-->
-                    <!--                        android:layout_height="28dp"-->
-                    <!--                        android:layout_gravity="end"-->
-                    <!--                        android:layout_marginTop="20dp"-->
-                    <!--                        android:background="@drawable/done_bg"-->
-                    <!--                        android:gravity="center"-->
-                    <!--                        android:padding="5dp">-->
-
-                    <!--                        <ImageView-->
-                    <!--                            android:layout_width="wrap_content"-->
-                    <!--                            android:layout_height="wrap_content"-->
-                    <!--                            android:src="@drawable/circular_plus_icon" />-->
-
-                    <!--                        <TextView-->
-                    <!--                            android:id="@+id/skill_save_btn"-->
-                    <!--                            android:layout_width="wrap_content"-->
-                    <!--                            android:layout_height="wrap_content"-->
-                    <!--                            android:layout_marginLeft="8dp"-->
-                    <!--                            android:text="Add new"-->
-                    <!--                            android:fontFamily="@font/roboto_medium"-->
-                    <!--                            android:textColor="@color/white"-->
-                    <!--                            android:textSize="12dp" />-->
-                    <!--                    </LinearLayout>-->
-
-
-                </LinearLayout>
+                   </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/account_setting_container"
@@ -690,19 +602,6 @@
                             android:fontFamily="@font/roboto_medium_new"
                             android:gravity="start"
                             android:text="Deactivate account temporarily" />
-
-                        <!--                        <TextView-->
-                        <!--                            android:id="@+id/datn"-->
-                        <!--                            android:layout_width="wrap_content"-->
-                        <!--                            android:layout_height="wrap_content"-->
-                        <!--                            android:gravity="start|center_vertical"-->
-                        <!--                            android:text="No"-->
-                        <!--                            android:background="@drawable/upcoming_event_bg"-->
-                        <!--                            android:paddingVertical="10dp"-->
-                        <!--                            android:paddingHorizontal="34dp"-->
-                        <!--                            android:textColor="@color/black"-->
-                        <!--                            android:textSize="12dp" />-->
-
                         <TextView
                             android:id="@+id/daty"
                             android:layout_width="wrap_content"
@@ -728,20 +627,7 @@
                             android:fontFamily="@font/roboto_medium_new"
                             android:gravity="start"
                             android:text="Delete account permanently" />
-
-                        <!--                        <TextView-->
-                        <!--                            android:id="@+id/datn"-->
-                        <!--                            android:layout_width="wrap_content"-->
-                        <!--                            android:layout_height="wrap_content"-->
-                        <!--                            android:gravity="start|center_vertical"-->
-                        <!--                            android:text="No"-->
-                        <!--                            android:background="@drawable/upcoming_event_bg"-->
-                        <!--                            android:paddingVertical="10dp"-->
-                        <!--                            android:paddingHorizontal="34dp"-->
-                        <!--                            android:textColor="@color/black"-->
-                        <!--                            android:textSize="12dp" />-->
-
-                        <TextView
+       <TextView
                             android:id="@+id/dapy"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -766,18 +652,6 @@
                             android:fontFamily="@font/roboto_medium_new"
                             android:gravity="start"
                             android:text="Delete data" />
-
-                        <!--                        <TextView-->
-                        <!--                            android:id="@+id/datn"-->
-                        <!--                            android:layout_width="wrap_content"-->
-                        <!--                            android:layout_height="wrap_content"-->
-                        <!--                            android:gravity="start|center_vertical"-->
-                        <!--                            android:text="No"-->
-                        <!--                            android:background="@drawable/upcoming_event_bg"-->
-                        <!--                            android:paddingVertical="10dp"-->
-                        <!--                            android:paddingHorizontal="34dp"-->
-                        <!--                            android:textColor="@color/black"-->
-                        <!--                            android:textSize="12dp" />-->
 
                         <TextView
                             android:id="@+id/ddy"
