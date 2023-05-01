@@ -190,7 +190,7 @@ class ActivityLogFragment(
                 list.add(RadarEntry(it.data.defaultList.others.toFloat()))
                 labels.add("Others")
                 list.add(RadarEntry(it.data.defaultList.distraction.toFloat()))
-                labels.add("Distraction")
+                labels.add("Distra..")
 
                 if (it.data.selectedCategories != null) {
                     categories = it.data.selectedCategories
@@ -227,10 +227,10 @@ class ActivityLogFragment(
                         focusTime += cat.duration
                         list.add(RadarEntry(cat.duration.toFloat()))
                         labels.add(
-                            if (cat.category.length >= 10) cat.category.substring(
+                            if (cat.category.length > 6) cat.category.substring(
                                 0,
-                                10
-                            ) else cat.category
+                                6
+                            )+ ".." else cat.category
                         )
                     }
                 setRadarChart(list, labels)

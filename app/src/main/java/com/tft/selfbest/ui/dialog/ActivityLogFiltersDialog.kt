@@ -136,6 +136,7 @@ class ActivityLogFiltersDialog(
                 if (!flag) {
                     val selectedItem = binding.duration.selectedItem as String
                     selectedDuration = selectedItem
+                    custom_selected = false
                     if (selectedItem.equals("custom")) {
                         Log.e("Flag Inside", flag.toString())
                         custom_selected = true
