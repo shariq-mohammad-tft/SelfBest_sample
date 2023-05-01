@@ -132,8 +132,8 @@
 
                     <com.github.mikephil.charting.charts.RadarChart
                         android:id="@+id/RadarChart"
-                        android:layout_width="340dp"
-                        android:layout_height="300dp"
+                        android:layout_width="320dp"
+                        android:layout_height="280dp"
                         app:layout_constraintBottom_toBottomOf="@id/rc_bg"
                         app:layout_constraintEnd_toEndOf="@id/rc_bg"
                         app:layout_constraintStart_toStartOf="@id/rc_bg"
@@ -279,7 +279,8 @@
                                 android:text="Break"
                                 android:textColor="#3E3E3E"
                                 android:textSize="12sp"
-                                app:drawableLeftCompat="@drawable/ic_circle" />
+                                app:drawableLeftCompat="@drawable/ic_circle"
+                                app:drawableTint="#2FD765" />
 
                             <TextView
                                 android:id="@+id/break_time"
@@ -306,11 +307,11 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="5dp"
                                 android:drawablePadding="5dp"
-                                android:drawableTint="#2FD765"
                                 android:text="Other"
                                 android:textColor="#3E3E3E"
                                 android:textSize="12sp"
-                                app:drawableLeftCompat="@drawable/ic_circle" />
+                                app:drawableLeftCompat="@drawable/ic_circle"
+                                app:drawableTint="#2FD765" />
 
                             <TextView
                                 android:id="@+id/others"
@@ -340,7 +341,7 @@
                                 android:textColor="#3E3E3E"
                                 android:textSize="12sp"
                                 app:drawableLeftCompat="@drawable/ic_circle"
-                                app:drawableTint="#E20404" />
+                                android:drawableTint="#2FD765" />
 
                             <TextView
                                 android:id="@+id/distraction_time1"
