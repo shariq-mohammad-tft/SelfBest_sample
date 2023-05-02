@@ -91,7 +91,7 @@ class PendingSkillRequestAdapter(
                     val filteredList1 = mutableListOf<SkillResponse>()
                     list
                         .filter {
-                            (it.skill.contains(constraint!!)|| it.email.contains(constraint))
+                            (it.skill.contains(constraint!!, ignoreCase = true)|| it.email.contains(constraint, ignoreCase = true))
                         }
                         .forEach { filteredList1.add(it) }
                     filteredList1
