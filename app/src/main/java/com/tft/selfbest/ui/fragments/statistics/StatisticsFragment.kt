@@ -550,6 +550,10 @@ class StatisticsFragment : Fragment(), View.OnClickListener,
         viewModel.updateStatus(id, status)
     }
 
+    override fun updateRating(id: Int, rating: Int) {
+        viewModel.updateRating(id, rating)
+    }
+
 //    override fun filterData(platform: String, duration: String) {
 //        when (duration) {
 //            "Daily" -> {

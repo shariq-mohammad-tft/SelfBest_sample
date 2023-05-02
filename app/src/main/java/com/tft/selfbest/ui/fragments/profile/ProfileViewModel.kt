@@ -46,6 +46,8 @@ class ProfileViewModel @Inject constructor(
     private val notificationResponse = MutableLiveData<NetworkResponse<DeviceTokenResponse>>()
     val notificationResponseObserver: LiveData<NetworkResponse<DeviceTokenResponse>> = notificationResponse
 
+    private val jobsList = MutableLiveData<NetworkResponse<List<String>>>()
+    val jobsListObserver: LiveData<NetworkResponse<List<String>>> = jobsList
     fun getProfileData(isNoNeedOfPersonalityList: Boolean) {
         viewModelScope.launch {
             val userId = preference.getLoginData?.id ?: return@launch
@@ -80,6 +82,7 @@ class ProfileViewModel @Inject constructor(
             //val userId = preference.getLoginData?.id ?: return@launch
             repository.getJobs().collect {
 //                profileLiveData.postValue()
+                jobsList.postValue(it)
             }
         }
     }

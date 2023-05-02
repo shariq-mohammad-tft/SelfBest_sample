@@ -10,7 +10,7 @@ data class QueryResponse (
     @SerializedName("subject")
     val subject: String,
     @SerializedName("query_status")
-    val query_status: Boolean,
+    val query_status: Boolean?,
     @SerializedName("timestamp")
     val timestamp: String,
     @SerializedName("rating")

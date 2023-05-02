@@ -105,7 +105,7 @@
                         android:layout_weight="1"
                         android:fontFamily="@font/roboto_medium_new"
                         android:gravity="end"
-                        android:text="2hrs:30mins"
+                        android:text="00hrs:00mins"
                         android:textColor="@color/white"
                         android:textSize="14sp" />
                 </LinearLayout>
@@ -188,7 +188,7 @@
                                 android:layout_marginEnd="5dp"
                                 android:layout_weight="1"
                                 android:gravity="end"
-                                android:text="2h:30m"
+                                android:text="00h:00m"
                                 android:textColor="#3E3E3E"
                                 android:textSize="14sp" />
                         </LinearLayout>
@@ -219,7 +219,7 @@
                                 android:layout_marginEnd="5dp"
                                 android:layout_weight="1"
                                 android:gravity="end"
-                                android:text="3h:30m"
+                                android:text="00h:00m"
                                 android:textColor="#3E3E3E"
                                 android:textSize="14sp" />
                         </LinearLayout>
@@ -289,7 +289,7 @@
                                 android:layout_marginEnd="5dp"
                                 android:layout_weight="1"
                                 android:gravity="end"
-                                android:text="2h:30m"
+                                android:text="00h:00m"
                                 android:textColor="#3E3E3E"
                                 android:textSize="12sp" />
                         </LinearLayout>
@@ -320,7 +320,7 @@
                                 android:layout_marginEnd="5dp"
                                 android:layout_weight="1"
                                 android:gravity="end"
-                                android:text="3h:30m"
+                                android:text="00h:00m"
                                 android:textColor="#3E3E3E"
                                 android:textSize="12sp" />
                         </LinearLayout>
@@ -350,7 +350,7 @@
                                 android:layout_marginEnd="5dp"
                                 android:layout_weight="1"
                                 android:gravity="end"
-                                android:text="3h:30m"
+                                android:text="00h:00m"
                                 android:textColor="#3E3E3E"
                                 android:textSize="12sp" />
                         </LinearLayout>
@@ -443,7 +443,7 @@
                         android:layout_weight="1"
                         android:fontFamily="@font/roboto_medium_new"
                         android:gravity="end"
-                        android:text="2hrs:30mins"
+                        android:text="00hrs:00mins"
                         android:textColor="@color/white"
                         android:textSize="14sp" />
                 </LinearLayout>
@@ -505,6 +505,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15dp"
+                    android:visibility="gone"
                     app:layout_constraintTop_toBottomOf="@id/lines"
                     app:layout_constraintStart_toStartOf="parent"/>
 
@@ -516,6 +517,37 @@
                     app:layout_constraintTop_toBottomOf="@id/lines"
                     app:layout_constraintStart_toStartOf="parent"
                     android:visibility="gone"/>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/without_data"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:layout_constraintTop_toBottomOf="@id/lines"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:visibility="gone">
+
+                    <com.airbnb.lottie.LottieAnimationView
+                        android:id="@+id/animation_view"
+                        android:layout_width="220dp"
+                        android:layout_height="220dp"
+                        app:lottie_rawRes="@raw/no_data"
+                        app:lottie_loop="true"
+                        app:lottie_autoPlay="true"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="There is nothing to show"
+                        android:textSize="14sp"
+                        android:textColor="#7D7D7D"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/animation_view"/>
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
 <!--                <com.google.android.material.tabs.TabLayout-->
 <!--                    android:id="@+id/tabLayout"-->

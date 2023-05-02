@@ -48,6 +48,8 @@ class UserManagementAccountSetting : Fragment(),
                 deleteRequests = it.data!!
                 if (deleteRequests.isNotEmpty()) {
                     isData = true
+                    binding.withData.visibility = View.VISIBLE
+                    binding.withoutData.visibility = View.GONE
                     binding.cbContainer.visibility = View.VISIBLE
                     binding.requests.layoutManager = LinearLayoutManager(binding.root.context)
                     adapter = DeleteRequestsAdapter(
@@ -57,6 +59,9 @@ class UserManagementAccountSetting : Fragment(),
                         this
                     )
                     binding.requests.adapter = adapter
+                }else{
+                    binding.withData.visibility = View.GONE
+                    binding.withoutData.visibility = View.VISIBLE
                 }
             }
         }

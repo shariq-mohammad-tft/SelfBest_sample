@@ -49,9 +49,15 @@ class UserManagementRequestReject : Fragment(), RejectedRequestAdapter.AcceptReq
             if(it is NetworkResponse.Success){
                 binding.progress.visibility = View.GONE
                 requests = it.data!!
-                if(requests.isNotEmpty()){
+                if (requests.isNotEmpty()) {
                     binding.cbContainer.visibility = View.VISIBLE
+                    binding.withData.visibility = View.VISIBLE
+                    binding.withoutData.visibility = View.GONE
                     isData = true
+                }else{
+                    binding.withData.visibility = View.GONE
+                    binding.withoutData.visibility = View.VISIBLE
+                    binding.animationView.playAnimation()
                 }
 //                for(req in requests){
 //                    if(req.status.equals("pending")){

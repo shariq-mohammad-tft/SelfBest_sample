@@ -32,6 +32,11 @@ class RejectedRequestAdapter(
         val request = fileteredList[position]
         var check = false
         holder.gmail.text = request.email
+        holder.linkedin.text = request.linkedInUrl
+        if(request.linkedInUrl.isEmpty())
+            holder.linkedinContainer.visibility = View.GONE
+        else
+            holder.linkedinContainer.visibility = View.VISIBLE
         holder.select.isChecked = selectAll
         val spinAdapter = ArrayAdapter(
             context,
@@ -91,6 +96,8 @@ class RejectedRequestAdapter(
         val role: Spinner = view.findViewById(R.id.spinner)
         val acceptButton: TextView = view.findViewById(R.id.accept)
         val select: CheckBox = view.findViewById(R.id.checkbox1)
+        val linkedin: TextView = view.findViewById(R.id.linkedin_id)
+        val linkedinContainer: LinearLayout = view.findViewById(R.id.linked_in_container)
     }
 
     override fun getFilter(): Filter {

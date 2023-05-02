@@ -51,6 +51,12 @@ class UserManagementAcceptedSkill : Fragment(),
                 }
                 if (acceptedSkills.isNotEmpty()) {
                     binding.cbContainer.visibility = View.VISIBLE
+                    binding.withData.visibility = View.VISIBLE
+                    binding.withoutData.visibility = View.GONE
+                }else{
+                    binding.withData.visibility = View.GONE
+                    binding.withoutData.visibility = View.VISIBLE
+                    binding.animationView.playAnimation()
                 }
                 binding.acceptedSkill.layoutManager = LinearLayoutManager(binding.root.context)
                 adapter = AcceptedSkillRequestAdapter(

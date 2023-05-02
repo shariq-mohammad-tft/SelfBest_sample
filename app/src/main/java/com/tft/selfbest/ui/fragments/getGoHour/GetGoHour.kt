@@ -326,6 +326,7 @@ class GetGoHour : Fragment(), View.OnClickListener {
         binding.lChart.axisRight.axisMinimum = 0F
         binding.lChart.xAxis.axisMinimum = 0F
         binding.lChart.xAxis.axisMaximum = (binding.timeHour.text.toString().toInt()*60F)
+
         binding.exPg.axisLeft.axisMinimum = 0F
         binding.exPg.axisRight.axisMinimum = 0F
         yVals.add(Entry(0F, 0F))
@@ -342,7 +343,8 @@ class GetGoHour : Fragment(), View.OnClickListener {
         binding.lChart.description.text = "Time(in mins)"
         binding.exPg.xAxis.position = XAxis.XAxisPosition.BOTTOM
         binding.exPg.axisRight.isEnabled = false
-        binding.exPg.description.isEnabled = false
+        binding.exPg.description.isEnabled = true
+        binding.lChart.legend.isEnabled = false
         //binding.lChart.animateX(1800, Easing.EaseInExpo)
         binding.lChart.data = data
         binding.lChart.xAxis.setDrawGridLines(false)

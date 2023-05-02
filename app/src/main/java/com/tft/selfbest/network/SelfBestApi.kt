@@ -387,10 +387,19 @@ interface SelfBestApi {
     ): List<QueryAnsweredResponse>
 
     @FormUrlEncoded
-    @POST("https://googlebot.self.best/userresponses/update-status/")
+    @POST("https://webbot.self.best/userresponses/update-status/")
     suspend fun updateStatus(
         @Field("id") id: Int,
-        @Field("status") status: Int
+        @Field("status") status: Int,
+        @Field("db_detail") db_detail: String
+    ): UpdationBody
+
+    @FormUrlEncoded
+    @POST("https://webbot.self.best/userresponses/update-rating/")
+    suspend fun updateRating(
+        @Field("id") id: Int,
+        @Field("rating") rating: Int,
+        @Field("db_detail") db_detail: String
     ): UpdationBody
 
     @FormUrlEncoded

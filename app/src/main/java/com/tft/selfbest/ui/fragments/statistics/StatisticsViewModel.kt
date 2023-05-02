@@ -103,6 +103,16 @@ class StatisticsViewModel @Inject constructor(
         }
     }
 
+    fun updateRating(id: Int, rating: Int) {
+        viewModelScope.launch {
+            statisticsRepository.updateRating(id, rating).collect {
+                if (it is NetworkResponse.Success) {
+                    updation.postValue(it)
+                }
+            }
+        }
+    }
+
     fun updateRelevance(id: Int, status: Int, db_detail: String) {
         viewModelScope.launch {
             statisticsRepository.updateRelevance(id, status, db_detail).collect {

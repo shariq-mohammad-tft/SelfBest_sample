@@ -48,7 +48,13 @@ class UserManagementRequestAccept : Fragment(), AcceptedRequestAdapter.RejectReq
                 requests = it.data!!
                 if (requests.isNotEmpty()) {
                     binding.cbContainer.visibility = View.VISIBLE
+                    binding.withData.visibility = View.VISIBLE
+                    binding.withoutData.visibility = View.GONE
                     isData = true
+                }else{
+                    binding.withData.visibility = View.GONE
+                    binding.withoutData.visibility = View.VISIBLE
+                    binding.animationView.playAnimation()
                 }
 //                for(req in requests){
 //                    if(req.status.equals("pending")){
