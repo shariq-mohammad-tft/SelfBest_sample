@@ -10,6 +10,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.chat_feature.data.SocketUpdate
+import com.example.chat_feature.data.experts.BotSeenRequest
 import com.example.chat_feature.data.experts.ChatBetweenUserAndExpertRequest
 import com.example.chat_feature.data.response.UploadPhotoResponse
 import com.example.chat_feature.data.response.expert_chat.ChatJson
@@ -180,6 +181,13 @@ class ExpertChatViewModel @Inject constructor(
             }
         }
 
+    fun seenBotMessage(data:BotSeenRequest) {
+        viewModelScope.launch {
+            safeApiCall {
+                api.botMessageSeenRequest(BotSeenRequest(data.sentBy,data.queryId))
+            }
+        }
+    }
 
     private fun buildImageUploadMessage(
         caption: String,

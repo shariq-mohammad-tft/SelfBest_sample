@@ -260,20 +260,13 @@ class ActivityLogFragment(
         binding.answered.setOnClickListener(this)
     }
 
-    private fun setRadarChart(list: ArrayList<RadarEntry>, labels: List<String>) {
+    /*private fun setRadarChart(list: ArrayList<RadarEntry>, labels: List<String>) {
         //binding.RadarChart.setBackgroundColor(Color.parseColor("#accbff"))
         binding.RadarChart.webLineWidth = 2f
         binding.RadarChart.webColor = Color.BLUE
         //binding.RadarChart.webLineWidthInner = 2f
         binding.RadarChart.webColorInner = Color.BLACK
         binding.RadarChart.webAlpha = 100
-
-//        list.add(RadarEntry(100f))
-//        list.add(RadarEntry(101f))
-//        list.add(RadarEntry(102f))
-//        list.add(RadarEntry(103f))
-//        list.add(RadarEntry(104f))
-
         val radarDataSet = RadarDataSet(list, "List")
 //        radarDataSet.setColors(ColorTemplate.MATERIAL_COLORS, 255)
         radarDataSet.color = Color.rgb(0, 255, 0)
@@ -303,7 +296,45 @@ class ActivityLogFragment(
         binding.RadarChart.description.text = ""
         binding.RadarChart.legend.isEnabled = false
         binding.RadarChart.animateY(2000)
+    }*/
+    private fun setRadarChart(list: ArrayList<RadarEntry>, labels: List<String>) {
+        //binding.RadarChart.setBackgroundColor(Color.parseColor("#accbff"))
+        binding.RadarChart.webLineWidth = 2f
+        binding.RadarChart.webColor = Color.BLUE
+        //binding.RadarChart.webLineWidthInner = 2f
+        binding.RadarChart.webColorInner = Color.BLACK
+        binding.RadarChart.webAlpha = 100
+        val radarDataSet = RadarDataSet(list, "List")
+//        radarDataSet.setColors(ColorTemplate.MATERIAL_COLORS, 255)
+        radarDataSet.color = Color.rgb(0, 255, 0)
+        radarDataSet.fillColor = Color.rgb(0, 255, 0)
+        radarDataSet.setDrawFilled(true)
+        radarDataSet.setDrawHighlightIndicators(true) // Enable highlight indicators
+        radarDataSet.highLightColor = Color.RED // Set highlight color
+        radarDataSet.setHighlightCircleFillColor(Color.RED) // Set highlight circle fill color
+        radarDataSet.setHighlightCircleStrokeColor(Color.BLACK) // Set highlight circle stroke color
+        radarDataSet.setHighlightCircleStrokeWidth(12f) // Set highlight circle stroke width
+        radarDataSet.lineWidth = 2f
+        radarDataSet.valueTextColor = Color.RED
+        radarDataSet.valueTextSize = 14f
+        radarDataSet.setDrawValues(false)
+        radarDataSet.setDrawVerticalHighlightIndicator(true)
+        //radarDataSet.setDrawCircles(true)
+
+        val radarData = RadarData()
+        radarData.addDataSet(radarDataSet)
+        val xAxis = binding.RadarChart.xAxis
+        xAxis.valueFormatter = IndexAxisValueFormatter(labels)
+        xAxis.textSize = 12f
+
+        binding.RadarChart.data = radarData
+        binding.RadarChart.yAxis.setDrawLabels(false);
+        binding.RadarChart.description.text = ""
+        binding.RadarChart.legend.isEnabled = false
+        binding.RadarChart.animateY(2000)
     }
+
+
 
     override fun onClick(p0: View?) {
         when (p0?.id) {

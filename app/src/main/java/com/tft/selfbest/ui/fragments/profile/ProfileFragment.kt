@@ -34,7 +34,6 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.chat_feature.network.web_socket.isNetworkConnected
 import com.google.gson.internal.LinkedTreeMap
 import com.tft.selfbest.R
 import com.tft.selfbest.data.SelfBestPreference
@@ -48,9 +47,7 @@ import com.tft.selfbest.ui.activites.*
 import com.tft.selfbest.ui.adapter.*
 import com.tft.selfbest.ui.login.LoginActivity
 import com.tft.selfbest.utils.isInternetAvailable
-import com.tft.selfbest.utils.isOnline
 import dagger.hilt.android.AndroidEntryPoint
-import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
 import java.net.URL
 import javax.inject.Inject
@@ -63,7 +60,7 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
     lateinit var binding: FragmentProfileBinding
     val viewModel by viewModels<ProfileViewModel>()
     private lateinit var profileData: ProfileData
-    private lateinit var personalityTypes: ArrayList<String>
+   // private lateinit var personalityTypes: ArrayList<String>
     private var workingDaysTemp = arrayListOf<RecursiveDays>()
     lateinit var linkedIndialog: Dialog
     var deactivated = false
@@ -90,22 +87,25 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
         "mongodb"
     )
 
-    //    val personalities = arrayOf(
-//        "Having deadlines",
-//        "Having accountability partner",
-//        "Rewards",
-//        "Reminders",
-//        "Reducing distractions",
-//        "Looking at inspiring content",
-//        "Working in isolation",
-//        "Working around people",
-//        "Just help getting started",
-//        "Taking micro-breaks during work"
-//    )
-//    lateinit var customPersonlityList: List<String>
-//    var FinalPersonality = arrayListOf<String>()
-//    var personalityList = arrayListOf<Int>()
-//    val personalityBoolean = BooleanArray(personalities.size)
+    private lateinit var requiredFields: List<EditText>
+
+  /*      val personalities = arrayOf(
+        "Having deadlines",
+        "Having accountability partner",
+        "Rewards",
+        "Reminders",
+        "Reducing distractions",
+        "Looking at inspiring content",
+        "Working in isolation",
+        "Working around people",
+        "Just help getting started",
+        "Taking micro-breaks during work"
+    )
+    lateinit var customPersonlityList: List<String>
+    var FinalPersonality = arrayListOf<String>()
+    var personalityList = arrayListOf<Int>()
+    val personalityBoolean = BooleanArray(personalities.size)*/
+
     private var startHour = 0
     private var startMinute = 0
     private var endHour = 0
@@ -160,6 +160,13 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
             }
 
         }
+        requiredFields = listOf(
+            binding.firstName,
+            binding.lastName,
+            binding.jobPosition,
+            binding.experience,
+            // Add other required fields here
+        )
 
         someActivityResultLauncher = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
@@ -560,10 +567,80 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
                         "You dont have connectivity",
                         Toast.LENGTH_SHORT
                     ).show()
-                } else {
+                }
+                else{
+                    val allFieldsFilled = requiredFields.all { it.text.isNotEmpty() }
+                    if (allFieldsFilled) {
+                      val experience=  binding.experience.text.toString().toFloatOrNull() ?: 0.0f
+                      val firstName=   binding.firstName.text.toString()
+                       val lastName= binding.lastName.text.toString()
+                       val occupation= binding.jobPosition.text.toString()
+                        val gender = genderCategory[binding.genderSpinner.selectedItemPosition]
+                        val startWorkingTime = timeInString(startHour, startMinute)
+                        val endWorkingTime = timeInString(endHour, endMinute)
+                        val skills: LinkedTreeMap<String, Int> = LinkedTreeMap()
+                        profileSkills.forEach {
+                            skills[it.key] = it.value.toInt()
+                        }
+                        pendingSkills.forEach {
+                            skills[it.key] = 1
+                        }
+                        workingDays.clear()
+                        for (day in workingDaysTemp) {
+                            if (day.isSelected)
+                                workingDays.add(day.recursiveDate)
+                        }
+                        if (workingDays.isEmpty()) {
+                            Toast.makeText(
+                                requireContext(),
+                                "Select atleast 1 working day",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+
+                        val profileChangesData = ProfileChangesData(
+                            "",
+                            "",
+                            listOf(),
+                            //FinalPersonality.distinct(),//custom personality
+                            experience as Float,
+                            firstName,
+                            gender,
+                            listOf(),
+                            false,
+                            lastName,
+                            "Asia/Calcutta",
+                            occupation,
+                            "",
+                            false,
+                            skills,
+                            endWorkingTime,
+                            startWorkingTime,
+                            workingDays,
+                            //listOf("Monday", "Tuesday", "Wednesday", "Thursday", "Saturday"),
+                            ""
+                        )
+                        viewModel.saveProfileChangesData(profileChangesData)
+
+
+                    } else {
+                        binding.firstName.error=""
+                        Toast.makeText(requireContext(), "One or more filed are empty", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+           /* R.id.save_profile -> {
+                if (!requireContext().isInternetAvailable()) {
+                    Toast.makeText(
+                        requireContext(),
+                        "You dont have connectivity",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                else {
                     var isReady = true
-                    val experience = if (binding.experience.text.toString().isEmpty()) {
-                        binding.experience.error = "field can't be empty"
+                    val experience = if (binding.experience.text.toString().isEmpty() ) {
+                        binding.experience.error=""
                         isReady = false
                         0.0f
                     } else {
@@ -639,54 +716,13 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
                         //listOf("Monday", "Tuesday", "Wednesday", "Thursday", "Saturday"),
                         ""
                     )
-//                pref.setProfileData(
-//                    ProfileData(
-//                        pref.getProfileData?.contact,
-//                        pref.getProfileData?.accountabilitypartner,
-//                        pref.getProfileData?.createdAt,
-//                        pref.getProfileData?.dob,
-//                        pref.getProfileData?.email,
-//                        pref.getProfileData?.existingGoals,
-//                        pref.getProfileData?.extensionUsedAt,
-//                        binding.firstName.text.toString(),
-//                        gender,
-//                        pref.getProfileData?.id,
-//                        pref.getProfilePicture,
-//                        pref.getProfileData?.importConnectionsLinkedIn,
-//                        pref.getProfileData?.importGoogleCalendar,
-//                        pref.getProfileData?.importOutlookCalendar,
-//                        pref.getProfileData?.interests,
-//                        pref.getProfileData?.isOrgAdmin,
-//                        pref.getProfileData?.isadmin,
-//                        pref.getProfileData?.isapproved,
-//                        pref.getProfileData?.jiraId,
-//                        binding.lastName.text.toString(),
-//                        pref.getProfileData?.lastlogin,
-//                        pref.getProfileData?.lastloginworkinghour,
-//                        pref.getProfileData?.learning,
-//                        pref.getProfileData?.linkedinProfileUrl,
-//                        experience,
-//                        occupation,
-//                        pref.getProfileData?.password,
-//                        personalityType,
-//                        pref.getProfileData?.rejectedCount,
-//                        pref.getProfileData?.role,
-//                        pref.getProfileData?.skillenhanced,
-//                        skills,
-//                        pref.getProfileData?.timeZone,
-//                        pref.getProfileData?.typicalProcrastinatorTrigger,
-//                        pref.getProfileData?.updatedAt,
-//                        pref.getProfileData?.working!!,
-//                        pref.getProfileData?.organisationName!!,
-//                        pref.getProfileData?.customPersonality!!
-//                    )
-//                )
+
                     if (isReady)
                         viewModel.saveProfileChangesData(profileChangesData)
                 }
 
 
-            }
+            }*/
             R.id.skill_search -> {
                 if(!requireContext().isInternetAvailable()){
                     Toast.makeText(

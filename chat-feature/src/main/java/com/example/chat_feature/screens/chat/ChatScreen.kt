@@ -35,7 +35,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.example.chat_feature.data.*
 import com.example.chat_feature.navigation.AppScreen
 import com.example.chat_feature.navigation.ROUTE_ROOM
@@ -45,8 +44,6 @@ import com.example.chat_feature.view_models.ChatViewModel
 import com.example.chat_feature.view_models.ExpertChatViewModel
 import com.example.chat_feature.view_models.ExpertListViewModel
 import kotlinx.coroutines.launch
-import okhttp3.MultipartBody
-import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
 
 private const val TAG = "ChatScreen"
@@ -122,7 +119,7 @@ fun ChatScreen(
         CenterAlignedTopAppBar(
             title = {
                 Text(
-                    "Solution Point",
+                    "Selfbest Bot",
                     fontSize = TextUnit(20f, TextUnitType.Sp),
                     fontWeight = FontWeight.SemiBold,
                     style = MaterialTheme.typography.h6
@@ -879,7 +876,7 @@ fun MessageCard(
 
 
         if (message.message == "Please select a valid skill from this dropdown") {
-            DialogExample(options, isDropDownEnabled) {
+            DialogForSkill(options, isDropDownEnabled) {
                 Log.d("selectedOptionTitle", "$it")
                 val messagess = buildPlainMessage(message = it.toString(), userId = senderId)
                 onSend.invoke(messagess)

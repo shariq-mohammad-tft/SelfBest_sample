@@ -179,7 +179,7 @@ fun ChatItem(user: Expert? = null, onClick: (user: Expert) -> Unit = {}) {
             Spacer(modifier = Modifier.size(10.dp))
             if (user.queryStatus) {
                 Text(
-                    text = "Done",
+                    text = "Closed",
                     fontWeight = FontWeight.Normal,
                     // color = selfBestDefaultColor,
                     fontSize = TextUnit(12f, TextUnitType.Sp),
