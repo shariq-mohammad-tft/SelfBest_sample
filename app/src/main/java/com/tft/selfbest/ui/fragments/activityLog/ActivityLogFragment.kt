@@ -244,7 +244,7 @@ class ActivityLogFragment(
 
             } else if (it is NetworkResponse.Error) {
                 binding.progress.visibility = View.GONE
-                Toast.makeText(context, "Check your internet connection", Toast.LENGTH_LONG).show()
+                Toast.makeText(context, "Your connection is not stable or try to logout/login", Toast.LENGTH_LONG).show()
             }
         }
 

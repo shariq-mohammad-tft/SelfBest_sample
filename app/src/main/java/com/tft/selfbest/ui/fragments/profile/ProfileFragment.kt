@@ -244,7 +244,7 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
                 setData()
             } else if (it is NetworkResponse.Error) {
                 binding.progress.visibility = View.GONE
-                Toast.makeText(context, "Check your internet connection", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Your internet connection is not stable or try to Logout/Login", Toast.LENGTH_SHORT).show()
 //                preferences.clear()
 //                val loginScreen = Intent(activity, LoginActivity::class.java)
 //                loginScreen.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
@@ -640,8 +640,7 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
 
 
                     } else {
-                        binding.firstName.error=""
-                        Toast.makeText(requireContext(), "One or more filed are empty", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "One or more fields are empty", Toast.LENGTH_SHORT).show()
                     }
                 }
             }

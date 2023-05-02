@@ -2,19 +2,25 @@ package com.tft.selfbest.ui.fragments.getGoHour
 
 import android.annotation.SuppressLint
 import android.graphics.Color
+import android.graphics.Color.red
 import android.os.*
+import android.text.Layout.Alignment
 import android.util.Log
 import android.view.*
 import android.view.animation.RotateAnimation
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.charts.BarChart
+import com.github.mikephil.charting.components.AxisBase
+import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.*
+import com.github.mikephil.charting.formatter.IAxisValueFormatter
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.utils.ColorTemplate
@@ -38,6 +44,7 @@ import java.time.temporal.ChronoUnit
 import java.time.temporal.Temporal
 import java.util.*
 import javax.inject.Inject
+import kotlin.math.max
 import kotlin.math.roundToInt
 
 @AndroidEntryPoint
@@ -314,6 +321,7 @@ class GetGoHour : Fragment(), View.OnClickListener {
     }
 
     private fun setChart() {
+        var yVal: ArrayList<Entry> = arrayListOf()
         binding.lChart.axisLeft.axisMinimum = 0F
         binding.lChart.axisRight.axisMinimum = 0F
         binding.lChart.xAxis.axisMinimum = 0F
@@ -321,7 +329,9 @@ class GetGoHour : Fragment(), View.OnClickListener {
         binding.exPg.axisLeft.axisMinimum = 0F
         binding.exPg.axisRight.axisMinimum = 0F
         yVals.add(Entry(0F, 0F))
-        val sety = LineDataSet(yVals, "Time")
+        val yAxis=binding.lChart.axisLeft
+        val sety = LineDataSet(yVals, "Points")
+       /* val sety2 = LineDataSet(yVal, "Points")*/
         val data = LineData(sety)
         sety.mode = LineDataSet.Mode.CUBIC_BEZIER
         sety.setDrawCircles(false)
@@ -329,7 +339,7 @@ class GetGoHour : Fragment(), View.OnClickListener {
         binding.lChart.xAxis.position = XAxis.XAxisPosition.BOTTOM
         binding.lChart.axisRight.isEnabled = false
         binding.lChart.description.isEnabled = true
-        binding.lChart.description.text = "Time (in minutes)"
+        binding.lChart.description.text = "Time(in mins)"
         binding.exPg.xAxis.position = XAxis.XAxisPosition.BOTTOM
         binding.exPg.axisRight.isEnabled = false
         binding.exPg.description.isEnabled = false
@@ -340,6 +350,7 @@ class GetGoHour : Fragment(), View.OnClickListener {
         binding.exPg.animateX(1800, Easing.EaseInExpo)
         binding.exPg.data = data
         binding.exPg.xAxis.setDrawGridLines(false)
+
     }
 
 
@@ -771,6 +782,8 @@ class GetGoHour : Fragment(), View.OnClickListener {
         }
     }*/
 
+
+    /*--------------this is working fine and using for current flow-----------------*/
     private fun addChartData(progress: List<SubProgressResponse>) {
         val data = binding.lChart.data
         val set = data.getDataSetByIndex(0) as? LineDataSet
@@ -778,6 +791,60 @@ class GetGoHour : Fragment(), View.OnClickListener {
             val prevSize = set.entryCount
             for (p in progress) {
                 set.addEntry(Entry(p.xAxisLabel.toFloat(), p.point))
+            }
+            set.getValues().sortBy { it.x }
+
+            set.mode = LineDataSet.Mode.HORIZONTAL_BEZIER
+            set.lineWidth = 3f
+            set.color = Color.parseColor("#1D71D4")
+            val newSize = set.entryCount
+            val xIncrement = if (newSize > prevSize) {
+                1f
+            } else {
+                (prevSize.toFloat() + 1) / newSize.toFloat()
+            }
+
+            binding.lChart.xAxis.valueFormatter = MyXAxisValueFormatter(xIncrement)
+            data.notifyDataChanged()
+            binding.lChart.notifyDataSetChanged()
+            binding.lChart.setVisibleXRangeMaximum(binding.timeHour.text.toString().toInt() * 60F)
+            binding.lChart.moveViewToX(data.xMax)
+
+
+          /*  val yAxis = binding.lChart.axisLeft
+            yAxis.textColor=Color.parseColor("#1D71D4")
+            yAxis.valueFormatter = MyYAxisValueFormatter()*/
+        }
+    }
+
+    class MyXAxisValueFormatter(private val xIncrement: Float) : ValueFormatter() {
+        override fun getFormattedValue(value: Float): String {
+            return (value * xIncrement).toInt().toString()
+        }
+    }
+    class MyYAxisValueFormatter : ValueFormatter() {
+        override fun getFormattedValue(value: Float, axis: AxisBase?): String {
+            return value.toString().also {
+                // Set color to red
+                axis?.textColor = Color.RED
+            }
+        }
+    }
+
+
+    /*private fun addChartData(progress: List<SubProgressResponse>) {
+        val data = binding.lChart.data
+        val set = data.getDataSetByIndex(0) as? LineDataSet
+        if (set != null) {
+            val prevSize = set.entryCount
+            for (p in progress) {
+                val entry = Entry(p.xAxisLabel.toFloat(), p.point)
+                // Check if the point value is 0, and if so, set the entry to the same value as the previous entry
+                if (prevSize > 0 && p.point == 0f) {
+                    val prevEntry = set.getEntryForIndex(prevSize - 1)
+                    entry.y = prevEntry.y
+                }
+                set.addEntry(entry)
             }
             set.getValues().sortBy { it.x }
             set.mode = LineDataSet.Mode.HORIZONTAL_BEZIER
@@ -795,13 +862,15 @@ class GetGoHour : Fragment(), View.OnClickListener {
             binding.lChart.setVisibleXRangeMaximum(binding.timeHour.text.toString().toInt() * 60F)
             binding.lChart.moveViewToX(data.xMax)
         }
-    }
+    }*/
 
-    class MyXAxisValueFormatter(private val xIncrement: Float) : ValueFormatter() {
-        override fun getFormattedValue(value: Float): String {
-            return (value * xIncrement).toInt().toString()
-        }
-    }
+
+
+
+
+
+
+
 
 
 
@@ -875,7 +944,9 @@ class GetGoHour : Fragment(), View.OnClickListener {
         binding.lChart.data = LineData(l)
 
         binding.lChart.axisLeft.axisMinimum = 0f
+        binding.lChart.axisLeft.textColor=ContextCompat.getColor(requireContext(),R.color.tool_bar_color)
         binding.lChart.axisRight.axisMinimum = 0f
+
         binding.lChart.xAxis.position = XAxis.XAxisPosition.BOTTOM
         binding.lChart.axisRight.isEnabled = false
         binding.lChart.description.isEnabled = false

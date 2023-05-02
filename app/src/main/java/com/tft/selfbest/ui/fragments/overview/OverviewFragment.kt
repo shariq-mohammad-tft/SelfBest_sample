@@ -170,7 +170,7 @@ class OverviewFragment : Fragment(), View.OnClickListener {
                 binding.level.text = "Level $currentLevel"
             }else if(it is NetworkResponse.Error){
                 binding.progress.visibility = View.GONE
-                Toast.makeText(context, "Check your internet connection", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Your connection is not stable or try to logout/login", Toast.LENGTH_SHORT).show()
 //                preferences.clear()
 //                val loginScreen = Intent(activity, LoginActivity::class.java)
 //                loginScreen.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
