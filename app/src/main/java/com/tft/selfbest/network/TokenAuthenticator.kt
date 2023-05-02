@@ -52,7 +52,7 @@ class TokenAuthenticator @Inject constructor(
                                     tokenResponse.data.userid,
                                     pref.getLoginData?.lastName!!,
                                     pref.getLoginData?.redirect,
-                                    tokenResponse.data.refreshToken,
+                                    pref.getLoginData?.refreshToken!!,
                                     pref.getLoginData?.roles!!,
                                     pref.getLoginData?.userName,
                                     pref.getLoginData?.isNewUser!!

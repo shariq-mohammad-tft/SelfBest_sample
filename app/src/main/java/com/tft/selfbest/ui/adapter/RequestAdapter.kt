@@ -34,9 +34,11 @@ class RequestAdapter(
         var check = false
         val request = fileteredList[position]
         holder.gmail.text = request.email
+        holder.linkedin.text = request.linkedInUrl
         if(request.linkedInUrl.isEmpty())
             holder.linkedinContainer.visibility = View.GONE
-        holder.linkedin.text = request.linkedInUrl
+        else
+            holder.linkedinContainer.visibility = View.VISIBLE
         holder.selected.isChecked = selectall
         val spinAdapter = ArrayAdapter(
             context,

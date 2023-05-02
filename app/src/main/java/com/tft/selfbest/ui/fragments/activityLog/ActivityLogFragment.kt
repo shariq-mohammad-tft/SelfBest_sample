@@ -105,11 +105,20 @@ class ActivityLogFragment(
             if (it is NetworkResponse.Success) {
                 binding.hoursSavedSp.text = it.data!!.hours_saved
                 binding.askedQueries.layoutManager = LinearLayoutManager(context)
-                queries = it.data!!.query_data
+                queries = it.data.query_data
                 for (query in queries) {
                     if (query.question != "")
                         queries1.add(query)
                 }
+                if (queries1.isNotEmpty()) {
+                    binding.askedQueries.visibility = View.VISIBLE
+                    binding.withoutData.visibility = View.GONE
+                }else{
+                    binding.askedQueries.visibility = View.GONE
+                    binding.withoutData.visibility = View.VISIBLE
+                    binding.animationView.playAnimation()
+                }
+
                 binding.askedQueries.layoutManager = LinearLayoutManager(binding.root.context)
                 binding.askedQueries.adapter = QueryResponseAdapter(
                     binding.root.context,
@@ -132,7 +141,15 @@ class ActivityLogFragment(
                 answeredQueries = it.data!!
                 //if(answeredQueries.size > 10){
                 //binding.loadMoreBtn.visibility = View.VISIBLE
-                binding.answeredQueries.layoutManager = LinearLayoutManager(binding.root.context)
+                if (queries1.isNotEmpty()) {
+                    binding.answeredQueries.visibility = View.VISIBLE
+                    binding.withoutData.visibility = View.GONE
+                }else {
+                    binding.answeredQueries.visibility = View.GONE
+                    binding.withoutData.visibility = View.VISIBLE
+                    binding.animationView.playAnimation()
+                }
+                    binding.answeredQueries.layoutManager = LinearLayoutManager(binding.root.context)
                 binding.answeredQueries.adapter = AnsweredQueryAdapter(
                     binding.root.context,
                     answeredQueries,
@@ -415,6 +432,10 @@ class ActivityLogFragment(
     override fun changeStatus(id: Int, status: Int) {
         Log.e("Status ", "2")
         viewModel.updateStatus(id, status)
+    }
+
+    override fun updateRating(id: Int, rating: Int) {
+        viewModel.updateRating(id, rating)
     }
 
     override fun filterData(platform: String, duration: String) {

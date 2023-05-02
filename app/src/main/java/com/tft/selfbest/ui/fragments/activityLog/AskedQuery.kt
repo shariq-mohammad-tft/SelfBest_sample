@@ -84,4 +84,8 @@ class AskedQuery(
     override fun changeStatus(id: Int, status: Int) {
         viewModel.updateStatus(id, status)
     }
+
+    override fun updateRating(id: Int, rating: Int) {
+        viewModel.updateRating(id, rating)
+    }
 }

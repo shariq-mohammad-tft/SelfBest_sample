@@ -7,11 +7,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import android.widget.RatingBar.OnRatingBarChangeListener
 import androidx.recyclerview.widget.RecyclerView
 import com.tft.selfbest.R
 import com.tft.selfbest.models.QueryResponse
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 class QueryResponseAdapter(
     val context: Context,
@@ -43,28 +45,45 @@ class QueryResponseAdapter(
         formatter.timeZone = TimeZone.getDefault()
         val dateStr = formatter.format(date!!)
         holder.time.text = dateStr
-        if (query.query_status) {
+        val spinAdapter = ArrayAdapter(
+            context,
+            R.layout.query_spinner,
+            status
+        )
+        spinAdapter.setDropDownViewResource(R.layout.spinner_dropdown_style)
+        holder.spinner.adapter = spinAdapter
+        val stat = if (query.query_status == true) 0 else 1
+        holder.spinner.setSelection(stat)
+
+        if (query.query_status == true) {
             //if done
             holder.viewQueryHeading.visibility = View.GONE
             holder.viewQuery.visibility = View.GONE
+            holder.spinner.isEnabled = false
+            holder.spinnerContainer.setBackgroundResource(R.drawable.done_query_bg)
             holder.rateExpertHeading.visibility = View.VISIBLE
             holder.rating.visibility = View.VISIBLE
-            holder.rating.setOnClickListener(View.OnClickListener {
-                //TODO
-            })
+            holder.rating.rating = if(query.rating != "") query.rating.toInt().toFloat() else 0f
         } else {
             //if in progress
             holder.viewQueryHeading.visibility = View.VISIBLE
             holder.viewQuery.visibility = View.VISIBLE
+            holder.spinner.isEnabled = true
             holder.rateExpertHeading.visibility = View.GONE
             holder.rating.visibility = View.GONE
+            holder.spinnerContainer.setBackgroundResource(R.drawable.asked_query_bg)
             holder.viewQuery.setOnClickListener {
                 View.OnClickListener {
                     //TODO
                 }
             }
         }
-        holder.spinner.setSelection(0, false)
+
+        holder.rating.onRatingBarChangeListener =
+            OnRatingBarChangeListener { ratingBar, rating, fromUser ->
+                changeStatusListener.updateRating(query.id, rating.toInt())
+            }
+
         holder.spinner.onItemSelectedListener =
             object : AdapterView.OnItemSelectedListener {
                 override fun onNothingSelected(parent: AdapterView<*>?) {}
@@ -78,21 +97,21 @@ class QueryResponseAdapter(
                     val selectedItem = holder.spinner.selectedItem as String
                     if (check) {
                         val stat = if (selectedItem == "Done") 1 else 0
+                        if(selectedItem == "Done"){
+                            holder.viewQueryHeading.visibility = View.GONE
+                            holder.viewQuery.visibility = View.GONE
+                            holder.spinner.isEnabled = false
+                            holder.spinnerContainer.setBackgroundResource(R.drawable.done_query_bg)
+                            holder.rateExpertHeading.visibility = View.VISIBLE
+                            holder.rating.visibility = View.VISIBLE
+                            holder.rating.rating = if(query.rating != "") query.rating.toInt().toFloat() else 0f
+                        }
                         changeStatusListener.changeStatus(query.id, stat)
                     }
                     check = true
                 }
             }
 
-        val spinAdapter = ArrayAdapter(
-            context,
-            R.layout.query_spinner,
-            status
-        )
-        spinAdapter.setDropDownViewResource(R.layout.spinner_dropdown_style)
-        holder.spinner.adapter = spinAdapter
-        val stat = if (query.query_status) 0 else 1
-        holder.spinner.setSelection(stat)
 //        if(stat == 0) {
 //            holder.spinnerContainer.setBackgroundResource(R.drawable.asked_query_bg)
 //        }
@@ -119,6 +138,7 @@ class QueryResponseAdapter(
 
     interface ChangeStatusListener {
         fun changeStatus(id: Int, status: Int)
+        fun updateRating(id: Int, rating: Int)
     }
 
     inner class QueryViewHolder(val view: View) : RecyclerView.ViewHolder(view) {

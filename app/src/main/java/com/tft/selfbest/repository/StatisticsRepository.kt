@@ -51,7 +51,14 @@ class StatisticsRepository @Inject constructor(
     suspend fun updateStatus(id: Int, status: Int) = flow{
         emit(NetworkResponse.Loading())
         emit(NetworkRequest.process {
-            client.apis.updateStatus(id, status)
+            client.apis.updateStatus(id, status, "webbot")
+        })
+    }
+
+    suspend fun updateRating(id: Int, rating: Int) = flow{
+        emit(NetworkResponse.Loading())
+        emit(NetworkRequest.process {
+            client.apis.updateRating(id, rating, "webbot")
         })
     }
 

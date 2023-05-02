@@ -48,6 +48,14 @@ class UserManagementPendingSkill : Fragment(), PendingSkillRequestAdapter.Change
                         pendingSkills.add(sk)
                     }
                 }
+                if (pendingSkills.isNotEmpty()) {
+                    binding.withData.visibility = View.VISIBLE
+                    binding.withoutData.visibility = View.GONE
+                }else{
+                    binding.withData.visibility = View.GONE
+                    binding.withoutData.visibility = View.VISIBLE
+                    binding.animationView.playAnimation()
+                }
                 binding.pendingSkill.layoutManager = LinearLayoutManager(binding.root.context)
                 adapter = PendingSkillRequestAdapter(
                     binding.root.context,
