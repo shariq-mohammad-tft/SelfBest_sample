@@ -31,7 +31,7 @@ class ActivityTimelineAdapter(
             val ss = "+ " + res.points.toString() + " Pts"
             holder.pos_points.text = ss
 
-            val df = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
+            val df = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ENGLISH)
             df.timeZone = TimeZone.getTimeZone("UTC")
             val date = df.parse(res.createdAt)
             val formatter =

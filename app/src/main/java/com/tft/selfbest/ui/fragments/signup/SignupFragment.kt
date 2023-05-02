@@ -111,7 +111,7 @@ class SignupFragment : Fragment(), View.OnClickListener,
         binding.recommendedSkills.adapter =
             RecommendationsAdapter(binding.root.context, rSkills, this)
         viewModel.getProfile("Window")
-        viewModel.getJobs()
+//        viewModel.getJobs()
         viewModel.getSkills()
         viewModel.pSkillsObserver.observe(viewLifecycleOwner) {
             if (it is NetworkResponse.Success) {

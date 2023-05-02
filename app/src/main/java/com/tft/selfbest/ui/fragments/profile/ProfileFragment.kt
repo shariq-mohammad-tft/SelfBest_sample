@@ -173,34 +173,17 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
             }
         }
 
-        val suggestions = arrayOf(
-            "Computer Scientist",
-            "IT Professional",
-            "UX Designer",
-            "UI Developer",
-            "SQL Developer",
-            "Web Designer",
-            "Web Developer",
-            "Help Desk Worker/Desktop Support",
-            "Software Engineer",
-            "Data Entry",
-            "DevOps Engineer",
-            "Computer Programmer",
-            "Network Administrator",
-            "Information Security Analyst",
-            "Artificial Intelligence Engineer",
-            "Cloud Architect",
-            "IT Manager",
-            "Technical Specialist",
-            "Application Developer",
-            "Chief Technology Officer (CTO)",
-            "Chief Information Officer (CIO)"
-        )
+        var suggestions = listOf<String>()
 
-        val adapter =
-            ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, suggestions)
-        binding.jobPosition.threshold = 0
-        binding.jobPosition.setAdapter(adapter)
+        viewModel.jobsListObserver.observe(viewLifecycleOwner){
+            if(it is NetworkResponse.Success){
+                suggestions = it.data ?: listOf()
+                val adapter =
+                    ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, suggestions)
+                binding.jobPosition.threshold = 0
+                binding.jobPosition.setAdapter(adapter)
+            }
+        }
 
         binding.jobPosition.setOnFocusChangeListener { view, hasFocus ->
             if (hasFocus) {
@@ -358,6 +341,7 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
 //            setData()
 //        }
         viewModel.getAllSkills()
+        viewModel.getJobs()
 //        viewModel.getPersonalityList()
 
         binding.skillSearch.onItemClickListener =
