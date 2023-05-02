@@ -140,7 +140,7 @@ class AcceptedRequestAdapter(
                     val filteredList1 = mutableListOf<UserRequest>()
                     list
                         .filter {
-                            (it.email.contains(constraint!!))
+                            (it.email.contains(constraint!!, ignoreCase = true))
                         }
                         .forEach { filteredList1.add(it) }
                     filteredList1
