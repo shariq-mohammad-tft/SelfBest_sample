@@ -23,5 +23,6 @@ data class SkillResponse(
     @SerializedName("Skill")
     val skill: String,
     @SerializedName("Status")
-    val status: String
+    val status: String,
+    var isSelected: Boolean = false
 )

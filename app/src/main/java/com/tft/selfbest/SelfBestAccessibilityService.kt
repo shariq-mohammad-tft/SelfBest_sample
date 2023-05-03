@@ -249,11 +249,8 @@ class SelfBestAccessibilityService : AccessibilityService() {
                     lastAppUsage!!.endTime
                 ).collect { response ->
                     if (response is NetworkResponse.Success)
-                        Toast.makeText(
-                            applicationContext,
-                            "Data Send to Server " + response.data?.response,
-                            Toast.LENGTH_LONG
-                        ).show()
+
+                    Log.d("Data Send to Server ",response.data?.response.toString() )
 
                 }
             }

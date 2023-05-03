@@ -624,7 +624,6 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
 
 
                     } else {
-                        binding.firstName.error=""
                         Toast.makeText(requireContext(), "One or more field are empty", Toast.LENGTH_SHORT).show()
                     }
                 }

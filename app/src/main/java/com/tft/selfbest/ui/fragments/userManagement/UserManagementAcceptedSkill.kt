@@ -19,6 +19,8 @@ import com.tft.selfbest.ui.adapter.AcceptedSkillRequestAdapter
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
+
+
 class UserManagementAcceptedSkill : Fragment(),
     AcceptedSkillRequestAdapter.ChangeSkillRequestListener {
     lateinit var binding: FragmentUserManagementAcceptedSkillBinding
@@ -63,9 +65,10 @@ class UserManagementAcceptedSkill : Fragment(),
                     binding.root.context,
                     acceptedSkills,
                     binding.checkBox.isChecked,
-                    this
+                    this,
                 )
                 binding.acceptedSkill.adapter = adapter
+
             }
         }
         viewModel.skillRequestChangeDataObserver.observe(viewLifecycleOwner) {
@@ -140,7 +143,7 @@ class UserManagementAcceptedSkill : Fragment(),
                         binding.search.findViewById(R.id.search_close_btn) as ImageView
                     searchViewIcon.visibility = View.GONE
                     Log.e("Query", "1")
-                    adapter.filter.filter(query)
+                    adapter.filter.filter(query,)
                     return false
                 }
                 return true

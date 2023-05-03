@@ -163,6 +163,21 @@ fun String.extractTime(timeString: String): String? {
     val formattedHour = if (hour == 0 || hour == 12) 12 else hour % 12
     return String.format("%02d:%02d %s", formattedHour, minute, amPm)
 }
+@RequiresApi(Build.VERSION_CODES.O)
+fun String.extractTimeForMainApp(timeString: String): String? {
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'")
+    val utcDateTime = LocalDateTime.parse(timeString, formatter)
+        .atZone(ZoneId.of("UTC"))
+    val istDateTime = utcDateTime.withZoneSameInstant(ZoneId.of("Asia/Kolkata"))
+    val pattern = Regex("\\b([01]\\d|2[0-3]):([0-5]\\d)\\b")
+    val matchResult = pattern.find(istDateTime.toLocalTime().toString())
+    val time = matchResult?.value ?: return null
+    val hour = time.substringBefore(":").toInt()
+    val minute = time.substringAfter(":").toInt()
+    val amPm = if (hour < 12) "AM" else "PM"
+    val formattedHour = if (hour == 0 || hour == 12) 12 else hour % 12
+    return String.format("%02d:%02d %s", formattedHour, minute, amPm)
+}
 
 @RequiresApi(Build.VERSION_CODES.O)
 fun getCurrentTime(): String {

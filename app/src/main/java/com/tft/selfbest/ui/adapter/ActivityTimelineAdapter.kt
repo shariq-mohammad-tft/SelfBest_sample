@@ -1,11 +1,15 @@
 package com.tft.selfbest.ui.adapter
 
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
+import com.example.chat_feature.utils.extractTime
+import com.example.chat_feature.utils.extractTimeForMainApp
 import com.tft.selfbest.R
 import com.tft.selfbest.models.ActivityTimelineResponse
 import java.text.SimpleDateFormat
@@ -21,6 +25,7 @@ class ActivityTimelineAdapter(
         return ActivityViewHolder(layoutInflater)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: ActivityViewHolder, position: Int) {
         val res = list[position]
         if(res.points >= 0) {
@@ -31,14 +36,14 @@ class ActivityTimelineAdapter(
             val ss = "+ " + res.points.toString() + " Pts"
             holder.pos_points.text = ss
 
-            val df = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ENGLISH)
+            /*val df = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ENGLISH)
             df.timeZone = TimeZone.getTimeZone("UTC")
             val date = df.parse(res.createdAt)
             val formatter =
                 SimpleDateFormat("hh:mm a", Locale.getDefault())
             formatter.timeZone = TimeZone.getDefault()
-            val dateStr = formatter.format(date!!)
-            holder.pos_time.text = dateStr
+            val dateStr = formatter.format(date!!)*/
+            holder.pos_time.text = String().extractTimeForMainApp(res.createdAt)
             holder.pos_description.text = res.description
         }else{
             holder.distraction_container.visibility = View.VISIBLE
@@ -48,14 +53,14 @@ class ActivityTimelineAdapter(
             val ss = res.points.toString() + " Pts"
             holder.neg_points.text = ss
 
-            val df = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
+            /*val df = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
             df.timeZone = TimeZone.getTimeZone("UTC")
             val date = df.parse(res.createdAt)
             val formatter =
                 SimpleDateFormat("hh:mm a", Locale.getDefault())
             formatter.timeZone = TimeZone.getDefault()
-            val dateStr = formatter.format(date!!)
-            holder.neg_time.text = dateStr
+            val dateStr = formatter.format(date!!)*/
+            holder.neg_time.text = String().extractTimeForMainApp(res.createdAt)
             holder.neg_description.text = res.description
         }
     }
