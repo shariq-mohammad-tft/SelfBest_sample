@@ -339,6 +339,7 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
         viewModel.profileChangesDoneMessageObserver.observe(viewLifecycleOwner) {
             Log.e("Profile", " Updated")
             Toast.makeText(binding.root.context, it, Toast.LENGTH_LONG).show()
+            viewModel.getProfileData(true)
         }
 //        if (pref.getProfileData == null) {
         viewModel.getProfileData(false)
@@ -354,16 +355,18 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
         binding.skillSearch.onItemClickListener =
             AdapterView.OnItemClickListener { arg0, _, position, _ ->
                 val selectedItem = arg0.getItemAtPosition(position) as String
-                binding.skillListScroll.visibility = View.VISIBLE
-                profileSkills[selectedItem] = 1
-                currentSkills.add(selectedItem)
-                (binding.skillList.adapter as ProfileSkillsAdapter).addSkill(
-                    binding.skillSearch.text.toString(),
-                    1
-                )
-                binding.skillSearch.text.clear()
-                viewModel.getRecommendation(selectedItem)
-                Toast.makeText(context, "Skill added successfully", Toast.LENGTH_SHORT).show()
+                if(selectedItem.isNotEmpty()){
+                    binding.skillListScroll.visibility = View.VISIBLE
+                    profileSkills[selectedItem] = 1
+                    currentSkills.add(selectedItem)
+                    (binding.skillList.adapter as ProfileSkillsAdapter).addSkill(
+                        binding.skillSearch.text.toString(),
+                        1
+                    )
+                    binding.skillSearch.text.clear()
+                    viewModel.getRecommendation(selectedItem)
+                    Toast.makeText(context, "Skill added successfully", Toast.LENGTH_SHORT).show()
+                }
             }
         setListeners()
         return binding.root
@@ -444,13 +447,13 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
         if (pendingSkills.isNotEmpty()) {
             binding.pendingSkillHeading.visibility = View.VISIBLE
             binding.pendingSkillListScroll.visibility = View.VISIBLE
+            binding.pendingSkillList.layoutManager = LinearLayoutManager(binding.root.context)
+            binding.pendingSkillList.adapter =
+                PendingSkillAdapter(
+                    binding.root.context,
+                    pendingSkills
+                )
         }
-        binding.pendingSkillList.layoutManager = LinearLayoutManager(binding.root.context)
-        binding.pendingSkillList.adapter =
-            PendingSkillAdapter(
-                binding.root.context,
-                pendingSkills
-            )
         binding.workDays.layoutManager =
             SpanningLinearLayoutManager(binding.root.context, LinearLayoutManager.HORIZONTAL, false)
         workingDaysTemp = if (profileData.working == null) {
@@ -743,21 +746,24 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
 //                }
                     binding.skillListScroll.visibility = View.VISIBLE
                     //currentSkills.add(binding.skill.text.toString())
-                    if (isPresentSkill(binding.skillSearch.text.toString())) {
-                        currentSkills.add(binding.skillSearch.text.toString())
-                        profileSkills[binding.skillSearch.text.toString()] = 1
-                        (binding.skillList.adapter as ProfileSkillsAdapter).addSkill(
-                            binding.skillSearch.text.toString(),
-                            1
-                        )
-                        viewModel.getRecommendation(binding.skillSearch.text.toString())
-                        Toast.makeText(context, "Skill added successfully", Toast.LENGTH_SHORT).show()
-                    } else {
-                        pendingSkills[binding.skillSearch.text.toString()] = 1
-                        (binding.pendingSkillList.adapter as PendingSkillAdapter).addSkill(
-                            binding.skillSearch.text.toString(),
-                            1
-                        )
+                    if(binding.skillSearch.text.isNotEmpty()){
+//                        if (isPresentSkill(binding.skillSearch.text.toString())) {
+                            currentSkills.add(binding.skillSearch.text.toString())
+                            profileSkills[binding.skillSearch.text.toString()] = 1
+                            (binding.skillList.adapter as ProfileSkillsAdapter).addSkill(
+                                binding.skillSearch.text.toString(),
+                                1
+                            )
+                            viewModel.getRecommendation(binding.skillSearch.text.toString())
+                            Toast.makeText(context, "Skill added successfully", Toast.LENGTH_SHORT)
+                                .show()
+//                        } else {
+//                            pendingSkills[binding.skillSearch.text.toString()] = 1
+//                            (binding.pendingSkillList.adapter as PendingSkillAdapter).addSkill(
+//                                binding.skillSearch.text.toString(),
+//                                1
+//                            )
+//                        }
                     }
                     binding.skillSearch.text.clear()
 //                isSkillAvailableForSave = !isSkillAvailableForSave

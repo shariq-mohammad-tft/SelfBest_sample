@@ -35,8 +35,8 @@ class ActivityTimelineAdapter(
             df.timeZone = TimeZone.getTimeZone("UTC")
             val date = df.parse(res.createdAt)
             val formatter =
-                SimpleDateFormat("hh:mm a", Locale.getDefault())
-            formatter.timeZone = TimeZone.getDefault()
+                SimpleDateFormat("hh:mm a", Locale.ENGLISH)
+            formatter.timeZone = TimeZone.getTimeZone("Asia/Kolkata")
             val dateStr = formatter.format(date!!)
             holder.pos_time.text = dateStr
             holder.pos_description.text = res.description
@@ -48,12 +48,12 @@ class ActivityTimelineAdapter(
             val ss = res.points.toString() + " Pts"
             holder.neg_points.text = ss
 
-            val df = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
+            val df = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ENGLISH)
             df.timeZone = TimeZone.getTimeZone("UTC")
             val date = df.parse(res.createdAt)
             val formatter =
-                SimpleDateFormat("hh:mm a", Locale.getDefault())
-            formatter.timeZone = TimeZone.getDefault()
+                SimpleDateFormat("hh:mm a", Locale.ENGLISH)
+            formatter.timeZone = TimeZone.getTimeZone("Asia/Kolkata")
             val dateStr = formatter.format(date!!)
             holder.neg_time.text = dateStr
             holder.neg_description.text = res.description
