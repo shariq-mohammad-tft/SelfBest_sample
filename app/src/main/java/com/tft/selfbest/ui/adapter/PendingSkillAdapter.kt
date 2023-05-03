@@ -34,6 +34,7 @@ class PendingSkillAdapter(val context: Context, val hashMap: LinkedTreeMap<Strin
         })
 
         holder.initial.text = mapObject.key.toString().substring(0, 1)
+        Log.e("Pending Skill", mapObject.toString())
     }
 
     override fun getItemCount(): Int {

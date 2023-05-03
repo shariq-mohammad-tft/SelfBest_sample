@@ -1,7 +1,6 @@
 package com.tft.selfbest.ui.adapter
 
 import android.content.Context
-import android.graphics.text.TextRunShaper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View

@@ -43,7 +43,7 @@ class AnsweredQueryAdapter(
         val date = df.parse(query.timestamp)
         val formatter =
             SimpleDateFormat("dd-MM-yyyy '|' hh:mm a", Locale.ENGLISH)
-        formatter.timeZone = TimeZone.getDefault()
+        formatter.timeZone = TimeZone.getTimeZone("Asia/Kolkata")
         val dateStr = formatter.format(date!!)
         holder.time.text = dateStr
 //        holder.spinner.onItemSelectedListener =
