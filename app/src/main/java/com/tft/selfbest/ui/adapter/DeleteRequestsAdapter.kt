@@ -11,10 +11,7 @@ import android.widget.Filterable
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.tft.selfbest.R
-import com.tft.selfbest.models.AccountRequestBody
-import com.tft.selfbest.models.ChangeAccountRequestBody
-import com.tft.selfbest.models.DeleteAccountResponse
-import com.tft.selfbest.models.SkillResponse
+import com.tft.selfbest.models.*
 import okhttp3.RequestBody
 
 class DeleteRequestsAdapter(
@@ -25,6 +22,8 @@ class DeleteRequestsAdapter(
 ) : RecyclerView.Adapter<DeleteRequestsAdapter.DeleteRequestViewHolder>(), Filterable {
 
     var fileteredList = list
+    private val selectedItems = mutableListOf<DeleteAccountResponse>()
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DeleteRequestViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.delete_data_layout_item, parent, false)
@@ -53,6 +52,14 @@ class DeleteRequestsAdapter(
                 )
             )
         })
+
+        holder.selected.setOnCheckedChangeListener { _, isChecked ->
+            if(isChecked)
+                selectedItems.add(request)
+            else
+                selectedItems.remove(request)
+            changeAccountRequestListener.updateVisibility()
+        }
     }
 
     override fun getItemCount(): Int {
@@ -61,6 +68,7 @@ class DeleteRequestsAdapter(
 
     interface ChangeAccountRequestListener {
         fun changeAccountRequest(request: ChangeAccountRequestBody)
+        fun updateVisibility()
     }
 
     inner class DeleteRequestViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -69,6 +77,10 @@ class DeleteRequestsAdapter(
         val acceptButton: TextView = view.findViewById(R.id.accept)
         val rejectButton: TextView = view.findViewById(R.id.reject)
         val selected: CheckBox = view.findViewById(R.id.checkbox1)
+    }
+
+    fun getSelectedItems(): List<DeleteAccountResponse> {
+        return selectedItems
     }
 
     override fun getFilter(): Filter {

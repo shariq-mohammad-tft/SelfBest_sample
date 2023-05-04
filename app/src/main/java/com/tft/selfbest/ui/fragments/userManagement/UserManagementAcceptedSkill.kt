@@ -26,6 +26,7 @@ class UserManagementAcceptedSkill : Fragment(),
     lateinit var skills: List<SkillResponse>
     val acceptedSkills = mutableListOf<SkillResponse>()
     lateinit var adapter: AcceptedSkillRequestAdapter
+    var allSelected = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -77,6 +78,7 @@ class UserManagementAcceptedSkill : Fragment(),
 
         binding.checkBox.setOnClickListener(View.OnClickListener {
             if (binding.checkBox.isChecked) {
+                allSelected = true
                 binding.selected.visibility = View.VISIBLE
                 binding.acceptedSkill.layoutManager = LinearLayoutManager(binding.root.context)
                 adapter = AcceptedSkillRequestAdapter(
@@ -87,6 +89,7 @@ class UserManagementAcceptedSkill : Fragment(),
                 )
                 binding.acceptedSkill.adapter = adapter
             } else {
+                allSelected = false
                 binding.selected.visibility = View.GONE
                 binding.acceptedSkill.layoutManager = LinearLayoutManager(binding.root.context)
                 adapter = AcceptedSkillRequestAdapter(
@@ -101,8 +104,14 @@ class UserManagementAcceptedSkill : Fragment(),
 
         binding.rejectAll.setOnClickListener(View.OnClickListener {
             val rejectAllList = mutableListOf<Int>()
-            for (req in acceptedSkills) {
-                rejectAllList.add(req.id)
+            if(allSelected){
+                for (req in acceptedSkills) {
+                    rejectAllList.add(req.id)
+                }
+            }else{
+                for (req in adapter.getSelectedItems()) {
+                    rejectAllList.add(req.id)
+                }
             }
             viewModel.changeSkillRequestStatus(
                 ChangeSkillRequestStatus(
@@ -114,8 +123,20 @@ class UserManagementAcceptedSkill : Fragment(),
         return binding.root
     }
 
+    private fun updateButtonVisibility() {
+        if(adapter.getSelectedItems().isNotEmpty() || allSelected){
+            binding.selected.visibility = View.VISIBLE
+        }else{
+            binding.selected.visibility = View.GONE
+        }
+    }
+
     override fun changeSkillRequest(request: ChangeSkillRequestStatus) {
         viewModel.changeSkillRequestStatus(request)
+    }
+
+    override fun updateVisibility() {
+        updateButtonVisibility()
     }
 
 

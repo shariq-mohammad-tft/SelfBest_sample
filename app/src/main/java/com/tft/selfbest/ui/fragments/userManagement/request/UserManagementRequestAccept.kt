@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -29,6 +30,7 @@ class UserManagementRequestAccept : Fragment(), AcceptedRequestAdapter.RejectReq
     var isData = false
     var pendingRequests: MutableList<UserRequest> = mutableListOf()
     lateinit var adapter: AcceptedRequestAdapter
+    var allSelected = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,9 +87,16 @@ class UserManagementRequestAccept : Fragment(), AcceptedRequestAdapter.RejectReq
 //            }
 //        }
 //        )
+        viewModel.skillRequestChangeDataObserver.observe(viewLifecycleOwner){
+            if(it is NetworkResponse.Success){
+                Toast.makeText(requireContext(),"Data updated successfully", Toast.LENGTH_SHORT).show()
+                viewModel.getUserRequests("accepted")
+            }
+        }
 
         binding.checkBox.setOnClickListener(View.OnClickListener {
             if (binding.checkBox.isChecked) {
+                allSelected = true
                 binding.selected.visibility = View.VISIBLE
                 binding.pendingRequest.layoutManager = LinearLayoutManager(binding.root.context)
                 adapter = AcceptedRequestAdapter(
@@ -99,6 +108,7 @@ class UserManagementRequestAccept : Fragment(), AcceptedRequestAdapter.RejectReq
                 binding.pendingRequest.adapter = adapter
             } else {
                 binding.selected.visibility = View.GONE
+                allSelected = false
                 binding.pendingRequest.layoutManager = LinearLayoutManager(binding.root.context)
                 adapter = AcceptedRequestAdapter(
                     binding.root.context,
@@ -112,8 +122,14 @@ class UserManagementRequestAccept : Fragment(), AcceptedRequestAdapter.RejectReq
 
         binding.rejectAll.setOnClickListener(View.OnClickListener {
             val rejectAllList = mutableListOf<RequestStatus>()
-            for (req in requests) {
-                rejectAllList.add(RequestStatus("Rejected", req.userid, req.userType))
+            if(allSelected) {
+                for (req in requests) {
+                    rejectAllList.add(RequestStatus("Rejected", req.userid, req.userType))
+                }
+            }else{
+                for (req in adapter.getSelectedItems()) {
+                    rejectAllList.add(RequestStatus("Rejected", req.userid, req.userType))
+                }
             }
             viewModel.changeRequestStatus(
                 ChangeRequestStatus(
@@ -125,8 +141,20 @@ class UserManagementRequestAccept : Fragment(), AcceptedRequestAdapter.RejectReq
         return binding.root
     }
 
+    private fun updateButtonVisibility() {
+        if(adapter.getSelectedItems().isNotEmpty() || allSelected){
+            binding.selected.visibility = View.VISIBLE
+        }else{
+            binding.selected.visibility = View.GONE
+        }
+    }
+
     override fun rejectRequest(request: ChangeRequestStatus) {
         viewModel.changeRequestStatus(request)
+    }
+
+    override fun updateVisibility() {
+        updateButtonVisibility()
     }
 
     private fun searchViewListener(){

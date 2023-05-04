@@ -29,6 +29,7 @@ class UserManagementAccountSetting : Fragment(),
     var isData = false
     lateinit var deleteRequests: List<DeleteAccountResponse>
     lateinit var adapter: DeleteRequestsAdapter
+    var allSelected = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,6 +41,7 @@ class UserManagementAccountSetting : Fragment(),
     ): View? {
         // Inflate the layout for this fragment
         binding = FragmentUserManagementAccountSettingBinding.inflate(layoutInflater)
+        searchViewListener()
         viewModel.getDeleteAccounts()
         viewModel.deleteRequestsDataObserver.observe(viewLifecycleOwner) {
             if (it is NetworkResponse.Success) {
@@ -68,6 +70,7 @@ class UserManagementAccountSetting : Fragment(),
 
         binding.checkBox.setOnClickListener(View.OnClickListener {
             if(binding.checkBox.isChecked){
+                allSelected = true
                 binding.selected.visibility = View.VISIBLE
                 binding.requests.layoutManager = LinearLayoutManager(binding.root.context)
                 adapter = DeleteRequestsAdapter(
@@ -78,6 +81,7 @@ class UserManagementAccountSetting : Fragment(),
                 )
                 binding.requests.adapter = adapter
             }else{
+                allSelected = false
                 binding.selected.visibility = View.GONE
                 binding.requests.layoutManager = LinearLayoutManager(binding.root.context)
                 adapter = DeleteRequestsAdapter(
@@ -92,8 +96,14 @@ class UserManagementAccountSetting : Fragment(),
 
         binding.rejectAll.setOnClickListener(View.OnClickListener {
             val rejectAllList = mutableListOf<AccountRequestBody>()
-            for(req in deleteRequests){
-                rejectAllList.add(AccountRequestBody(req.email, req.type))
+            if(allSelected){
+                for(req in deleteRequests){
+                    rejectAllList.add(AccountRequestBody(req.email, req.type))
+                }
+            }else{
+                for(req in adapter.getSelectedItems()){
+                    rejectAllList.add(AccountRequestBody(req.email, req.type))
+                }
             }
             viewModel.changeAccountRequest(
                 ChangeAccountRequestBody(
@@ -105,8 +115,14 @@ class UserManagementAccountSetting : Fragment(),
 
         binding.acceptAll.setOnClickListener(View.OnClickListener {
             val acceptAllList = mutableListOf<AccountRequestBody>()
-            for(req in deleteRequests){
-                acceptAllList.add(AccountRequestBody(req.email, req.type))
+            if(allSelected){
+                for(req in deleteRequests){
+                    acceptAllList.add(AccountRequestBody(req.email, req.type))
+                }
+            }else{
+                for(req in adapter.getSelectedItems()){
+                    acceptAllList.add(AccountRequestBody(req.email, req.type))
+                }
             }
             viewModel.changeAccountRequest(
                 ChangeAccountRequestBody(
@@ -134,9 +150,22 @@ class UserManagementAccountSetting : Fragment(),
         return binding.root
     }
 
+    private fun updateButtonVisibility() {
+        if(adapter.getSelectedItems().isNotEmpty() || allSelected){
+            binding.selected.visibility = View.VISIBLE
+        }else{
+            binding.selected.visibility = View.GONE
+        }
+    }
+
     override fun changeAccountRequest(request: ChangeAccountRequestBody) {
         viewModel.changeAccountRequest(request)
     }
+
+    override fun updateVisibility() {
+        updateButtonVisibility()
+    }
+
 
     private fun searchViewListener(){
         binding.search.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
@@ -144,6 +173,9 @@ class UserManagementAccountSetting : Fragment(),
             override fun onQueryTextSubmit(query: String?): Boolean {
                 if (!query.isNullOrEmpty() && isData) {
                     Log.e("Query", "1")
+                    val searchViewIcon: ImageView =
+                        binding.search.findViewById(R.id.search_close_btn) as ImageView
+                    searchViewIcon.visibility = View.GONE
                     adapter.filter.filter(query)
                     return false
                 }

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.Drawable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,6 +36,7 @@ class ProfileSkillsAdapter(val context: Context, val hashMap: LinkedTreeMap<Stri
         holder.skillLevel.rating = mapObject.value.toFloat()
         holder.deleteIcon.setOnClickListener(View.OnClickListener {
             list.removeAt(position)
+            Log.e("Deleted Skills", mapObject.key.toString())
             hashMap.remove(mapObject.key)
             this.notifyItemRemoved(position)
         })

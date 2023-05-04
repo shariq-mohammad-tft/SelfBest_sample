@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tft.selfbest.R
 import com.tft.selfbest.models.ChangeSkillRequestStatus
 import com.tft.selfbest.models.SkillResponse
+import com.tft.selfbest.models.UserRequest
 
 class AcceptedSkillRequestAdapter(
     val context: Context,
@@ -19,6 +20,8 @@ class AcceptedSkillRequestAdapter(
 ) : RecyclerView.Adapter<AcceptedSkillRequestAdapter.SKillRequestViewHolder>(), Filterable {
 
     var fileteredList = list
+    private val selectedItems = mutableListOf<SkillResponse>()
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SKillRequestViewHolder {
         val view =
             LayoutInflater.from(parent.context)
@@ -41,6 +44,14 @@ class AcceptedSkillRequestAdapter(
             )
             notifyItemRemoved(position)
         }
+
+        holder.select.setOnCheckedChangeListener { _, isChecked ->
+            if(isChecked)
+                selectedItems.add(request)
+            else
+                selectedItems.remove(request)
+            changeSkillRequestListener.updateVisibility()
+        }
     }
 
     override fun getItemCount(): Int {
@@ -49,6 +60,11 @@ class AcceptedSkillRequestAdapter(
 
     interface ChangeSkillRequestListener {
         fun changeSkillRequest(request: ChangeSkillRequestStatus)
+        fun updateVisibility()
+    }
+
+    fun getSelectedItems(): List<SkillResponse> {
+        return selectedItems
     }
 
     inner class SKillRequestViewHolder(view: View) : RecyclerView.ViewHolder(view) {

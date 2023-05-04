@@ -52,6 +52,7 @@ import java.io.File
 import java.net.URL
 import javax.inject.Inject
 
+
 @AndroidEntryPoint
 class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnClickListener,
     RecommendationsAdapter.SkillAddedListener, ProfileSkillsAdapter.ChangeRatingListener {
@@ -60,7 +61,8 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
     lateinit var binding: FragmentProfileBinding
     val viewModel by viewModels<ProfileViewModel>()
     private lateinit var profileData: ProfileData
-   // private lateinit var personalityTypes: ArrayList<String>
+
+    // private lateinit var personalityTypes: ArrayList<String>
     private var workingDaysTemp = arrayListOf<RecursiveDays>()
     lateinit var linkedIndialog: Dialog
     var deactivated = false
@@ -89,22 +91,22 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
 
     private lateinit var requiredFields: List<EditText>
 
-  /*      val personalities = arrayOf(
-        "Having deadlines",
-        "Having accountability partner",
-        "Rewards",
-        "Reminders",
-        "Reducing distractions",
-        "Looking at inspiring content",
-        "Working in isolation",
-        "Working around people",
-        "Just help getting started",
-        "Taking micro-breaks during work"
-    )
-    lateinit var customPersonlityList: List<String>
-    var FinalPersonality = arrayListOf<String>()
-    var personalityList = arrayListOf<Int>()
-    val personalityBoolean = BooleanArray(personalities.size)*/
+    /*      val personalities = arrayOf(
+          "Having deadlines",
+          "Having accountability partner",
+          "Rewards",
+          "Reminders",
+          "Reducing distractions",
+          "Looking at inspiring content",
+          "Working in isolation",
+          "Working around people",
+          "Just help getting started",
+          "Taking micro-breaks during work"
+      )
+      lateinit var customPersonlityList: List<String>
+      var FinalPersonality = arrayListOf<String>()
+      var personalityList = arrayListOf<Int>()
+      val personalityBoolean = BooleanArray(personalities.size)*/
 
     private var startHour = 0
     private var startMinute = 0
@@ -182,8 +184,8 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
 
         var suggestions = listOf<String>()
 
-        viewModel.jobsListObserver.observe(viewLifecycleOwner){
-            if(it is NetworkResponse.Success){
+        viewModel.jobsListObserver.observe(viewLifecycleOwner) {
+            if (it is NetworkResponse.Success) {
                 suggestions = it.data ?: listOf()
                 val adapter =
                     ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, suggestions)
@@ -355,7 +357,7 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
         binding.skillSearch.onItemClickListener =
             AdapterView.OnItemClickListener { arg0, _, position, _ ->
                 val selectedItem = arg0.getItemAtPosition(position) as String
-                if(selectedItem.isNotEmpty()){
+                if (selectedItem.isNotEmpty()) {
                     binding.skillListScroll.visibility = View.VISIBLE
                     profileSkills[selectedItem] = 1
                     currentSkills.add(selectedItem)
@@ -523,7 +525,7 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
         )
     }
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("SetTextI18n", "UseCompatLoadingForDrawables")
     override fun onClick(view: View?) {
         when (view?.id) {
             R.id.user_icon -> {
@@ -574,10 +576,10 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
                 else{
                     val allFieldsFilled = requiredFields.all { it.text.isNotEmpty() }
                     if (allFieldsFilled) {
-                      val experience=  binding.experience.text.toString().toFloatOrNull() ?: 0.0f
-                      val firstName=   binding.firstName.text.toString()
-                       val lastName= binding.lastName.text.toString()
-                       val occupation= binding.jobPosition.text.toString()
+                        val experience=  binding.experience.text.toString().toFloatOrNull() ?: 0.0f
+                        val firstName=   binding.firstName.text.toString()
+                        val lastName= binding.lastName.text.toString()
+                        val occupation= binding.jobPosition.text.toString()
                         val gender = genderCategory[binding.genderSpinner.selectedItemPosition]
                         val startWorkingTime = timeInString(startHour, startMinute)
                         val endWorkingTime = timeInString(endHour, endMinute)
@@ -599,6 +601,16 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
                                 "Select atleast 1 working day",
                                 Toast.LENGTH_SHORT
                             ).show()
+                            return
+                        }
+
+                        if(skills.isEmpty()){
+                            Toast.makeText(
+                                requireContext(),
+                                "Please add atleast one skill",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            return
                         }
 
                         val profileChangesData = ProfileChangesData(
@@ -627,114 +639,112 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
 
 
                     } else {
-                        binding.firstName.error=""
                         Toast.makeText(requireContext(), "One or more field are empty", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
-           /* R.id.save_profile -> {
+            /* R.id.save_profile -> {
+                 if (!requireContext().isInternetAvailable()) {
+                     Toast.makeText(
+                         requireContext(),
+                         "You dont have connectivity",
+                         Toast.LENGTH_SHORT
+                     ).show()
+                 }
+                 else {
+                     var isReady = true
+                     val experience = if (binding.experience.text.toString().isEmpty() ) {
+                         binding.experience.error=""
+                         isReady = false
+                         0.0f
+                     } else {
+                         binding.experience.text.toString().toFloatOrNull() ?: 0.0f
+                     }
+                     val firstName = if (binding.firstName.text.toString().isEmpty()) {
+                         binding.firstName.error = "field can't be empty"
+                         isReady = false
+                         ""
+                     } else {
+                         binding.firstName.text.toString()
+                     }
+                     val gender = genderCategory[binding.genderSpinner.selectedItemPosition]
+                     val lastName = if (binding.lastName.text.toString().isEmpty()) {
+                         binding.lastName.error = "field can't be empty"
+                         isReady = false
+                         ""
+                     } else {
+                         binding.lastName.text.toString()
+                     }
+                     //val occupation = binding.userProfession.text.toString()
+                     val occupation = if (binding.jobPosition.text.toString().isEmpty()) {
+                         binding.jobPosition.error = "field can't be empty"
+                         isReady = false
+                         ""
+                     } else {
+                         binding.jobPosition.text.toString()
+                     }
+ //                val personalityType =
+ //                    personalityTypes[binding.personalityTypeSpinner.selectedItemPosition]
+                     val startWorkingTime = timeInString(startHour, startMinute)
+                     val endWorkingTime = timeInString(endHour, endMinute)
+                     val skills: LinkedTreeMap<String, Int> = LinkedTreeMap()
+                     profileSkills.forEach {
+                         skills[it.key] = it.value.toInt()
+                     }
+                     pendingSkills.forEach {
+                         skills[it.key] = 1
+                     }
+                     workingDays.clear()
+                     for (day in workingDaysTemp) {
+                         if (day.isSelected)
+                             workingDays.add(day.recursiveDate)
+                     }
+                     if (workingDays.isEmpty()) {
+                         isReady = false
+                         Toast.makeText(
+                             requireContext(),
+                             "Select atleast 1 working day",
+                             Toast.LENGTH_SHORT
+                         ).show()
+                     }
+
+                     val profileChangesData = ProfileChangesData(
+                         "",
+                         "",
+                         listOf(),
+                         //FinalPersonality.distinct(),//custom personality
+                         experience as Float,
+                         firstName,
+                         gender,
+                         listOf(),
+                         false,
+                         lastName,
+                         "Asia/Calcutta",
+                         occupation,
+                         "",
+                         false,
+                         skills,
+                         endWorkingTime,
+                         startWorkingTime,
+                         workingDays,
+                         //listOf("Monday", "Tuesday", "Wednesday", "Thursday", "Saturday"),
+                         ""
+                     )
+
+                     if (isReady)
+                         viewModel.saveProfileChangesData(profileChangesData)
+                 }
+
+
+             }*/
+            R.id.skill_search -> {
                 if (!requireContext().isInternetAvailable()) {
                     Toast.makeText(
                         requireContext(),
                         "You dont have connectivity",
                         Toast.LENGTH_SHORT
                     ).show()
-                }
-                else {
-                    var isReady = true
-                    val experience = if (binding.experience.text.toString().isEmpty() ) {
-                        binding.experience.error=""
-                        isReady = false
-                        0.0f
-                    } else {
-                        binding.experience.text.toString().toFloatOrNull() ?: 0.0f
-                    }
-                    val firstName = if (binding.firstName.text.toString().isEmpty()) {
-                        binding.firstName.error = "field can't be empty"
-                        isReady = false
-                        ""
-                    } else {
-                        binding.firstName.text.toString()
-                    }
-                    val gender = genderCategory[binding.genderSpinner.selectedItemPosition]
-                    val lastName = if (binding.lastName.text.toString().isEmpty()) {
-                        binding.lastName.error = "field can't be empty"
-                        isReady = false
-                        ""
-                    } else {
-                        binding.lastName.text.toString()
-                    }
-                    //val occupation = binding.userProfession.text.toString()
-                    val occupation = if (binding.jobPosition.text.toString().isEmpty()) {
-                        binding.jobPosition.error = "field can't be empty"
-                        isReady = false
-                        ""
-                    } else {
-                        binding.jobPosition.text.toString()
-                    }
-//                val personalityType =
-//                    personalityTypes[binding.personalityTypeSpinner.selectedItemPosition]
-                    val startWorkingTime = timeInString(startHour, startMinute)
-                    val endWorkingTime = timeInString(endHour, endMinute)
-                    val skills: LinkedTreeMap<String, Int> = LinkedTreeMap()
-                    profileSkills.forEach {
-                        skills[it.key] = it.value.toInt()
-                    }
-                    pendingSkills.forEach {
-                        skills[it.key] = 1
-                    }
-                    workingDays.clear()
-                    for (day in workingDaysTemp) {
-                        if (day.isSelected)
-                            workingDays.add(day.recursiveDate)
-                    }
-                    if (workingDays.isEmpty()) {
-                        isReady = false
-                        Toast.makeText(
-                            requireContext(),
-                            "Select atleast 1 working day",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-
-                    val profileChangesData = ProfileChangesData(
-                        "",
-                        "",
-                        listOf(),
-                        //FinalPersonality.distinct(),//custom personality
-                        experience as Float,
-                        firstName,
-                        gender,
-                        listOf(),
-                        false,
-                        lastName,
-                        "Asia/Calcutta",
-                        occupation,
-                        "",
-                        false,
-                        skills,
-                        endWorkingTime,
-                        startWorkingTime,
-                        workingDays,
-                        //listOf("Monday", "Tuesday", "Wednesday", "Thursday", "Saturday"),
-                        ""
-                    )
-
-                    if (isReady)
-                        viewModel.saveProfileChangesData(profileChangesData)
-                }
-
-
-            }*/
-            R.id.skill_search -> {
-                if(!requireContext().isInternetAvailable()){
-                    Toast.makeText(
-                        requireContext(),
-                        "You dont have connectivity",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-                else{
+                } else {
                     binding.skillSearch.requestFocus()
 //                if (binding.skillSearch.text.isEmpty()) {
 //                    Toast.makeText(
@@ -746,17 +756,17 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
 //                }
                     binding.skillListScroll.visibility = View.VISIBLE
                     //currentSkills.add(binding.skill.text.toString())
-                    if(binding.skillSearch.text.isNotEmpty()){
+                    if (binding.skillSearch.text.isNotEmpty()) {
 //                        if (isPresentSkill(binding.skillSearch.text.toString())) {
-                            currentSkills.add(binding.skillSearch.text.toString())
-                            profileSkills[binding.skillSearch.text.toString()] = 1
-                            (binding.skillList.adapter as ProfileSkillsAdapter).addSkill(
-                                binding.skillSearch.text.toString(),
-                                1
-                            )
-                            viewModel.getRecommendation(binding.skillSearch.text.toString())
-                            Toast.makeText(context, "Skill added successfully", Toast.LENGTH_SHORT)
-                                .show()
+                        currentSkills.add(binding.skillSearch.text.toString())
+                        profileSkills[binding.skillSearch.text.toString()] = 1
+                        (binding.skillList.adapter as ProfileSkillsAdapter).addSkill(
+                            binding.skillSearch.text.toString(),
+                            1
+                        )
+                        viewModel.getRecommendation(binding.skillSearch.text.toString())
+                        Toast.makeText(context, "Skill added successfully", Toast.LENGTH_SHORT)
+                            .show()
 //                        } else {
 //                            pendingSkills[binding.skillSearch.text.toString()] = 1
 //                            (binding.pendingSkillList.adapter as PendingSkillAdapter).addSkill(

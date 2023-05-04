@@ -22,6 +22,7 @@ class AcceptedRequestAdapter(
 
     private val roles = listOf("Admin", "User")
     var fileteredList = list
+    private val selectedItems = mutableListOf<UserRequest>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RequestViewHolder {
         val view =
@@ -88,6 +89,15 @@ class AcceptedRequestAdapter(
             )
             notifyItemRemoved(position)
         }
+
+        holder.checkBox.setOnCheckedChangeListener { _, isChecked ->
+            if(isChecked)
+                selectedItems.add(request)
+            else
+                selectedItems.remove(request)
+            rejectRequestListener.updateVisibility()
+        }
+
     }
 
     override fun getItemCount(): Int {
@@ -96,6 +106,11 @@ class AcceptedRequestAdapter(
 
     interface RejectRequestListener {
         fun rejectRequest(request: ChangeRequestStatus)
+        fun updateVisibility()
+    }
+
+    fun getSelectedItems(): List<UserRequest> {
+        return selectedItems
     }
 
 
@@ -106,6 +121,7 @@ class AcceptedRequestAdapter(
         val select: CheckBox = view.findViewById(R.id.checkbox1)
         val linkedin: TextView = view.findViewById(R.id.linkedin_id)
         val linkedinContainer: LinearLayout = view.findViewById(R.id.linked_in_container)
+        val checkBox: CheckBox = view.findViewById(R.id.checkbox1)
 
         fun bind(request: UserRequest) {
             role.onItemSelectedListener = object : OnItemSelectedListener {

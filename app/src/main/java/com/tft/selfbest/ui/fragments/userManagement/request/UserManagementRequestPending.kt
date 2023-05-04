@@ -34,6 +34,7 @@ class UserManagementRequestPending : Fragment(), RequestAdapter.ChangeRequestLis
     var isData = false
     var pendingRequests : MutableList<UserRequest> = mutableListOf()
     lateinit var adapter: RequestAdapter
+    var allSelected = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,14 +78,16 @@ class UserManagementRequestPending : Fragment(), RequestAdapter.ChangeRequestLis
                 binding.pendingRequest.adapter = adapter
             }
         }
-//        viewModel.skillRequestChangeDataObserver.observe(viewLifecycleOwner){
-//            if(it is NetworkResponse.Success){
-//                Toast.makeText(context!!, "Data Changed Successfully", Toast.LENGTH_SHORT).show()
-//            }
-//        }
+        viewModel.skillRequestChangeDataObserver.observe(viewLifecycleOwner){
+            if(it is NetworkResponse.Success){
+                Toast.makeText(requireContext(), "Data updated Successfully", Toast.LENGTH_SHORT).show()
+                viewModel.getUserRequests("pending")
+            }
+        }
 
         binding.checkBox.setOnClickListener(View.OnClickListener {
             if(binding.checkBox.isChecked){
+                allSelected = true
                 binding.selected.visibility = View.VISIBLE
                 binding.pendingRequest.layoutManager = LinearLayoutManager(binding.root.context)
                 adapter = RequestAdapter(
@@ -95,6 +98,7 @@ class UserManagementRequestPending : Fragment(), RequestAdapter.ChangeRequestLis
                 )
                 binding.pendingRequest.adapter = adapter
             }else{
+                allSelected = false
                 binding.selected.visibility = View.GONE
                 binding.pendingRequest.layoutManager = LinearLayoutManager(binding.root.context)
                 adapter = RequestAdapter(
@@ -109,8 +113,14 @@ class UserManagementRequestPending : Fragment(), RequestAdapter.ChangeRequestLis
 
         binding.rejectAll.setOnClickListener(View.OnClickListener {
             val rejectAllList = mutableListOf<RequestStatus>()
-            for(req in requests){
-                rejectAllList.add(RequestStatus("Rejected", req.userid, req.userType))
+            if(allSelected){
+                for (req in requests) {
+                    rejectAllList.add(RequestStatus("Rejected", req.userid, req.userType))
+                }
+            }else{
+                for (req in adapter.getSelectedItems()) {
+                    rejectAllList.add(RequestStatus("Rejected", req.userid, req.userType))
+                }
             }
             viewModel.changeRequestStatus(ChangeRequestStatus(
                 false, rejectAllList
@@ -119,8 +129,14 @@ class UserManagementRequestPending : Fragment(), RequestAdapter.ChangeRequestLis
 
         binding.acceptAll.setOnClickListener(View.OnClickListener {
             val acceptAllList = mutableListOf<RequestStatus>()
-            for(req in requests){
-                acceptAllList.add(RequestStatus("accepted", req.userid, req.userType))
+            if(allSelected){
+                for (req in requests) {
+                    acceptAllList.add(RequestStatus("accepted", req.userid, req.userType))
+                }
+            }else{
+                for (req in adapter.getSelectedItems()) {
+                    acceptAllList.add(RequestStatus("accepted", req.userid, req.userType))
+                }
             }
             viewModel.changeRequestStatus(ChangeRequestStatus(
                 false, acceptAllList
@@ -130,10 +146,20 @@ class UserManagementRequestPending : Fragment(), RequestAdapter.ChangeRequestLis
         return binding.root
     }
 
-
+    private fun updateButtonVisibility() {
+        if(adapter.getSelectedItems().isNotEmpty() || allSelected){
+            binding.selected.visibility = View.VISIBLE
+        }else{
+            binding.selected.visibility = View.GONE
+        }
+    }
 
     override fun changeRequest(request: ChangeRequestStatus) {
         viewModel.changeRequestStatus(request)
+    }
+
+    override fun updateVisibility() {
+        updateButtonVisibility()
     }
 
     private fun searchViewListener(){
