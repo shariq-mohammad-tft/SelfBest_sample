@@ -3,13 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:id="@+id/scrollviewatProfile"
+    >
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/detail_page_header_color"
-        tools:context=".ui.fragments.profile.ProfileFragment">
+        tools:context=".ui.fragments.profile.ProfileFragment"
+        app:layout_constraintTop_toBottomOf="parent"
+        >
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/user_icon"
@@ -125,6 +129,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/personal_detail_text">
 
+
                 <LinearLayout
                     android:id="@+id/profile_detail_container"
                     android:layout_width="match_parent"
@@ -197,6 +202,8 @@
                         android:letterSpacing="0.08"
                         android:paddingLeft="10dp"
                         android:textSize="12dp"
+                        android:inputType="numberDecimal"
+                        android:textColorHint="@color/red"
                         android:textStyle="bold" />
 
                     <TextView

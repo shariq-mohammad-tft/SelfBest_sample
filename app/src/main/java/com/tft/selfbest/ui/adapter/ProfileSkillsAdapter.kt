@@ -27,51 +27,70 @@ class ProfileSkillsAdapter(val context: Context, val hashMap: LinkedTreeMap<Stri
         return SkillViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: SkillViewHolder, position: Int) {
-//        val rnd = Random()
-//        val color: Int = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256))
+   /* override fun onBindViewHolder(holder: SkillViewHolder, position: Int) {
         val mapObject = list[position]
         holder.skillName.setText(mapObject.key)
         holder.skillLevel.rating = mapObject.value.toFloat()
         holder.deleteIcon.setOnClickListener(View.OnClickListener {
-            list.removeAt(position)
-            hashMap.remove(mapObject.key)
-            this.notifyItemRemoved(position)
+            val adapterPosition = holder.absoluteAdapterPosition
+            if (adapterPosition != RecyclerView.NO_POSITION) {
+                val removedMapObject = list.removeAt(adapterPosition)
+                hashMap.remove(removedMapObject.key)
+                this.notifyItemRemoved(adapterPosition)
+            }
         })
 
         holder.initial.text = mapObject.key.toString().substring(0, 1)
-//        val unwrappedDrawable: Drawable? =
-//            AppCompatResources.getDrawable(context, R.drawable.name_bg)
-//        val wrappedDrawable = unwrappedDrawable?.let { DrawableCompat.wrap(it) }
-//        if (wrappedDrawable != null) {
-//            DrawableCompat.setTint(wrappedDrawable, color)
-//        }
 
         holder.skillLevel.onRatingBarChangeListener =
             RatingBar.OnRatingBarChangeListener { _, _, _ ->
-//                Log.e("Skill Level Changed Skill : ", "$holder.skillName.toString()")
                 changeRatingListener.changeRating(
                     holder.skillLevel.rating,
                     holder.skillName.text.toString()
                 )
                 notifyDataSetChanged()
             }
-//        holder.skillLevel.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-//            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-//                mapObject.setValue((p2 + 1))
-//            }
-//
-//            override fun onNothingSelected(p0: AdapterView<*>?) {
-//                // to do
-//            }
-//
-//        }
-//        val spinAdapter = ArrayAdapter(context,
-//            R.layout.spinner_main_item_style, skillLevel)
-//        spinAdapter.setDropDownViewResource(R.layout.spinner_dropdown_style)
-//        holder.skillLevel.adapter = spinAdapter
-//        holder.skillLevel.setSelection(mapObject.value.toInt() - 1)
+    }*/
+
+    override fun onBindViewHolder(holder: SkillViewHolder, position: Int) {
+        if (list.isNotEmpty() && position < list.size) {
+            val mapObject = list[position]
+            if (mapObject != null) {
+                holder.skillName.text = mapObject.key
+                holder.skillLevel.rating = mapObject.value.toFloat()
+                holder.deleteIcon.setOnClickListener {
+                    val adapterPosition = holder.absoluteAdapterPosition
+                    if (adapterPosition != RecyclerView.NO_POSITION) {
+                        val removedMapObject = list.getOrNull(adapterPosition)
+                        if (removedMapObject != null) {
+                            list.removeAt(adapterPosition)
+                            hashMap.remove(removedMapObject.key)
+                            this.notifyItemRemoved(adapterPosition)
+                        }
+                    }
+                }
+
+                if (mapObject.key != null && mapObject.key.isNotEmpty()) {
+                    holder.initial.text = mapObject.key.substring(0, 1)
+                } else {
+                    holder.initial.text = ""
+                }
+
+                holder.skillLevel.onRatingBarChangeListener =
+                    RatingBar.OnRatingBarChangeListener { _, _, _ ->
+                        val skillName = holder.skillName.text?.toString()
+                        if (skillName != null) {
+                            changeRatingListener.changeRating(
+                                holder.skillLevel.rating,
+                                skillName
+                            )
+                            notifyDataSetChanged()
+                        }
+                    }
+            }
+        }
     }
+
 
     override fun getItemCount(): Int {
         return list.size

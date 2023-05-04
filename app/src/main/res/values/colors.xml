@@ -2,6 +2,7 @@
 <resources>
     <color name="main">@color/tool_bar_color</color>
     <color name="black">#FF000000</color>
+    <color name="red">#F31C1C</color>
     <color name="white">#FFFFFFFF</color>
     <color name="splash_background">#00FFFFFF</color>
     <color name="tool_bar_color">#1D71D4</color>

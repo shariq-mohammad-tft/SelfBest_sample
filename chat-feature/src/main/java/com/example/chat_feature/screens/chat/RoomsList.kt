@@ -52,6 +52,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
+import coil.compose.rememberImagePainter
+import coil.request.ImageRequest
 import com.example.chat_feature.R
 import com.example.chat_feature.data.experts.BotUnseenCountRequest
 import com.example.chat_feature.data.experts.Expert
@@ -66,6 +69,7 @@ import com.example.chat_feature.utils.toast
 import com.example.chat_feature.view_models.ExpertListViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
+import java.util.Base64.Decoder
 
 
 private const val TAG = "ExpertList"
@@ -228,11 +232,13 @@ fun RoomsList(
                     is Resource.Success -> {
                         val data =
                             if (searchState.list.isNullOrEmpty()) it.value else searchState.list
-                        if (data.isEmpty()) {
+                        if (data.isNotEmpty()) {
+
                             Box(
                                 modifier = Modifier.fillMaxSize(),
                                 contentAlignment = Alignment.Center
                             ) {
+                               /* AsyncImage(model =R.drawable.noData, contentDescription ="" )*/
                                 Text(
                                     text = "Start chat with Codey",
                                     fontWeight = FontWeight.Bold,

@@ -9,6 +9,7 @@ import android.app.TimePickerDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.graphics.Rect
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -47,6 +48,7 @@ import com.tft.selfbest.ui.activites.*
 import com.tft.selfbest.ui.adapter.*
 import com.tft.selfbest.ui.login.LoginActivity
 import com.tft.selfbest.utils.isInternetAvailable
+import com.tft.selfbest.utils.showIconErrorOnly
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
 import java.net.URL
@@ -160,6 +162,21 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
             }
 
         }
+      /*  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            binding.scrollviewatProfile.setOnScrollChangeListener { view, scrollX, scrollY, oldScrollX, oldScrollY ->
+                if (scrollY < oldScrollY) {
+                    // User is scrolling down, hide the error message
+                   binding.firstName.error=null
+                } else if (scrollY > oldScrollY) {
+                    // User is scrolling up, show the error message again
+                    binding.firstName.error = "Your error message"
+                }
+            }
+        }*/
+
+
+
+
         requiredFields = listOf(
             binding.firstName,
             binding.lastName,
@@ -563,7 +580,7 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
             R.id.cancel_profile -> {
                 (activity as DetailActivity).finish()
             }
-            R.id.save_profile -> {
+          /*  R.id.save_profile -> {
                 if (!requireContext().isInternetAvailable()) {
                     Toast.makeText(
                         requireContext(),
@@ -630,8 +647,8 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
                         Toast.makeText(requireContext(), "One or more field are empty", Toast.LENGTH_SHORT).show()
                     }
                 }
-            }
-           /* R.id.save_profile -> {
+            }*/
+            R.id.save_profile -> {
                 if (!requireContext().isInternetAvailable()) {
                     Toast.makeText(
                         requireContext(),
@@ -642,14 +659,14 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
                 else {
                     var isReady = true
                     val experience = if (binding.experience.text.toString().isEmpty() ) {
-                        binding.experience.error=""
+                        binding.experience.showIconErrorOnly()
                         isReady = false
                         0.0f
                     } else {
                         binding.experience.text.toString().toFloatOrNull() ?: 0.0f
                     }
                     val firstName = if (binding.firstName.text.toString().isEmpty()) {
-                        binding.firstName.error = "field can't be empty"
+                        binding.firstName.showIconErrorOnly()
                         isReady = false
                         ""
                     } else {
@@ -657,7 +674,7 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
                     }
                     val gender = genderCategory[binding.genderSpinner.selectedItemPosition]
                     val lastName = if (binding.lastName.text.toString().isEmpty()) {
-                        binding.lastName.error = "field can't be empty"
+                        binding.lastName.showIconErrorOnly()
                         isReady = false
                         ""
                     } else {
@@ -665,7 +682,7 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
                     }
                     //val occupation = binding.userProfession.text.toString()
                     val occupation = if (binding.jobPosition.text.toString().isEmpty()) {
-                        binding.jobPosition.error = "field can't be empty"
+                        binding.jobPosition.showIconErrorOnly()
                         isReady = false
                         ""
                     } else {
@@ -724,7 +741,7 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
                 }
 
 
-            }*/
+            }
             R.id.skill_search -> {
                 if(!requireContext().isInternetAvailable()){
                     Toast.makeText(

@@ -1,11 +1,17 @@
 package com.tft.selfbest.utils
 
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
+import android.widget.EditText
+import androidx.core.content.ContextCompat
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.tft.selfbest.R
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.Job
@@ -88,3 +94,30 @@ fun Context.isInternetAvailable(): Boolean {
         return networkInfo.isConnected
     }
 }
+
+/*fun EditText.showIconErrorOnly() {
+    val errorIcon = ContextCompat.getDrawable(context, R.drawable.ic_error)
+    errorIcon?.setBounds(0, 0, errorIcon.intrinsicWidth, errorIcon.intrinsicHeight)
+    setCompoundDrawables(null, null, errorIcon, null)
+}*/
+
+fun EditText.showIconErrorOnly() {
+    val errorIcon = ContextCompat.getDrawable(context, R.drawable.ic_error)
+    errorIcon?.setBounds(0, 0, errorIcon.intrinsicWidth, errorIcon.intrinsicHeight)
+    setCompoundDrawables(null, null, errorIcon, null)
+
+    addTextChangedListener(object : TextWatcher {
+        override fun afterTextChanged(s: Editable?) {
+            if (!s.isNullOrEmpty()) {
+                setCompoundDrawables(null, null, null, null)
+            } else {
+                setCompoundDrawables(null, null, errorIcon, null)
+            }
+        }
+
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+    })
+}
+

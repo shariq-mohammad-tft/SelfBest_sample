@@ -27,9 +27,16 @@ class AcceptedSkillRequestAdapter(
             LayoutInflater.from(parent.context)
                 .inflate(R.layout.accepted_skill_layout_item, parent, false)
         return SKillRequestViewHolder(view)
+
     }
 
     override fun onBindViewHolder(holder: SKillRequestViewHolder, position: Int) {
+        if(selectAll){
+             holder.select.visibility=View.VISIBLE
+        }
+        else{
+            holder.select.visibility=View.GONE
+        }
         val request = fileteredList[position]
         holder.id.text = request.email
         holder.skill.text = request.skill
