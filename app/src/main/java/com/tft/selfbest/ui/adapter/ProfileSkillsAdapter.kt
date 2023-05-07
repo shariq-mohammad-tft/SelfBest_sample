@@ -65,6 +65,7 @@ class ProfileSkillsAdapter(val context: Context, val hashMap: LinkedTreeMap<Stri
                         if (removedMapObject != null) {
                             list.removeAt(adapterPosition)
                             hashMap.remove(removedMapObject.key)
+                            changeRatingListener.itemRemoved(removedMapObject.key)
                             this.notifyItemRemoved(adapterPosition)
                         }
                     }
@@ -98,6 +99,7 @@ class ProfileSkillsAdapter(val context: Context, val hashMap: LinkedTreeMap<Stri
 
     interface ChangeRatingListener : RatingBar.OnRatingBarChangeListener {
         fun changeRating(level: Float, skill: String)
+        fun itemRemoved(skill: String)
     }
 
     inner class SkillViewHolder(view: View) : RecyclerView.ViewHolder(view) {

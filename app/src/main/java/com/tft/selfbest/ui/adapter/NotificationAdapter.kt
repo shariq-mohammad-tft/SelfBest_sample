@@ -28,7 +28,7 @@ class NotificationAdapter(val list: List<NotificationDetail>,
         val date = df.parse(item.time)
         val formatter =
             SimpleDateFormat("dd-MM-yyyy '|' hh:mm a", Locale.ENGLISH)
-        formatter.timeZone = TimeZone.getDefault()
+        formatter.timeZone = TimeZone.getTimeZone("Asia/Kolkata")
         val dateStr = formatter.format(date!!)
         holder.title.text = dateStr
         holder.content.text = item.content
