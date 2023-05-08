@@ -713,6 +713,15 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
                         ).show()
                     }
 
+                    if(profileSkills.isEmpty()){
+                        Toast.makeText(
+                            requireContext(),
+                            "Please add atleast one skill",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        return
+                    }
+
                     val profileChangesData = ProfileChangesData(
                         "",
                         "",

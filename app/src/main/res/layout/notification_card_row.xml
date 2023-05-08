@@ -40,7 +40,9 @@
         android:text="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut."
         android:textSize="10dp"
         app:layout_constraintStart_toEndOf="@+id/notification_icon"
-        app:layout_constraintTop_toBottomOf="@id/notification_header" />
+        app:layout_constraintTop_toBottomOf="@id/notification_header"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
 
     <View
         android:layout_width="match_parent"
