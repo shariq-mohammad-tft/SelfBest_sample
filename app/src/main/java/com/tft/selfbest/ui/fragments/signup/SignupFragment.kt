@@ -228,17 +228,19 @@ class SignupFragment : Fragment(), View.OnClickListener,
 //                    ).show()
 //                    return
 //                }
-                //binding.emptyList.visibility = View.GONE
-                binding.skillListContainer.visibility = View.VISIBLE
-                currentSkills.add(binding.skill.text.toString())
-                profileSkills[binding.skill.text.toString()] = 1
-                (binding.skillList.adapter as SignUpSkillListAdapter).addSkill(
-                    binding.skill.text.toString(),
-                    1
-                )
-                viewModel.getRecommendation(binding.skill.text.toString())
-                binding.skill.text.clear()
-                Toast.makeText(context, "Skill added successfully", Toast.LENGTH_SHORT).show()
+//                binding.emptyList.visibility = View.GONE
+                if(binding.skill.text.isNotEmpty()) {
+                    binding.skillListContainer.visibility = View.VISIBLE
+                    currentSkills.add(binding.skill.text.toString())
+                    profileSkills[binding.skill.text.toString()] = 1
+                    (binding.skillList.adapter as SignUpSkillListAdapter).addSkill(
+                        binding.skill.text.toString(),
+                        1
+                    )
+                    viewModel.getRecommendation(binding.skill.text.toString())
+                    binding.skill.text.clear()
+                    Toast.makeText(context, "Skill added successfully", Toast.LENGTH_SHORT).show()
+                }
             }
             R.id.cancel_event -> {
                 activity?.finish()
@@ -289,11 +291,16 @@ class SignupFragment : Fragment(), View.OnClickListener,
         Log.e("Skill Level Changed", "$profileSkills")
     }
 
+    override fun itemRemoved(skill: String) {
+        currentSkills.remove(skill)
+    }
+
     override fun skillAdded(skill: String) {
         (binding.skillList.adapter as SignUpSkillListAdapter).addSkill(
             skill,
             1
         )
+        currentSkills.add(skill)
         binding.skillListContainer.visibility = View.VISIBLE
         viewModel.getRecommendation(skill)
     }

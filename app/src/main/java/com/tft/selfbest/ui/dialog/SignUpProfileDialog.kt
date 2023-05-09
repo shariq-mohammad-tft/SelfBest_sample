@@ -102,8 +102,12 @@ class SignUpProfileDialog() : DialogFragment(), View.OnClickListener, SignUpSkil
 
     override fun changeRating(level: Float, skill: String){
         profileSkills[skill] = level.toInt()
-        Log.e("Skill Level Changed Level : ", "$level")
+        Log.e("Skill Level Changed", "$level")
         Log.e("Skill Level Changed", "$profileSkills")
+    }
+
+    override fun itemRemoved(skill: String) {
+        TODO("Not yet implemented")
     }
 
     override fun onRatingChanged(p0: RatingBar?, p1: Float, p2: Boolean) {

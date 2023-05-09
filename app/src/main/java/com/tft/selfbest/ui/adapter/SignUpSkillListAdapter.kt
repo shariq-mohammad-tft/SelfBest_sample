@@ -17,26 +17,48 @@ import com.tft.selfbest.R
 import java.util.*
 
 
-class SignUpSkillListAdapter(val context: Context, val hashMap: LinkedTreeMap<String, Int>,
-                             private val changeRatingListener: ChangeRatingListener
+class SignUpSkillListAdapter(
+    val context: Context, val hashMap: LinkedTreeMap<String, Int>,
+    private val changeRatingListener: ChangeRatingListener
 ) : RecyclerView.Adapter<SignUpSkillListAdapter.SkillViewHolder>() {
     var list = ArrayList(hashMap.entries)
     //val skillLevel = listOf("Beginner", "Intermediate", "Expert")
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SkillViewHolder {
         val view =
-            LayoutInflater.from(parent.context).inflate(R.layout.signup_skill_single_row, parent, false)
+            LayoutInflater.from(parent.context)
+                .inflate(R.layout.signup_skill_single_row, parent, false)
         return SkillViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: SkillViewHolder, position: Int) {
 //        val rnd = Random()
 //        val color: Int = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256))
-        val mapObject = list[position]
-        //holder.state.isChecked = true
-        holder.skillName.text = mapObject.key
-        holder.skillLevel.rating = mapObject.value.toFloat()
-        holder.initial.text = mapObject.key.toString().substring(0, 1)
+        if (list.isNotEmpty() && position < list.size) {
+            val mapObject = list[position]
+            //holder.state.isChecked = true
+            if (mapObject != null) {
+                holder.skillName.text = mapObject.key
+                holder.skillLevel.rating = mapObject.value.toFloat()
+//                holder.initial.text = mapObject.key.toString().substring(0, 1)
+                holder.deleteIcon.setOnClickListener {
+                    val adapterPosition = holder.absoluteAdapterPosition
+                    if (adapterPosition != RecyclerView.NO_POSITION) {
+                        val removedMapObject = list.getOrNull(adapterPosition)
+                        if (removedMapObject != null) {
+                            list.removeAt(adapterPosition)
+                            hashMap.remove(removedMapObject.key)
+                            changeRatingListener.itemRemoved(removedMapObject.key)
+                            this.notifyItemRemoved(adapterPosition)
+                        }
+                    }
+                }
+
+                if (mapObject.key != null && mapObject.key.isNotEmpty()) {
+                    holder.initial.text = mapObject.key.substring(0, 1)
+                } else {
+                    holder.initial.text = ""
+                }
 //        val unwrappedDrawable: Drawable? =
 //            AppCompatResources.getDrawable(context, R.drawable.name_bg)
 //        val wrappedDrawable = unwrappedDrawable?.let { DrawableCompat.wrap(it) }
@@ -50,12 +72,19 @@ class SignUpSkillListAdapter(val context: Context, val hashMap: LinkedTreeMap<St
 //            hashMap.remove(mapObject.key)
 //            this.notifyItemRemoved(position)
 //        })
-        holder.skillLevel.onRatingBarChangeListener =
-            OnRatingBarChangeListener { _, _, _ ->
+                holder.skillLevel.onRatingBarChangeListener =
+                    OnRatingBarChangeListener { _, _, _ ->
 //                Log.e("Skill Level Changed Skill : ", "$holder.skillName.toString()")
-                changeRatingListener.changeRating(holder.skillLevel.rating, holder.skillName.text.toString())
-                notifyDataSetChanged()
+                        if(holder.skillName.text?.toString() != null) {
+                            changeRatingListener.changeRating(
+                                holder.skillLevel.rating,
+                                holder.skillName.text.toString()
+                            )
+                            notifyDataSetChanged()
+                        }
+                    }
             }
+        }
 
         //holder.skillLevel.onRatingBarChangeListener = OnRatingBarChangeListener
 //            changeRatingListener.changeRating(holder.skillLevel.rating, holder.skillName.toString())
@@ -79,15 +108,16 @@ class SignUpSkillListAdapter(val context: Context, val hashMap: LinkedTreeMap<St
         return list.size
     }
 
-    interface ChangeRatingListener : OnRatingBarChangeListener{
+    interface ChangeRatingListener : OnRatingBarChangeListener {
         fun changeRating(level: Float, skill: String)
+        fun itemRemoved(skill: String)
     }
 
     inner class SkillViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val skillName : TextView = view.findViewById(R.id.name_of_skill)
-        var skillLevel : RatingBar = view.findViewById(R.id.level)
-        val initial : TextView = view.findViewById(R.id.initial)
-        //val deleteIcon : ImageView = view.findViewById(R.id.delete)
+        val skillName: TextView = view.findViewById(R.id.name_of_skill)
+        var skillLevel: RatingBar = view.findViewById(R.id.level)
+        val initial: TextView = view.findViewById(R.id.initial)
+        val deleteIcon : ImageView = view.findViewById(R.id.delete)
         //var state : CheckBox = view.findViewById(R.id.state)
         //var levelName : TextView = view.findViewById(R.id.level_name)
     }

@@ -49,6 +49,7 @@
         android:paddingHorizontal="20dp"
         android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@+id/frame"
+        app:layout_constraintStart_toStartOf="parent"
         tools:listitem="@layout/notification_card_row" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

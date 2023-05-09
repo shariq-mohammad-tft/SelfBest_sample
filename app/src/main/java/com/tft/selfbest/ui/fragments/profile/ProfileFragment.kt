@@ -1134,6 +1134,7 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
             skill,
             1
         )
+        currentSkills.add(skill)
         binding.skillListScroll.visibility = View.VISIBLE
         viewModel.getRecommendation(skill)
     }
@@ -1142,6 +1143,10 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
         profileSkills[skill] = level.toInt()
         binding.skillList.adapter =
             ProfileSkillsAdapter(binding.root.context, profileSkills, this)
+    }
+
+    override fun itemRemoved(skill: String) {
+        currentSkills.remove(skill)
     }
 
     override fun onRatingChanged(p0: RatingBar?, p1: Float, p2: Boolean) {

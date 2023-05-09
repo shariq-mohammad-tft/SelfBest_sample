@@ -76,15 +76,15 @@
 
         </LinearLayout>
 
-<!--        <ImageView-->
-<!--            android:id="@+id/delete"-->
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:layout_weight="1"-->
-<!--            android:padding="6dp"-->
-<!--            android:layout_marginStart="10dp"-->
-<!--            android:background="@drawable/upcoming_event_bg"-->
-<!--            android:src="@drawable/icon_delete" />-->
+        <ImageView
+            android:id="@+id/delete"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="6dp"
+            android:layout_marginStart="10dp"
+            android:background="@drawable/upcoming_event_bg"
+            android:src="@drawable/icon_delete" />
     </LinearLayout>
 
 
