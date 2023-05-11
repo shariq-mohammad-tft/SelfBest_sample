@@ -81,7 +81,7 @@ class OverviewFragment : Fragment(), View.OnClickListener {
 //        binding.installedAppList.layoutManager = GridLayoutManager(context, 3)
         binding.taskSummaryList.layoutManager = LinearLayoutManager(context)
         //val activity = activity as HomeActivity
-        preferences.setFilters(DurationFilter("Mobile", "daily", null, null))
+        preferences.setFilters(DurationFilter("daily", "Mobile", null, null))
 
         gghViewViewModel.activityLogObserver.observe(viewLifecycleOwner){
             if (it is NetworkResponse.Success) {

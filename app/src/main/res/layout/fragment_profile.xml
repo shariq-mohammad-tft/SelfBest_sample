@@ -159,6 +159,8 @@
                         android:layout_marginTop="3dp"
                         android:background="@drawable/upcoming_event_bg"
                         android:letterSpacing="0.08"
+                        android:inputType="text"
+                        android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz "
                         android:paddingLeft="10dp"
                         android:textColor="#3e3e3e"
                         android:textSize="12dp"
@@ -181,6 +183,8 @@
                         android:layout_marginTop="3dp"
                         android:background="@drawable/upcoming_event_bg"
                         android:letterSpacing="0.08"
+                        android:inputType="text"
+                        android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz "
                         android:paddingLeft="10dp"
                         android:textSize="12dp"
                         android:maxLines="1"
@@ -272,10 +276,11 @@
                         android:layout_marginTop="3dp"
                         android:background="@drawable/upcoming_event_bg"
                         android:letterSpacing="0.08"
+                        android:inputType="text"
+                        android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz "
                         android:maxLines="1"
                         android:paddingLeft="10dp"
                         android:textSize="12dp"
-                        android:maxLines="1"
                         android:textStyle="bold" />
 
                     <TextView

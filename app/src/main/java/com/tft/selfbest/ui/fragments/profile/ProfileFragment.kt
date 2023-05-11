@@ -487,6 +487,10 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
                     } else {
                         binding.experience.text.toString().toFloatOrNull() ?: 0.0f
                     }
+                    if(experience > 100) {
+                        binding.experience.showIconErrorOnly()
+                        isReady = false
+                    }
                     val firstName = if (binding.firstName.text.toString().isEmpty()) {
                         binding.firstName.showIconErrorOnly()
                         isReady = false
