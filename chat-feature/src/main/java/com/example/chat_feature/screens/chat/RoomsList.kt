@@ -232,7 +232,7 @@ fun RoomsList(
                     is Resource.Success -> {
                         val data =
                             if (searchState.list.isNullOrEmpty()) it.value else searchState.list
-                        if (data.isNotEmpty()) {
+                        if (data.isEmpty()) {
 
                             Box(
                                 modifier = Modifier.fillMaxSize(),

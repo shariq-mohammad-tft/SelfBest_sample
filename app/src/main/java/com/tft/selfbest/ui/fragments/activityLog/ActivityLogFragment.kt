@@ -112,10 +112,10 @@ class ActivityLogFragment(
                 }
                 if (queries1.isNotEmpty()) {
                     binding.askedQueries.visibility = View.VISIBLE
-                    binding.withoutData.visibility = View.GONE
+                    binding.noAskedQueries.visibility = View.GONE
                 }else{
                     binding.askedQueries.visibility = View.GONE
-                    binding.withoutData.visibility = View.VISIBLE
+                    binding.noAskedQueries.visibility = View.VISIBLE
                     binding.animationView.playAnimation()
                 }
 
@@ -141,13 +141,13 @@ class ActivityLogFragment(
                 answeredQueries = it.data!!
                 //if(answeredQueries.size > 10){
                 //binding.loadMoreBtn.visibility = View.VISIBLE
-                if (queries1.isNotEmpty()) {
+                if (answeredQueries.isNotEmpty()) {
                     binding.answeredQueries.visibility = View.VISIBLE
-                    binding.withoutData.visibility = View.GONE
+                    binding.noAnsweredQueries.visibility = View.GONE
                 }else {
                     binding.answeredQueries.visibility = View.GONE
-                    binding.withoutData.visibility = View.VISIBLE
-                    binding.animationView.playAnimation()
+                    binding.noAnsweredQueries.visibility = View.VISIBLE
+                    binding.animationView1.playAnimation()
                 }
                     binding.answeredQueries.layoutManager = LinearLayoutManager(binding.root.context)
                 binding.answeredQueries.adapter = AnsweredQueryAdapter(
@@ -377,8 +377,8 @@ class ActivityLogFragment(
             R.id.asked -> {
                 binding.asked.setTextColor(Color.parseColor("#3E3E3E"))
                 binding.asked.setTypeface(null, Typeface.BOLD)
-                binding.askedQueries.visibility = View.VISIBLE
-                binding.answeredQueries.visibility = View.GONE
+                binding.askedQueryBox.visibility = View.VISIBLE
+                binding.answeredQueryBox.visibility = View.GONE
 
                 binding.answered.setTextColor(Color.parseColor("#707070"))
                 binding.answered.setTypeface(null, Typeface.NORMAL)
@@ -391,8 +391,8 @@ class ActivityLogFragment(
             R.id.answered -> {
                 binding.answered.setTextColor(Color.parseColor("#3E3E3E"))
                 binding.answered.setTypeface(null, Typeface.BOLD)
-                binding.askedQueries.visibility = View.GONE
-                binding.answeredQueries.visibility = View.VISIBLE
+                binding.askedQueryBox.visibility = View.GONE
+                binding.answeredQueryBox.visibility = View.VISIBLE
 
                 binding.asked.setTextColor(Color.parseColor("#707070"))
                 binding.asked.setTypeface(null, Typeface.NORMAL)

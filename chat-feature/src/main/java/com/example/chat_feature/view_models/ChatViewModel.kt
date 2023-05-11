@@ -157,18 +157,20 @@ class ChatViewModel @Inject constructor(
                         messageList.add(Resource.Success(it.convertToMessage()))
                     }
 
-                    val lastmsg = messageList.last() as Resource.Success
-                    if (!lastmsg.value.buttons.isNullOrEmpty()) {
-                        lastmsg.value.isButtonEnabled = true
-                        messageList.removeLast()
-                        messageList.add(lastmsg)
-                    }
-                    if (lastmsg.value.message.contains("Please select a valid skill from this dropdown")) {
-                        Log.d("lastMessageSelect", "called")
-                        lastmsg.value.isDropDownEnabled = true
-                        messageList.removeLast()
-                        messageList.add(lastmsg)
-                        Log.d("lastMessageSelect", "called +$lastmsg")
+                    if(!messageList.isNullOrEmpty()) {
+                        val lastmsg = messageList.last() as Resource.Success
+                        if (!lastmsg.value.buttons.isNullOrEmpty()) {
+                            lastmsg.value.isButtonEnabled = true
+                            messageList.removeLast()
+                            messageList.add(lastmsg)
+                        }
+                        if (lastmsg.value.message.contains("Please select a valid skill from this dropdown")) {
+                            Log.d("lastMessageSelect", "called")
+                            lastmsg.value.isDropDownEnabled = true
+                            messageList.removeLast()
+                            messageList.add(lastmsg)
+                            Log.d("lastMessageSelect", "called +$lastmsg")
+                        }
                     }
                 }
             }

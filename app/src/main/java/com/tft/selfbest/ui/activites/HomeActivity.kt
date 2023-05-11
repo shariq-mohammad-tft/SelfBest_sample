@@ -142,7 +142,7 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,HomeActivityCalle
             if(it is NetworkResponse.Success){
                 Log.e("Profile", "Observer")
                 preferences.setOrgAdmin(it.data!!.profileData!!.isOrgAdmin!!)
-                if(it.data.profileData!!.image != null) {
+                if(!it.data.profileData!!.image.isNullOrEmpty()) {
                     preferences.setProfilePicture(it.data.profileData.image!!)
                     Glide.with(applicationContext).load(preferences.getProfilePicture).into(binding.profile)
                 }

@@ -75,24 +75,24 @@ class OverviewViewModel @Inject constructor(
         }
     }
 
-    fun getGoHour(){
+    fun getGoHour() {
         viewModelScope.launch {
             val id = preference.getLoginData?.id ?: return@launch
             repository.getGoHour(id).collect {
-                if(it is NetworkResponse.Success)
+                if (it is NetworkResponse.Success)
                     getGoHourData.postValue(it)
-                else if(it is NetworkResponse.Error)
+                else if (it is NetworkResponse.Error)
                     Log.e("Token ", "${it.msg}")
             }
         }
     }
 
-    fun getStarted(startTime : StartTime) {
+    fun getStarted(startTime: StartTime) {
         viewModelScope.launch {
             val userId = preference.getLoginData?.id ?: return@launch
             repository.getStarted(userId, startTime).collect {
-                if(it is NetworkResponse.Success)
-                getStarted.postValue(it)
+                if (it is NetworkResponse.Success)
+                    getStarted.postValue(it)
             }
         }
     }
