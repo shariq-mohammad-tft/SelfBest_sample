@@ -29,7 +29,6 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -49,12 +48,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import coil.compose.AsyncImage
-import coil.compose.rememberImagePainter
-import coil.request.ImageRequest
 import com.example.chat_feature.R
 import com.example.chat_feature.data.experts.BotUnseenCountRequest
 import com.example.chat_feature.data.experts.Expert
@@ -65,11 +60,9 @@ import com.example.chat_feature.screens.chat.components.telegram.ChatItem
 import com.example.chat_feature.utils.Constants
 import com.example.chat_feature.utils.Resource
 import com.example.chat_feature.utils.createSocketUrl
-import com.example.chat_feature.utils.toast
 import com.example.chat_feature.view_models.ExpertListViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
-import java.util.Base64.Decoder
 
 
 private const val TAG = "ExpertList"

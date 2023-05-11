@@ -43,6 +43,7 @@ class SelfBestApiClient @Inject constructor(
                     logging.level = HttpLoggingInterceptor.Level.BODY
                     client.addInterceptor(logging)
                 }
+
             }.build()
     }
 

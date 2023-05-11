@@ -62,7 +62,8 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
     lateinit var binding: FragmentProfileBinding
     val viewModel by viewModels<ProfileViewModel>()
     private lateinit var profileData: ProfileData
-   // private lateinit var personalityTypes: ArrayList<String>
+
+    // private lateinit var personalityTypes: ArrayList<String>
     private var workingDaysTemp = arrayListOf<RecursiveDays>()
     lateinit var linkedIndialog: Dialog
     var deactivated = false
@@ -90,24 +91,6 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
     )
 
     private lateinit var requiredFields: List<EditText>
-
-  /*      val personalities = arrayOf(
-        "Having deadlines",
-        "Having accountability partner",
-        "Rewards",
-        "Reminders",
-        "Reducing distractions",
-        "Looking at inspiring content",
-        "Working in isolation",
-        "Working around people",
-        "Just help getting started",
-        "Taking micro-breaks during work"
-    )
-    lateinit var customPersonlityList: List<String>
-    var FinalPersonality = arrayListOf<String>()
-    var personalityList = arrayListOf<Int>()
-    val personalityBoolean = BooleanArray(personalities.size)*/
-
     private var startHour = 0
     private var startMinute = 0
     private var endHour = 0
@@ -118,8 +101,6 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
     private var isIntegrationView = false
     lateinit var calendarType: String
     lateinit var someActivityResultLauncher: ActivityResultLauncher<Intent>
-
-    //    var isSkillAvailableForSave = false
     private lateinit var allSkills: List<String>
 
     companion object {
@@ -160,23 +141,7 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
                         })
                 )
             }
-
         }
-      /*  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            binding.scrollviewatProfile.setOnScrollChangeListener { view, scrollX, scrollY, oldScrollX, oldScrollY ->
-                if (scrollY < oldScrollY) {
-                    // User is scrolling down, hide the error message
-                   binding.firstName.error=null
-                } else if (scrollY > oldScrollY) {
-                    // User is scrolling up, show the error message again
-                    binding.firstName.error = "Your error message"
-                }
-            }
-        }*/
-
-
-
-
         requiredFields = listOf(
             binding.firstName,
             binding.lastName,
@@ -199,8 +164,8 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
 
         var suggestions = listOf<String>()
 
-        viewModel.jobsListObserver.observe(viewLifecycleOwner){
-            if(it is NetworkResponse.Success){
+        viewModel.jobsListObserver.observe(viewLifecycleOwner) {
+            if (it is NetworkResponse.Success) {
                 suggestions = it.data ?: listOf()
                 val adapter =
                     ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, suggestions)
@@ -239,8 +204,6 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
                 }
                 pendingSkills = profileData.pendingskills as LinkedTreeMap<String, Int>
                 Log.e("Skill", pendingSkills.toString())
-                //pref.setProfileData(it.data.profileData)
-                //customPersonlityList = profileData.customPersonality
                 setData()
             } else if (it is NetworkResponse.Error) {
                 binding.progress.visibility = View.GONE
@@ -262,77 +225,6 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
                 )
             }
         }
-        /* viewModel.personalityTypeObserver.observe(viewLifecycleOwner) {
-             if (it is NetworkResponse.Success) {
-                 personalityTypes = it.data as ArrayList<String>
-                 Log.e("Personality List", "" + personalityTypes.size)
-                 val personalityAdapter = ArrayAdapter(
-                     binding.root.context,
-                     R.layout.spinner_main_item_style,
-                     personalityTypes
-                 )
-                 //personalityTypes.add("Choose Personality Attribute")
- //                personalityAdapter.setDropDownViewResource(R.layout.spinner_dropdown_style)
- //                binding.personalityTypeSpinner.adapter = personalityAdapter
- //                binding.personalityTypeSpinner.setSelection(personalityTypes.indexOf(profileData.personalityType))
- ////                binding.personalityTypeSpinner.onItemSelectedListener =
- //                    object : AdapterView.OnItemSelectedListener {
- //                        override fun onNothingSelected(parent: AdapterView<*>?) {}
- //                        override fun onItemSelected(
- //                            parent: AdapterView<*>?,
- //                            view: View?,
- //                            position: Int,
- //                            id: Long
- //                        ) {
- //                            if (binding.personalityTypeSpinner.selectedItem.toString() == "Choose Personality Attribute") {
- //                                val builder: AlertDialog.Builder = AlertDialog.Builder(activity)
- //                                builder.setCancelable(false)
- //
- //                                builder.setMultiChoiceItems(personalities, personalityBoolean,
- //                                    OnMultiChoiceClickListener { _, i, b ->
- //                                        if (b) {
- //                                            personalityList.add(i)
- //                                            personalityList.sort()
- //                                        } else {
- //                                            personalityList.remove(Integer.valueOf(i))
- //                                        }
- //                                    })
- //
- //                                builder.setPositiveButton(
- //                                    "OK"
- //                                ) { _, _ ->
- //                                    val stringBuilder = StringBuilder()
- //                                    for (j in 0 until personalityList.size) {
- //                                        FinalPersonality.add(personalities[personalityList[j]])
- //                                        stringBuilder.append(personalities[personalityList[j]])
- //                                        if (j != personalityList.size - 1) {
- //                                            stringBuilder.append(", ")
- //                                        }
- //                                    }
- //                                    binding.personalityTypeSpinner.setSelection(
- //                                        personalityTypes.indexOf(
- //                                            profileData.personalityType
- //                                        )
- //                                    )
- //                                }
- //
- //                                builder.setNegativeButton(
- //                                    "Cancel"
- //                                ) { dialogInterface, _ ->
- //                                    dialogInterface.dismiss()
- //                                    binding.personalityTypeSpinner.setSelection(
- //                                        personalityTypes.indexOf(
- //                                            profileData.personalityType
- //                                        )
- //                                    )
- //                                }
- //                                builder.show()
- //                            }
- //                        }
- //                    }
-
-             }
-         }*/
         viewModel.profileImageObserver.observe(viewLifecycleOwner) {
             if (it is NetworkResponse.Success) {
                 Toast.makeText(context, "Image updated successfully", Toast.LENGTH_SHORT).show()
@@ -367,12 +259,11 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
 //        }
         viewModel.getAllSkills()
         viewModel.getJobs()
-//        viewModel.getPersonalityList()
 
         binding.skillSearch.onItemClickListener =
             AdapterView.OnItemClickListener { arg0, _, position, _ ->
                 val selectedItem = arg0.getItemAtPosition(position) as String
-                if(selectedItem.isNotEmpty()){
+                if (selectedItem.isNotEmpty()) {
                     binding.skillListScroll.visibility = View.VISIBLE
                     profileSkills[selectedItem] = 1
                     currentSkills.add(selectedItem)
@@ -580,74 +471,6 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
             R.id.cancel_profile -> {
                 (activity as DetailActivity).finish()
             }
-          /*  R.id.save_profile -> {
-                if (!requireContext().isInternetAvailable()) {
-                    Toast.makeText(
-                        requireContext(),
-                        "You dont have connectivity",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-                else{
-                    val allFieldsFilled = requiredFields.all { it.text.isNotEmpty() }
-                    if (allFieldsFilled) {
-                      val experience=  binding.experience.text.toString().toFloatOrNull() ?: 0.0f
-                      val firstName=   binding.firstName.text.toString()
-                       val lastName= binding.lastName.text.toString()
-                       val occupation= binding.jobPosition.text.toString()
-                        val gender = genderCategory[binding.genderSpinner.selectedItemPosition]
-                        val startWorkingTime = timeInString(startHour, startMinute)
-                        val endWorkingTime = timeInString(endHour, endMinute)
-                        val skills: LinkedTreeMap<String, Int> = LinkedTreeMap()
-                        profileSkills.forEach {
-                            skills[it.key] = it.value.toInt()
-                        }
-                        pendingSkills.forEach {
-                            skills[it.key] = 1
-                        }
-                        workingDays.clear()
-                        for (day in workingDaysTemp) {
-                            if (day.isSelected)
-                                workingDays.add(day.recursiveDate)
-                        }
-                        if (workingDays.isEmpty()) {
-                            Toast.makeText(
-                                requireContext(),
-                                "Select atleast 1 working day",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-
-                        val profileChangesData = ProfileChangesData(
-                            "",
-                            "",
-                            listOf(),
-                            //FinalPersonality.distinct(),//custom personality
-                            experience as Float,
-                            firstName,
-                            gender,
-                            listOf(),
-                            false,
-                            lastName,
-                            "Asia/Calcutta",
-                            occupation,
-                            "",
-                            false,
-                            skills,
-                            endWorkingTime,
-                            startWorkingTime,
-                            workingDays,
-                            //listOf("Monday", "Tuesday", "Wednesday", "Thursday", "Saturday"),
-                            ""
-                        )
-                        viewModel.saveProfileChangesData(profileChangesData)
-
-
-                    } else {
-                        Toast.makeText(requireContext(), "One or more field are empty", Toast.LENGTH_SHORT).show()
-                    }
-                }
-            }*/
             R.id.save_profile -> {
                 if (!requireContext().isInternetAvailable()) {
                     Toast.makeText(
@@ -655,10 +478,9 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
                         "You dont have connectivity",
                         Toast.LENGTH_SHORT
                     ).show()
-                }
-                else {
+                } else {
                     var isReady = true
-                    val experience = if (binding.experience.text.toString().isEmpty() ) {
+                    val experience = if (binding.experience.text.toString().isEmpty()) {
                         binding.experience.showIconErrorOnly()
                         isReady = false
                         0.0f
@@ -713,7 +535,7 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
                         ).show()
                     }
 
-                    if(profileSkills.isEmpty()){
+                    if (profileSkills.isEmpty()) {
                         Toast.makeText(
                             requireContext(),
                             "Please add atleast one skill",
@@ -752,78 +574,31 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
 
             }
             R.id.skill_search -> {
-                if(!requireContext().isInternetAvailable()){
+                if (!requireContext().isInternetAvailable()) {
                     Toast.makeText(
                         requireContext(),
                         "You dont have connectivity",
                         Toast.LENGTH_SHORT
                     ).show()
-                }
-                else{
+                } else {
                     binding.skillSearch.requestFocus()
-//                if (binding.skillSearch.text.isEmpty()) {
-//                    Toast.makeText(
-//                        binding.root.context,
-//                        "Skill must be not null",
-//                        Toast.LENGTH_LONG
-//                    ).show()
-//                    return
-//                }
                     binding.skillListScroll.visibility = View.VISIBLE
                     //currentSkills.add(binding.skill.text.toString())
-                    if(binding.skillSearch.text.isNotEmpty()){
+                    if (binding.skillSearch.text.isNotEmpty()) {
 //                        if (isPresentSkill(binding.skillSearch.text.toString())) {
-                            currentSkills.add(binding.skillSearch.text.toString())
-                            profileSkills[binding.skillSearch.text.toString()] = 1
-                            (binding.skillList.adapter as ProfileSkillsAdapter).addSkill(
-                                binding.skillSearch.text.toString(),
-                                1
-                            )
-                            viewModel.getRecommendation(binding.skillSearch.text.toString())
-                            Toast.makeText(context, "Skill added successfully", Toast.LENGTH_SHORT)
-                                .show()
-//                        } else {
-//                            pendingSkills[binding.skillSearch.text.toString()] = 1
-//                            (binding.pendingSkillList.adapter as PendingSkillAdapter).addSkill(
-//                                binding.skillSearch.text.toString(),
-//                                1
-//                            )
-//                        }
+                        currentSkills.add(binding.skillSearch.text.toString())
+                        profileSkills[binding.skillSearch.text.toString()] = 1
+                        (binding.skillList.adapter as ProfileSkillsAdapter).addSkill(
+                            binding.skillSearch.text.toString(),
+                            1
+                        )
+                        viewModel.getRecommendation(binding.skillSearch.text.toString())
+                        Toast.makeText(context, "Skill added successfully", Toast.LENGTH_SHORT)
+                            .show()
                     }
                     binding.skillSearch.text.clear()
-//                isSkillAvailableForSave = !isSkillAvailableForSave
-//                if (isSkillAvailableForSave) {
-//                    binding.skill.requestFocus()
-//                    binding.addSkillContainer.visibility = View.VISIBLE
-//                    binding.skillSaveBtn.text = "Save"
-//                } else {
-//                    if (binding.skill.text.isEmpty()) {
-//                        Toast.makeText(
-//                            binding.root.context,
-//                            "Skill must be not null",
-//                            Toast.LENGTH_LONG
-//                        ).show()
-//                        isSkillAvailableForSave = !isSkillAvailableForSave
-//                        return
-//                    }
-//                    //  profileSkills[binding.skill.text.toString()] = 1.0
-//                    (binding.skillList.adapter as ProfileSkillsAdapter).addSkill(
-//                        binding.skill.text.toString(),
-//                        1.0
-//                    )
-//                    viewModel.getRecommendation(binding.skill.text.toString())
-//                    binding.addSkillContainer.visibility = View.GONE
-//                    binding.skillSaveBtn.text = "Add new"
-//                }
                 }
-
             }
-//            R.id.delete_skill -> {
-//                binding.addSkillContainer.visibility = View.GONE
-//                binding.skill.text.clear()
-//                isSkillAvailableForSave = false
-//                binding.skillSaveBtn.text = "Add new"
-//            }
             R.id.personal -> {
                 if (!isIntegrationView)
                     return
@@ -1106,10 +881,6 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
             if (url.contains("code")) {
                 val code = uri.getQueryParameter("code") ?: ""
                 linkedIndialog.dismiss()
-/*
-                val reDirectUrl =
-                    if (calendarType == "Google") "/user/profile" else MICROSOFT_REDIRECT_URL
-*/
                 viewModel.connectCalendar(code, "/user/profile", calendarType)
             } else if (url.contains("error")) {
                 val error = uri.getQueryParameter("error") ?: ""
