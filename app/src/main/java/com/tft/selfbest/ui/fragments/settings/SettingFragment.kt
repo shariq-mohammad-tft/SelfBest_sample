@@ -52,10 +52,10 @@ class SettingFragment : Fragment(), View.OnClickListener {
         binding = FragmentSettingBinding.inflate(layoutInflater)
         setOnClickListener()
         isAdmin = preferences.isOrgAdmin
-//        if(isAdmin)
+        if(isAdmin)
             binding.usermanagement.visibility = View.VISIBLE
-//        else
-//            binding.usermanagement.visibility = View.GONE
+        else
+            binding.usermanagement.visibility = View.GONE
 
         /* viewModel.profileObserver.observe(viewLifecycleOwner) {
              if (it is NetworkResponse.Success) {
@@ -100,8 +100,7 @@ class SettingFragment : Fragment(), View.OnClickListener {
 
             R.id.usermanagement -> {
                 //Toast.makeText(activity, "Distraction", Toast.LENGTH_SHORT).show()
-//                if(isAdmin)
-                    loadFragment(UserManagement())
+                if(isAdmin) loadFragment(UserManagement())
                 // else Toast.makeText(activity, "you are not an admin", Toast.LENGTH_SHORT).show()
 
             }
