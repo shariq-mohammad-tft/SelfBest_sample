@@ -9,7 +9,6 @@ import android.app.TimePickerDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
-import android.graphics.Rect
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -52,7 +51,10 @@ import com.tft.selfbest.utils.showIconErrorOnly
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
 import java.net.URL
+import java.text.SimpleDateFormat
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 @AndroidEntryPoint
 class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnClickListener,
@@ -378,22 +380,50 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
 
     }
 
+//    private fun setBackendTime() {
+//        val workingTime = profileData.working[0]
+//        startHour = workingTime.startHour + 5
+//        startMinute = workingTime.startMinute + 30
+//        endHour = workingTime.endHour + 5
+//        endMinute = workingTime.endMinute + 30
+//        if (startMinute >= 60) {
+//            startHour += 1
+//            startMinute -= 60
+//        }
+//        if (endMinute >= 60) {
+//            endHour += 1
+//            endMinute -= 60
+//        }
+//    }
+
     private fun setBackendTime() {
         val workingTime = profileData.working[0]
-        startHour = workingTime.startHour + 5
-        startMinute = workingTime.startMinute + 30
-        endHour = workingTime.endHour + 5
-        endMinute = workingTime.endMinute + 30
-        if (startMinute >= 60) {
-            startHour += 1
-            startMinute -= 60
-        }
-        if (endMinute >= 60) {
-            endHour += 1
-            endMinute -= 60
-        }
-    }
+        startHour = workingTime.startHour
+        startMinute = workingTime.startMinute
 
+        endHour = workingTime.endHour
+        endMinute = workingTime.endMinute
+
+        val formatter = SimpleDateFormat("HH:mm", Locale.getDefault())
+        formatter.timeZone = TimeZone.getTimeZone("UTC")
+        val utcTime = formatter.parse("$startHour:$startMinute")
+        val utcTimeE = formatter.parse("$endHour:$endMinute")
+
+        formatter.timeZone = TimeZone.getTimeZone("Asia/Kolkata")
+        val istTime = formatter.format(utcTime)
+
+        val parts = istTime.split(":")
+        startHour = parts[0].toInt()
+        startMinute = parts[1].toInt()
+
+        val istTimeE = formatter.format(utcTimeE)
+
+        val partsE = istTimeE.split(":")
+        endHour = partsE[0].toInt()
+        endMinute = partsE[1].toInt()
+
+        Log.e("Profile Time", "$startHour $startMinute $endHour $endMinute")
+    }
     override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
         profileData.gender = genderCategory[p2]
     }
@@ -668,8 +698,18 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
                 timePicker = TimePickerDialog(
                     binding.root.context,
                     { _, selectedHour, selectedMinute ->
-                        startHour = selectedHour
-                        startMinute = selectedMinute
+
+                        val calendar = Calendar.getInstance()
+                        calendar.set(Calendar.HOUR_OF_DAY, selectedHour)
+                        calendar.set(Calendar.MINUTE, selectedMinute)
+
+                        val dateFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+                        val time24 = dateFormat.format(calendar.time)
+
+                        val parts = time24.split(":")
+                        startHour = parts[0].toInt()
+                        startMinute = parts[1].toInt()
+
                         binding.startTime.text = setTimeInLocalFormat(startHour, startMinute)
                     },
                     startHour,
@@ -682,8 +722,16 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
                 timePicker = TimePickerDialog(
                     binding.root.context,
                     { _, selectedHour, selectedMinute ->
-                        endHour = selectedHour
-                        endMinute = selectedMinute
+                        val calendar = Calendar.getInstance()
+                        calendar.set(Calendar.HOUR_OF_DAY, selectedHour)
+                        calendar.set(Calendar.MINUTE, selectedMinute)
+
+                        val dateFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+                        val time24 = dateFormat.format(calendar.time)
+
+                        val parts = time24.split(":")
+                        endHour = parts[0].toInt()
+                        endMinute = parts[1].toInt()
                         binding.endTime.text = setTimeInLocalFormat(endHour, endMinute)
                     },
                     endHour,
@@ -895,13 +943,23 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
         }
     }
 
+//    private fun timeInString(hours: Int, minutes: Int): String {
+//        val time = if (minutes < 30) {
+//            "${hours.minus(6)}:${minutes.plus(30)}"
+//        } else {
+//            "${hours.minus(5)}:${minutes.minus(30)}"
+//        }
+//        return time
+//    }
+
     private fun timeInString(hours: Int, minutes: Int): String {
-        val time = if (minutes < 30) {
-            "${hours.minus(6)}:${minutes.plus(30)}"
-        } else {
-            "${hours.minus(5)}:${minutes.minus(30)}"
-        }
-        return time
+        val formatter = SimpleDateFormat("HH:mm", Locale.getDefault())
+        formatter.timeZone = TimeZone.getTimeZone("Asia/Kolkata")
+        val istTime = formatter.parse("$hours:$minutes")
+
+        formatter.timeZone = TimeZone.getTimeZone("UTC")
+
+        return formatter.format(istTime!!)
     }
 
     override fun skillAdded(skill: String) {
