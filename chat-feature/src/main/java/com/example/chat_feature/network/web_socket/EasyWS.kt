@@ -8,16 +8,15 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import com.example.chat_feature.data.SocketUpdate
 import com.example.chat_feature.data.SocketUpdate.*
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
+import okio.IOException
+import retrofit2.HttpException
 import java.net.UnknownHostException
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -31,7 +30,7 @@ class EasyWS(val webSocket: WebSocket, val response: Response) {
 
 @RequiresApi(Build.VERSION_CODES.M)
 @OptIn(DelicateCoroutinesApi::class)
-suspend fun OkHttpClient.easyWebSocket(url: String, context: Context)= suspendCoroutine {
+suspend fun OkHttpClient.easyWebSocket(url: String, context: Context)= suspendCancellableCoroutine {
 
     println("easyWebSocket: $url")
     var easyWs: EasyWS? = null
@@ -40,7 +39,7 @@ suspend fun OkHttpClient.easyWebSocket(url: String, context: Context)= suspendCo
         val errorMessage = "No network connectivity"
         println(errorMessage)
         //it.resumeWithException(IOException(errorMessage))
-        return@suspendCoroutine
+//        return@suspendCancellableCoroutine
     } else{
         newWebSocket(Request.Builder().url(url).build(), object : WebSocketListener() {
 
@@ -53,19 +52,33 @@ suspend fun OkHttpClient.easyWebSocket(url: String, context: Context)= suspendCo
 
             override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
                 super.onFailure(webSocket, t, response)
-                if(t is UnknownHostException){
-                    MainScope().launch {
-                        Toast.makeText(context, "No internet connection", Toast.LENGTH_SHORT).show()
+                when (t) {
+                    is UnknownHostException -> {
+                        GlobalScope.launch {
+                            Toast.makeText(context, "No internet connection", Toast.LENGTH_SHORT).show()
 
-                        // Notify the textChannel of the failure
-                        easyWs?.textChannel?.send(Failure(exception = t))
+                            // Notify the textChannel of the failure
+                            easyWs?.textChannel?.send(Failure(exception = t))
+                        }
+                    }
+                    is HttpException, is IOException->{
+                        println("onFailure: $t $response ${t.cause}")
+                       // it.resumeWithException(t)
+                        /*GlobalScope.launch {
+                            println("no internet connection")
+
+                            // Notify the textChannel of the failure
+                            easyWs?.textChannel?.send(Failure(exception = t))
+                        }*/
+                        it.cancel()
+                    }
+                    else -> {
+                        println("onFailures: $t $response ${t.cause}")
+                        GlobalScope.launch { easyWs!!.textChannel.send(Failure(exception = t)) }
+                      //  it.resumeWithException(t)
                     }
                 }
-                else{
-                    println("onFailure: $t $response ${t.cause}")
-                    GlobalScope.launch { easyWs!!.textChannel.send(Failure(exception = t)) }
-                    //it.resumeWithException(t)
-                }
+//                it.resume(null)
             }
 
 
@@ -96,6 +109,7 @@ suspend fun OkHttpClient.easyWebSocket(url: String, context: Context)= suspendCo
             }
 
         })
+
     }
     }
 

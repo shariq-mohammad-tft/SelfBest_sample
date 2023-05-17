@@ -47,10 +47,14 @@ class HomeActivityViewModel @Inject constructor() : ViewModel() {
 
     @RequiresApi(Build.VERSION_CODES.M)
     fun connectSocket(socketurl:String=Constants.SELF_BEST_SOCKET_URL){
-        viewModelScope.launch(Dispatchers.IO) {
-            easyWS = OkHttpClient().easyWebSocket(socketurl, appContext)
-            Log.d("HomeActivity", "Connection: CONNECTION established!")
-            listenUpdates()
+        try {
+            viewModelScope.launch(Dispatchers.IO) {
+                easyWS = OkHttpClient().easyWebSocket(socketurl, appContext)
+                Log.d("HomeActivity", "Connection: CONNECTION established!")
+                listenUpdates()
+            }
+        } catch (e: Exception) {
+            Log.d("HomeActivityWebSocket",e.toString())
         }
     }
 
@@ -63,31 +67,36 @@ class HomeActivityViewModel @Inject constructor() : ViewModel() {
     }
 
     private suspend fun listenUpdates() {
-        easyWS?.webSocket?.send("")
-        easyWS?.textChannel?.consumeEach {
-            when (it) {
-                is SocketUpdate.Failure -> {
-                    Log.d("unseenPayload", "failed")
-                }
-                is SocketUpdate.Success -> {
-                    val text = it.text
-                    Log.d("unseenPayloadText", "onMessage: $text")
-                    val jsonObject = JSONObject(text)
+        try { easyWS?.webSocket?.send("")
 
-                    if (jsonObject.has("data")) {
-                        val dataObj = jsonObject.getJSONObject("data")
-                        if (dataObj.has("chat_data")) {
-                            val chatDataObj = dataObj.getJSONObject("chat_data")
-                            if (chatDataObj.has("total_message_count")) {
-                                botMessageCount = chatDataObj.getInt("total_message_count")
+            easyWS?.textChannel?.consumeEach {
 
-                                // updateUnseenMessageCountBadge(unseenMessageCount)
+                when (it) {
+                    is SocketUpdate.Failure -> {
+                        Log.d("unseenPayload", "failed")
+                    }
+                    is SocketUpdate.Success -> {
+                        val text = it.text
+                        Log.d("unseenPayloadText", "onMessage: $text")
+                        val jsonObject = JSONObject(text)
+
+                        if (jsonObject.has("data")) {
+                            val dataObj = jsonObject.getJSONObject("data")
+                            if (dataObj.has("chat_data")) {
+                                val chatDataObj = dataObj.getJSONObject("chat_data")
+                                if (chatDataObj.has("total_message_count")) {
+                                    botMessageCount = chatDataObj.getInt("total_message_count")
+
+                                    // updateUnseenMessageCountBadge(unseenMessageCount)
+                                }
                             }
                         }
+                        _unseenMessageCount.postValue(botMessageCount)
                     }
-                    _unseenMessageCount.postValue(botMessageCount)
                 }
             }
+        } catch (e: Exception) {
+            Log.d("HomeActivityWebSocket",e.toString())
         }
     }
 

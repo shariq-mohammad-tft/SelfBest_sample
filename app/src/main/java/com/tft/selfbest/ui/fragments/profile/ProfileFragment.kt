@@ -6,8 +6,11 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.app.Dialog
 import android.app.TimePickerDialog
+import android.content.ContentUris
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.database.Cursor
 import android.graphics.Color
 import android.net.Uri
 import android.os.Build
@@ -33,6 +36,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.room.util.CursorUtil.getColumnIndexOrThrow
 import com.bumptech.glide.Glide
 import com.google.gson.internal.LinkedTreeMap
 import com.tft.selfbest.R
@@ -50,6 +54,7 @@ import com.tft.selfbest.utils.isInternetAvailable
 import com.tft.selfbest.utils.showIconErrorOnly
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
+import java.io.InputStream
 import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.*
@@ -151,16 +156,12 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
             binding.experience,
             // Add other required fields here
         )
-
-        someActivityResultLauncher = registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult()
-        ) { result ->
+        someActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
-                val uri = result.data?.data
-                if (uri != null) {
-                    val imagePath = getFileFromUri(uri)
-                    viewModel.updateProfilePhoto(imagePath)
-                }
+                val data: Intent? = result.data
+                val resultUri: Uri? = data?.data
+
+                handleActivityResult(resultUri)
             }
         }
 
@@ -209,12 +210,9 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
                 setData()
             } else if (it is NetworkResponse.Error) {
                 binding.progress.visibility = View.GONE
+                Log.d("profi ", it.data.toString())
+                Log.d("profi 2", it.msg)
                 Toast.makeText(context, "Check your internet connection", Toast.LENGTH_SHORT).show()
-//                preferences.clear()
-//                val loginScreen = Intent(activity, LoginActivity::class.java)
-//                loginScreen.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-//                startActivity(loginScreen)
-//                activity?.finish()
             }
         }
         viewModel.rSkillsObserver.observe(viewLifecycleOwner) {
@@ -252,13 +250,8 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
             Toast.makeText(binding.root.context, it, Toast.LENGTH_LONG).show()
             viewModel.getProfileData(true)
         }
-//        if (pref.getProfileData == null) {
         viewModel.getProfileData(false)
-//        } else {
-//            profileData = pref.getProfileData!!
-//            profileSkills = profileData.skills as LinkedTreeMap<String, Int>
-//            setData()
-//        }
+
         viewModel.getAllSkills()
         viewModel.getJobs()
 
@@ -380,22 +373,6 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
 
     }
 
-//    private fun setBackendTime() {
-//        val workingTime = profileData.working[0]
-//        startHour = workingTime.startHour + 5
-//        startMinute = workingTime.startMinute + 30
-//        endHour = workingTime.endHour + 5
-//        endMinute = workingTime.endMinute + 30
-//        if (startMinute >= 60) {
-//            startHour += 1
-//            startMinute -= 60
-//        }
-//        if (endMinute >= 60) {
-//            endHour += 1
-//            endMinute -= 60
-//        }
-//    }
-
     private fun setBackendTime() {
         val workingTime = profileData.working[0]
         startHour = workingTime.startHour
@@ -465,38 +442,14 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
     override fun onClick(view: View?) {
         when (view?.id) {
             R.id.user_icon -> {
-                if (if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                        Environment.isExternalStorageManager()
-                    } else {
-                        ContextCompat.checkSelfPermission(
-                            binding.root.context,
-                            Manifest.permission.READ_EXTERNAL_STORAGE
-                        ) == PackageManager.PERMISSION_GRANTED
-                    }
-                ) {
-                    val intent = Intent(Intent.ACTION_PICK)
-                    intent.type = "image/*"
-                    Log.e("image", "1 if")
-                    someActivityResultLauncher.launch(intent)
-
-                } else {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                        Log.e("image", "2 if")
-                        val intent = Intent()
-                        intent.action = Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION
-                        val uri =
-                            Uri.fromParts("package", (activity as DetailActivity).packageName, null)
-                        intent.data = uri
-                        startActivity(intent)
-                    } else {
-                        Log.e("image", "2 else")
-                        ActivityCompat.requestPermissions(
-                            activity as DetailActivity, arrayOf(
-                                Manifest.permission.READ_EXTERNAL_STORAGE
-                            ), 1
-                        )
-                    }
+                val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+                    addCategory(Intent.CATEGORY_OPENABLE)
+                    type = "image/*"
                 }
+
+                someActivityResultLauncher?.let {
+                    it.launch(intent)
+                } ?: Log.e("image", "ActivityResultLauncher is not set up properly.")
             }
             R.id.cancel_profile -> {
                 (activity as DetailActivity).finish()
@@ -520,6 +473,13 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
                     if(experience > 100) {
                         binding.experience.showIconErrorOnly()
                         isReady = false
+                        binding.experience.setText("100")
+                        Toast.makeText(
+                            requireContext(),
+                            "Experience can't be more than 100",
+                            Toast.LENGTH_SHORT
+                        ).show()
+
                     }
                     val firstName = if (binding.firstName.text.toString().isEmpty()) {
                         binding.firstName.showIconErrorOnly()
@@ -820,68 +780,20 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
         }
 
     }
+    fun handleActivityResult(resultUri: Uri?) {
+        resultUri?.let { uri ->
+            val inputStream: InputStream? = requireContext().contentResolver.openInputStream(uri)
+            val file = File(requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES), "my_image.jpg")
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (resultCode == Activity.RESULT_OK && requestCode == IMAGE_PICK_CODE) {
-            val uri = data?.data
-            if (uri != null) {
-                val imagePath = getFileFromUri(uri)
-                viewModel.updateProfilePhoto(imagePath)
-            }
-        }
-    }
-
-    private fun getFileFromUri(uri: Uri): File? {
-        if (uri.path == null) {
-            return null
-        }
-        var realPath = String()
-        val databaseUri: Uri
-        val selection: String?
-        val selectionArgs: Array<String>?
-        if (uri.path!!.contains("/document/image:")) {
-            databaseUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-            selection = "_id=?"
-            selectionArgs = arrayOf(DocumentsContract.getDocumentId(uri).split(":")[1])
-        } else {
-            databaseUri = uri
-            selection = null
-            selectionArgs = null
-        }
-        try {
-            val column = "_data"
-            val projection = arrayOf(column)
-            val cursor = requireContext().contentResolver.query(
-                databaseUri,
-                projection,
-                selection,
-                selectionArgs,
-                null
-            )
-            cursor?.let {
-                if (it.moveToFirst()) {
-                    val columnIndex = cursor.getColumnIndexOrThrow(column)
-                    realPath = cursor.getString(columnIndex)
+            inputStream?.use { input ->
+                file.outputStream().use { output ->
+                    input.copyTo(output)
                 }
-                cursor.close()
             }
-        } catch (e: Exception) {
-            Log.i("GetFileUri Exception:", e.message ?: "")
-        }
-        val path = realPath.ifEmpty {
-            when {
-                uri.path!!.contains("/document/raw:") -> uri.path!!.replace(
-                    "/document/raw:",
-                    ""
-                )
-                uri.path!!.contains("/document/primary:") -> uri.path!!.replace(
-                    "/document/primary:",
-                    "/storage/emulated/0/"
-                )
-                else -> return null
-            }
-        }
-        return File(path)
+
+            Log.d("image", "Selected file path: ${file.absolutePath}")
+            viewModel.updateProfilePhoto(file)
+        } ?: Log.e("image", "Result Uri is null.")
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -942,16 +854,6 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
             }
         }
     }
-
-//    private fun timeInString(hours: Int, minutes: Int): String {
-//        val time = if (minutes < 30) {
-//            "${hours.minus(6)}:${minutes.plus(30)}"
-//        } else {
-//            "${hours.minus(5)}:${minutes.minus(30)}"
-//        }
-//        return time
-//    }
-
     private fun timeInString(hours: Int, minutes: Int): String {
         val formatter = SimpleDateFormat("HH:mm", Locale.getDefault())
         formatter.timeZone = TimeZone.getTimeZone("Asia/Kolkata")
