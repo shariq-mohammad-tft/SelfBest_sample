@@ -28,6 +28,7 @@ class EasyWS(val webSocket: WebSocket, val response: Response) {
 }
 
 
+
 @RequiresApi(Build.VERSION_CODES.M)
 @OptIn(DelicateCoroutinesApi::class)
 suspend fun OkHttpClient.easyWebSocket(url: String, context: Context)= suspendCancellableCoroutine {
