@@ -18,6 +18,7 @@ import com.example.chat_feature.data.response.UploadPhotoResponse
 import com.example.chat_feature.data.response.expert.SocketResponseByBot
 import com.example.chat_feature.network.Api
 import com.example.chat_feature.network.web_socket.EasyWS
+import com.example.chat_feature.network.web_socket.WebSocketInterface
 import com.example.chat_feature.network.web_socket.easyWebSocket
 import com.example.chat_feature.utils.*
 import com.google.gson.Gson
@@ -36,10 +37,9 @@ import javax.inject.Inject
 @HiltViewModel
 class ChatViewModel @Inject constructor(
     private val api: Api,
-    application: Application,
-    private val context: Context
+    private val application: Application
 
-) : AndroidViewModel(application), SafeApiCall {
+) : AndroidViewModel(application), SafeApiCall, WebSocketInterface {
 
     companion object {
         private const val TAG = "ChatViewModel"
@@ -59,7 +59,7 @@ class ChatViewModel @Inject constructor(
 
 
     private val gson by lazy { Gson() }
-    private var easyWs: EasyWS? = null
+    override var easyWs: EasyWS? = null
 
 
     val messageList = mutableStateListOf<Resource<Message>>()
@@ -93,10 +93,11 @@ class ChatViewModel @Inject constructor(
                 messageList.add(Resource.Success(data.convertToMessage().copy(senderId = userId)))
                 safeApiCall {
                     api.sendPlainMessage(data).convertToMessage().copy(receiverId = userId).also {
-                      isImageBoxEnabled = it.message.contains("exact query")
+                        isImageBoxEnabled = it.message.contains("exact query")
                     }
                 }
             }
+
             is InteractiveMessageRequest -> {
                 messageList.add(Resource.Success(data.convertToMessage().copy(senderId = userId)))
                 safeApiCall {
@@ -114,7 +115,7 @@ class ChatViewModel @Inject constructor(
                     .addFormDataPart("event_message", data.event_message)
                     .addFormDataPart("sender_id", data.sender_id)
                     .addFormDataPart("event_type", data.event_type)
-                    .addFormDataPart("file", data.file.name, data.file.toRequestBody {  })
+                    .addFormDataPart("file", data.file.name, data.file.toRequestBody { })
                     .build()
 
                 safeApiCall {
@@ -157,7 +158,7 @@ class ChatViewModel @Inject constructor(
                         messageList.add(Resource.Success(it.convertToMessage()))
                     }
 
-                    if(!messageList.isNullOrEmpty()) {
+                    if (!messageList.isNullOrEmpty()) {
                         val lastmsg = messageList.last() as Resource.Success
                         if (!lastmsg.value.buttons.isNullOrEmpty()) {
                             lastmsg.value.isButtonEnabled = true
@@ -177,7 +178,7 @@ class ChatViewModel @Inject constructor(
 
         }
 
-    fun imgOnBot(data:MultipartBody){
+    fun imgOnBot(data: MultipartBody) {
         viewModelScope.launch {
             safeApiCall {
                 api.imgShareOnBot(data)
@@ -189,7 +190,7 @@ class ChatViewModel @Inject constructor(
     fun seenBotMessage() {
         viewModelScope.launch {
             safeApiCall {
-                api.botMessageSeenRequest(BotSeenRequest(userId,""))
+                api.botMessageSeenRequest(BotSeenRequest(userId, ""))
             }
         }
     }
@@ -208,12 +209,19 @@ class ChatViewModel @Inject constructor(
 
 
     @RequiresApi(Build.VERSION_CODES.M)
-    fun connectSocket(socketUrl: String = Constants.SELF_BEST_SOCKET_URL) =
+    override fun connectSocket(socketUrl: String) {
         viewModelScope.launch(Dispatchers.IO) {
             // /chat/676/
-            easyWs = OkHttpClient().easyWebSocket(socketUrl, context)
-            listenUpdates()
+
+            try {
+                easyWs = OkHttpClient().easyWebSocket(socketUrl, application.applicationContext)
+                Log.d(TAG, "Connection: CONNECTION established!")
+                listenUpdates()
+            } catch (e: Exception) {
+                Log.d(TAG, "connectSocket: ${e.message}")
+            }
         }
+    }
 
 
     private suspend fun listenUpdates() {
@@ -248,7 +256,7 @@ class ChatViewModel @Inject constructor(
     }
 
 
-    fun closeConnection() {
+    override fun closeConnection() {
         easyWs?.webSocket?.close(1001, "Closing manually")
         Log.d(TAG, "closeConnection: CONNECTION CLOSED!")
     }
