@@ -12,6 +12,7 @@ import com.tft.selfbest.ui.fragments.notification.NotificationFragment
 import com.tft.selfbest.ui.fragments.overview.OverviewFragment
 import com.tft.selfbest.ui.fragments.overview.ShareWithManagerFragment
 import com.tft.selfbest.ui.fragments.profile.ProfileFragment
+import com.tft.selfbest.ui.fragments.profile.companyProfile.CompanyProfileFragment
 import com.tft.selfbest.utils.InstalledAppInfoUtil
 import dagger.hilt.android.AndroidEntryPoint
 

@@ -9,6 +9,7 @@ import com.tft.selfbest.models.overview.*
 import com.tft.selfbest.models.suggestedApps.AppDetail
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.*
 import java.time.Instant
@@ -490,6 +491,63 @@ interface SelfBestApi {
     suspend fun sendRegistrationToken(
         @Body request: DeviceTokenRequest
     ): DeviceTokenResponse
+
+    //for company profile
+    @GET("/user/{user_id}/organisation/details")
+    suspend fun getCompanyDetail(
+        @Path("user_id") userID: Int
+    ): CompanyProfileDetail
+
+    @GET("/user/{user_id}/organisation/domains")
+    suspend fun getAllDomains(
+        @Path("user_id") userID: Int
+    ): List<String>
+    @GET("/user/{user_id}/organisation/orgskills")
+    suspend fun getAllOrgSkills(
+        @Path("user_id") userID: Int
+    ): List<String>
+
+    @PATCH("/user/{user_id}/organisation/collab-tools")
+    suspend fun collabTools(
+        @Path("user_id") userID: Int,
+        @Body request: CollabToolsRequest
+    )
+
+    @PUT("/user/{user_id}/organisation/details")
+    suspend fun saveOrgDetails(
+        @Path("user_id") userID: Int,
+        @Body saveOrgDetails: SaveOrgDetails
+    )
+
+    @GET("/user/{user_id}/organisation/download")
+    suspend fun getEmployeeSheet(
+        @Path("user_id") userID: Int
+    ) : ResponseBody
+    @Multipart
+    @POST("/user/{user_id}/organisation/upload")
+    suspend fun uploadEnmployeeSheet(
+        @Path("user_id") userID: Int,
+        @Part file: MultipartBody.Part
+    )
+
+    @Multipart
+    @PATCH("/user/{user_id}/organisation/profile-photo")
+    suspend fun uploadOrgProfilePhoto(
+        @Path("user_id") userID: Int,
+        @Part file: MultipartBody.Part
+    )
+
+    @POST("/user/{user_id}/organisation/addskills")
+    suspend fun addOrgSkill(
+        @Path("user_id") userID: Int,
+        @Body request: OrgAddSkillRequest
+    )
+
+    @DELETE("/user/{user_id}/organisation/org-account-operations")
+    suspend fun deleteOrgAccount(
+        @Path("user_id") userID: Int,
+        @Query("type") type: String
+    ): OrgAccountSettingResponse
 }
 
 

@@ -7,5 +7,8 @@
         <activity
             android:name="com.example.chat_feature.ComposeActivity"
             android:windowSoftInputMode="adjustResize" />
+
+        <activity android:name="com.example.chat_feature.SimplifyPathComposeActivity"
+            android:windowSoftInputMode="adjustResize"  />
     </application>
 </manifest>

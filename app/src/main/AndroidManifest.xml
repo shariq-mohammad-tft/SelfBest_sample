@@ -27,8 +27,9 @@
         >
 
         <activity
-            android:name=".ui.activites.ChatActivity2"
+            android:name=".ui.activites.SimplifyPathActivity"
             android:exported="false" />
+
         <activity
             android:name=".ui.activites.ChatActivity"
             android:exported="true"

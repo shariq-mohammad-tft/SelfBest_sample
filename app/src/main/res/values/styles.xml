@@ -43,4 +43,13 @@
         <item name="android:textSize">12sp</item>
         <item name="fontFamily">@font/roboto</item>
     </style>
+
+    <style name="CustomRadioButtonStyle" parent="@android:style/Widget.CompoundButton.RadioButton">
+        <item name="android:buttonTint">#1d71d4</item>
+    </style>
+
+    <style name="CustomCheckBoxStyle" parent="@android:style/Widget.CompoundButton.CheckBox">
+        <item name="android:buttonTint">#1d71d4</item>
+
+    </style>
 </resources>

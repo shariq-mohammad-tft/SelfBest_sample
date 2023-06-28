@@ -25,6 +25,7 @@ import com.tft.selfbest.models.*
 import com.tft.selfbest.models.overview.CourseDetail
 import com.tft.selfbest.network.NetworkResponse
 import com.tft.selfbest.ui.activites.ChatActivity
+import com.tft.selfbest.ui.activites.SimplifyPathActivity
 import com.tft.selfbest.ui.adapter.ActivityTimelineAdapter
 import com.tft.selfbest.ui.adapter.TaskListAdapter
 import com.tft.selfbest.ui.dialog.AccessibilityOnDialog
@@ -207,6 +208,7 @@ class OverviewFragment : Fragment(), View.OnClickListener {
         binding.dropDownArrow.setOnClickListener(this)
         binding.getStartBtn.setOnClickListener(this)
         binding.getUnstuck.setOnClickListener(this)
+        binding.getHelp.setOnClickListener(this) //for simplify path
         //binding.shareContainer.setOnClickListener(this)
         //binding.startInstalledAppBtn.setOnClickListener(this)
         // Inflate the layout for this fragment
@@ -250,6 +252,11 @@ class OverviewFragment : Fragment(), View.OnClickListener {
             R.id.get_unstuck -> {
                 val intentOpenDetailPage = Intent(activity, ChatActivity::class.java)
                 ContextCompat.startActivity(requireActivity(), intentOpenDetailPage, null)
+            }
+
+            R.id.get_help -> {
+                val intentOpenSimplifyChat = Intent(activity, SimplifyPathActivity::class.java)
+                ContextCompat.startActivity(requireActivity(), intentOpenSimplifyChat, null)
             }
         }
     }
