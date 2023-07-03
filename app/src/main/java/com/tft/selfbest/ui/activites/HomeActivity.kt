@@ -66,7 +66,7 @@ import javax.inject.Inject
 
 
 @AndroidEntryPoint
-class HomeActivity : AppCompatActivity(), View.OnClickListener,HomeActivityCaller{
+class HomeActivity : AppCompatActivity(), View.OnClickListener, HomeActivityCaller {
     private lateinit var bottomNavigation: BottomNavigationView
     private lateinit var navigationView: NavigationView
     private lateinit var drawerLayout: DrawerLayout
@@ -80,17 +80,14 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,HomeActivityCalle
     @Inject
     lateinit var preferences: SelfBestPreference
 
-    private var easyWS: EasyWS ?=null
+    private var easyWS: EasyWS? = null
     private val gson by lazy { Gson() }
 
     private val executorService = Executors.newSingleThreadScheduledExecutor()
     private var scheduledFuture: ScheduledFuture<*>? = null
 
-    var botMessageCount =0
-    var unseenMessageCount=0
-
-
-
+    var botMessageCount = 0
+    var unseenMessageCount = 0
 
 
     private val requestPermissionLauncher = registerForActivityResult(
@@ -138,13 +135,14 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,HomeActivityCalle
         //installedApps = InstalledAppInfoUtil.getInstallApps(this)
         loadFragment(OverviewFragment())
         viewModel.getProfileData(true)
-        viewModel.profileObserver.observe(this){
-            if(it is NetworkResponse.Success){
+        viewModel.profileObserver.observe(this) {
+            if (it is NetworkResponse.Success) {
                 Log.e("Profile", "Observer")
                 preferences.setOrgAdmin(it.data!!.profileData!!.isOrgAdmin!!)
-                if(it.data.profileData!!.image != null) {
+                if (!it.data.profileData!!.image.isNullOrEmpty()) {
                     preferences.setProfilePicture(it.data.profileData.image!!)
-                    Glide.with(applicationContext).load(preferences.getProfilePicture).into(binding.profile)
+                    Glide.with(applicationContext).load(preferences.getProfilePicture)
+                        .into(binding.profile)
                 }
             }
         }
@@ -176,7 +174,8 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,HomeActivityCalle
         val notificationBadge: View =
             LayoutInflater.from(this).inflate(R.layout.component_tabbar_badge, itemView, false)
 
-        viewmodel2.getTotalUnseenCount(TotalUnseenCountRequest(sentBy = preferences.getLoginData?.id.toString()))
+//        viewmodel2.getTotalUnseenCount(TotalUnseenCountRequest(sentBy = preferences.getLoginData?.id.toString()))
+
         viewmodel2.unseenMessageCount.observe(this) {
             if (it > 0) {
                 Log.d("unseenTotalCount", it.toString())
@@ -204,17 +203,20 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,HomeActivityCalle
                     //Toast.makeText(this, "Overview Page", Toast.LENGTH_LONG).show()
                     return@setOnItemSelectedListener true
                 }
+
                 R.id.statisticsFragment -> {
                     loadFragment(ActivityLogFragment("Mobile", "daily", "", ""))
                     binding.headerTitle.text = ""
                     // Toast.makeText(this, "statisticsFragment Page", Toast.LENGTH_LONG).show()
                     return@setOnItemSelectedListener true
                 }
+
                 R.id.eventsFragment -> {
                     val intentOpenDetailPage = Intent(this, ChatActivity::class.java)
                     ContextCompat.startActivity(this, intentOpenDetailPage, null)
 
                 }
+
                 R.id.settingFragment -> {
                     loadFragment(SettingFragment())
                     binding.headerTitle.text = ""
@@ -227,7 +229,6 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,HomeActivityCalle
             false
         }
     }
-
 
 
     private fun askForNotificationPermission() {
@@ -254,8 +255,7 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,HomeActivityCalle
                     // Log and toast
                     Log.e("Firebase Message", token)
                 })
-            }
-            else if (shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)) {
+            } else if (shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)) {
                 //ask user to choose 'yes' or 'no' for notifications
                 Log.e("Else if", "Firebase")
                 Snackbar.make(
@@ -270,8 +270,7 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,HomeActivityCalle
                     intent.data = uri
                     startActivity(intent)
                 }.show()
-            }
-            else {
+            } else {
                 // The registered ActivityResultCallback gets the result of this request
                 //ask for permission
                 Log.e("Else", "Firebase")
@@ -279,8 +278,7 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,HomeActivityCalle
                     Manifest.permission.POST_NOTIFICATIONS
                 )
             }
-        }
-        else{
+        } else {
             Log.e("Not Entered", "02")
             FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
                 if (!task.isSuccessful) {
@@ -302,10 +300,12 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,HomeActivityCalle
             })
         }
     }
+
     fun Context.dpToPx(dp: Int): Int {
         val scale = resources.displayMetrics.density
         return (dp * scale + 0.5f).toInt()
     }
+
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onResume() {
         super.onResume()
@@ -318,7 +318,7 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,HomeActivityCalle
             redirectToSettings()
         }*/
         checkAccessibilityPermission()
-        if(preferences.getProfilePicture != "")
+        if (preferences.getProfilePicture != "")
             Glide.with(applicationContext).load(preferences.getProfilePicture).into(binding.profile)
         else
             binding.profile.setImageResource(R.drawable.user_icon)
@@ -344,14 +344,14 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,HomeActivityCalle
         }
         return accessEnabled != 0
         //return if (accessEnabled == 0) {
-            // if not construct intent to request permission
+        // if not construct intent to request permission
 //            val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
 //            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            // request permission via start activity for result
-            //startActivity(intent)
+        // request permission via start activity for result
+        //startActivity(intent)
         //    false
         //} else {
-          //  true
+        //  true
         //}
 
     }
@@ -399,9 +399,11 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,HomeActivityCalle
             R.id.view_calender_event -> {
                 openDetailPage("Upcoming Events", "calendar")
             }
+
             R.id.view_notifications -> {
                 openDetailPage("Notifications", "notifications")
             }
+
             R.id.profile -> {
 
                 openDetailPage("Profile", "profile")
@@ -424,83 +426,20 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,HomeActivityCalle
         }
     }
 
-    fun hideForFullScreen(){
+    fun hideForFullScreen() {
         binding.myToolbar.visibility = View.GONE
         binding.bottomNavigation.visibility = View.GONE
     }
 
-    fun showForFullScreen(){
+    fun showForFullScreen() {
         binding.myToolbar.visibility = View.VISIBLE
         binding.bottomNavigation.visibility = View.VISIBLE
     }
 
     override fun callHomeActivity() {
-        val intent=Intent(this, HomeActivity::class.java)
+        val intent = Intent(this, HomeActivity::class.java)
         startActivity(intent)
     }
-
-
-
-
-
-
-
-
-    /*-------------------------------web socket--------------------------*/
-  /*  @RequiresApi(Build.VERSION_CODES.M)
-    fun connectSocket(socketurl:String=Constants.SELF_BEST_SOCKET_URL){
-        lifecycleScope.launch(Dispatchers.IO) {
-            easyWS = OkHttpClient().easyWebSocket(socketurl, this@HomeActivity)
-            Log.d("HomeActivity", "Connection: CONNECTION established!")
-            listenUpdates()
-        }
-    }
-
-    fun getTotalUnseenCount(data: TotalUnseenCountRequest) {
-        val msg = gson.toJson(data)
-        Log.d("unseenPayload", msg.toString())
-        scheduledFuture=executorService.scheduleAtFixedRate({
-            easyWS?.webSocket?.send(msg)
-        },0,1, TimeUnit.SECONDS)
-    }
-
-    private suspend fun listenUpdates() {
-        easyWS?.webSocket?.send("")
-        easyWS?.textChannel?.consumeEach {
-            when (it) {
-                is SocketUpdate.Failure -> {
-                    Log.d("unseenPayload", "failed")
-                }
-                is SocketUpdate.Success -> {
-                    val text = it.text
-                    Log.d("unseenPayloadText", "onMessage: $text")
-                    val jsonObject = JSONObject(text)
-
-                    if (jsonObject.has("data")) {
-                        val dataObj = jsonObject.getJSONObject("data")
-                        if (dataObj.has("chat_data")) {
-                            val chatDataObj = dataObj.getJSONObject("chat_data")
-                            if (chatDataObj.has("total_message_count")) {
-                                botMessageCount = chatDataObj.getInt("total_message_count")
-
-                               // updateUnseenMessageCountBadge(unseenMessageCount)
-                            }
-                        }
-                    }
-                    unseenMessageCount=botMessageCount
-                    Log.d("unseenMsgAtHome", "TotalMessageCount: $botMessageCount")
-                }
-            }
-        }
-    }
-
-
-
-    fun closeConnection() {
-        easyWS?.webSocket?.close(1001, "Closing manually")
-        Log.d("HomeActivity", "closeConnection: CONNECTION CLOSED!")
-    }*/
-
 
 
 }

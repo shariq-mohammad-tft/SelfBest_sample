@@ -1,8 +1,10 @@
 package com.example.chat_feature.view_models
 
+import android.app.Application
 import android.content.Context
 import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -17,6 +19,7 @@ import com.example.chat_feature.data.response.expert_chat.ChatJson
 import com.example.chat_feature.data.response.expert_chat.ExpertChatRequest
 import com.example.chat_feature.network.Api
 import com.example.chat_feature.network.web_socket.EasyWS
+import com.example.chat_feature.network.web_socket.WebSocketInterface
 import com.example.chat_feature.network.web_socket.easyWebSocket
 import com.example.chat_feature.utils.Constants
 import com.example.chat_feature.utils.Resource
@@ -38,8 +41,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ExpertChatViewModel @Inject constructor(
     private val api: Api,
-    private val context: Context
-) : ViewModel(), SafeApiCall {
+    private val application: Application
+) : ViewModel(), SafeApiCall, WebSocketInterface {
 
     companion object {
         private const val TAG = "ExpertChatViewModel"
@@ -56,7 +59,8 @@ class ExpertChatViewModel @Inject constructor(
     val imageProgressState = mutableStateOf(0)
 
     private val gson by lazy { Gson() }
-    private var easyWs: EasyWS? = null
+
+    override var easyWs: EasyWS? = null
 
     var message by mutableStateOf("")
         private set
@@ -174,6 +178,7 @@ class ExpertChatViewModel @Inject constructor(
                 Resource.Loading -> {
                     imageUploadResponse.value = Resource.Loading
                 }
+
                 is Resource.Failure -> {
                     imageUploadResponse.value = response
                 }
@@ -181,10 +186,10 @@ class ExpertChatViewModel @Inject constructor(
             }
         }
 
-    fun seenBotMessage(data:BotSeenRequest) {
+    fun seenBotMessage(data: BotSeenRequest) {
         viewModelScope.launch {
             safeApiCall {
-                api.botMessageSeenRequest(BotSeenRequest(data.sentBy,data.queryId))
+                api.botMessageSeenRequest(BotSeenRequest(data.sentBy, data.queryId))
             }
         }
     }
@@ -207,15 +212,20 @@ class ExpertChatViewModel @Inject constructor(
 
     /*----------------------------------- Web Socket --------------------------------*/
 
-    fun connectSocket(socketUrl: String = Constants.SELF_BEST_SOCKET_URL) =
+    @RequiresApi(Build.VERSION_CODES.M)
+    override fun connectSocket(socketUrl: String) {
         viewModelScope.launch(Dispatchers.IO) {
             // /chat/676/
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                easyWs = OkHttpClient().easyWebSocket(socketUrl,context)
+            try {
+                easyWs = OkHttpClient().easyWebSocket(socketUrl, application.applicationContext)
+                Log.d(TAG, "Connection: CONNECTION established!")
+                listenUpdates()
+            } catch (e: Exception) {
+                Log.d(TAG, "connectSocket: ${e.message}")
             }
-            Log.d(TAG, "connectSocket: Called Listen Channel")
-            listenUpdates()
         }
+    }
+
 
     fun sendMessage(data: ExpertChatRequest) {
 
@@ -248,7 +258,7 @@ class ExpertChatViewModel @Inject constructor(
                     }
 
                     val response = gson.fromJson(responseObj, ChatJson::class.java)
-                    if(response.type=="chat"){
+                    if (response.type == "chat") {
                         Log.d(TAG, "onMessage: $response")
 
                         messageList.add(Resource.Success(response))
@@ -259,7 +269,8 @@ class ExpertChatViewModel @Inject constructor(
             }
         }
     }
-    private fun closeConnection() {
+
+    override fun closeConnection() {
         easyWs?.webSocket?.close(1001, "Closing manually")
         Log.d("expertlistviewmodel", "closeConnectionFORCHATVIEWMODEL: CONNECTION CLOSED!")
     }
@@ -270,137 +281,3 @@ class ExpertChatViewModel @Inject constructor(
         Log.d("expertlistviewmodel", "viewmodelClearedForChaTViewmodel")
     }
 }
-
-
-
-/*
-
-@HiltViewModel
-//class ExpertChatViewModel @Inject constructor(
-    private val api: Api
-) : ViewModel(), SafeApiCall {
-
-    companion object {
-        private const val TAG = "ExpertChatViewModel"
-    }
-
-    private val gson by lazy { Gson() }
-    private var easyWs: EasyWS? = null
-
-    var message by mutableStateOf("")
-        private set
-
-    //TODO can be remove
-    private val existingMessageList =
-        mutableStateOf<Resource<ChatBetweenUserAndExpertResponse>>(Resource.Loading)
-
-    val messageList = mutableStateListOf<Resource<ExpertChatResponse>>()
-
-    fun updateMessage(newValue: String) {
-        message = newValue
-    }
-
-
-    init {
-        viewModelScope.launch(Dispatchers.IO) {
-//            listenUpdates()
-        }
-    }
-
-    fun loadChatBetweenUserAndExpert(data: ChatBetweenUserAndExpertRequest) =
-        viewModelScope.launch {
-            val response = safeApiCall {
-                api.loadChatBetweenUserAndExpert(
-                    senderId = data.senderId,
-                    queryId = data.queryId,
-                )
-            }
-
-            when (response) {
-                Resource.Loading -> Unit
-                is Resource.Failure -> {
-                    messageList.add(response)
-                }
-
-                is Resource.Success -> {
-                    response.value.chatMessages.forEach {
-                        messageList.add(Resource.Success(it))
-                    }
-                }
-
-            }
-            existingMessageList.value = response
-        }
-
-
-    */
-/*----------------------------------- Web Socket --------------------------------*//*
-
-
-    fun connectSocket(socketUrl: String = Constants.SELF_BEST_SOCKET_URL) =
-        viewModelScope.launch(Dispatchers.IO) {
-            // /chat/676/
-            easyWs = OkHttpClient().easyWebSocket(socketUrl)
-            Log.d(TAG, "connectSocket: Called Listen Channel")
-            listenUpdates()
-        }
-
-
-    //TODO to store sender msg
-    fun sendMessage(data: ExpertChatRequest) {
-        val msg = gson.toJson(data)
-        easyWs?.webSocket?.send(msg)
-        messageList.add(Resource.Success(data.convertToExpertChatResponse()))
-    }
-
-
-    private suspend fun listenUpdates() {
-
-        easyWs?.textChannel?.consumeEach {
-            when (it) {
-                is SocketUpdate.Failure -> {
-                    messageList.add(Resource.Failure(message = it.exception?.message!!))
-                }
-
-                is SocketUpdate.Success -> {
-
-                    val text = it.text
-                    Log.d(TAG, "onMessage: $text")
-
-
-                    val jsonObject = JSONObject(text)
-                    var responseObj = text!!
-
-                    if (jsonObject.has("data")) {
-                        responseObj = jsonObject.getString("data")
-                    }
-
-                    val response = gson.fromJson(responseObj, ExpertChatResponse::class.java)
-                    Log.d(TAG, "onMessage: $response")
-
-                    messageList.add(Resource.Success(response))
-
-                }
-            }
-        }
-    }
-
-
-    private fun closeConnection() {
-        easyWs?.webSocket?.close(1001, "Closing manually")
-        Log.d(TAG, "closeConnection: CONNECTION CLOSED!")
-    }
-
-
-    override fun onCleared() {
-        super.onCleared()
-
-        closeConnection()
-    }
-
-}
-
-
-
-
-*/

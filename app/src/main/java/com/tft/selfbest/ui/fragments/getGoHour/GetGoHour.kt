@@ -148,10 +148,10 @@ class GetGoHour : Fragment(), View.OnClickListener {
                     //setLineChart(progress)
                     addChartData(progress)
                 }
-                if (it.data.isPaused) {
-                    pauseTimer()
-                    binding.pause.setImageResource(R.drawable.ic_play_fill)
-                }
+//                if (it.data.isPaused) {
+//                    pauseTimer()
+//                    binding.pause.setImageResource(R.drawable.ic_play_fill)
+//                }
             }else if(it is NetworkResponse.Error)
                 Toast.makeText(requireContext(), "Something went wrong", Toast.LENGTH_LONG).show()
         }
@@ -164,7 +164,29 @@ class GetGoHour : Fragment(), View.OnClickListener {
                 binding.resetLeft.text = it.data.resetsLeft.toString()
                 resetLeft = it.data.resetsLeft
                 if (getGoHourResponse.isPaused) {
-                    pauseTime = getGoHourResponse.pauseStartTime
+                    binding.pause.setImageResource(R.drawable.ic_play_fill)
+                    val left = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        ChronoUnit.SECONDS.between(
+                            startTime(getGoHourResponse.startTime),
+                            startTime(getGoHourResponse.pauseStartTime)
+                        )
+                    }else{
+                        TODO()
+                    }
+                    max = binding.timeHour.text.toString().toInt() * 60 * 60
+                    updateProgressBar(max)
+                    timeLeft = ((max - left) + (getGoHourResponse.totalPauseTime / 1000000000))*1000
+                    binding.progressBar.progress =
+                        ((max * 1000 - timeLeft) / 1000.0).roundToInt()
+                    binding.myView.progress =
+                        ((max * 1000 - timeLeft) / 1000.0).roundToInt()
+                    val f: NumberFormat = DecimalFormat("00")
+                    val hour = (max * 1000 - timeLeft) / 3600000 % 24
+                    val min = (max * 1000 - timeLeft) / 60000 % 60
+                    val sec = (max * 1000 - timeLeft) / 1000 % 60
+                    val finalTime = f.format(hour)
+                        .toString() + ":" + f.format(min) + ":" + f.format(sec)
+                    binding.text.text = finalTime
                     pauseTimer()
                 }
                 if (getGoHourResponse.isActive && !getGoHourResponse.isPaused && !getGoHourResponse.ended && it.data.startTime != null) {
@@ -437,6 +459,7 @@ class GetGoHour : Fragment(), View.OnClickListener {
                     }
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         viewModel.pause(StartTime(Instant.now().toString()))
+                        pauseTime = Instant.now().toString()
                     }
                 } else {
                     binding.pause.setImageResource(R.drawable.ic_pause)
@@ -595,10 +618,12 @@ class GetGoHour : Fragment(), View.OnClickListener {
 
     private fun resumeTimer() {
 //        Toast.makeText(activity,"Resumed",Toast.LENGTH_SHORT).show()
+        Log.e("TimeLeft", timeLeft.toString())
         max = binding.timeHour.text.toString().toInt() * 60 * 60
         updateProgressBar(max)
         timer = object : CountDownTimer(timeLeft, 1 * 1000) {
             override fun onTick(millisUntilFinished: Long) {
+
                 timeLeft = millisUntilFinished
                 binding.progressBar.progress =
                     (((max * 1000) - millisUntilFinished) / 1000.0).roundToInt()

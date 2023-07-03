@@ -45,16 +45,22 @@ class ProfileRepository @Inject constructor(private val client: SelfBestApiClien
         })
     }.flowOn(Dispatchers.IO)
 
-        suspend fun updateProfilePhoto(file: File?, userId: Int) = flow {
-            val requestFile = RequestBody.create("multipart/form-data".toMediaTypeOrNull(), file!!)
-            val requestImage = MultipartBody.Part.createFormData("image", file.name, requestFile)
-            val requestUserId =
-                RequestBody.create("multipart/form-data".toMediaTypeOrNull(), userId.toString())
-            emit(NetworkResponse.Loading())
-            emit(NetworkRequest.process {
-                client.apis.updateProfilePicture(requestImage, requestUserId)
-            })
-        }.flowOn(Dispatchers.IO)
+    suspend fun updateProfilePhoto(file: File?, userId: Int) = flow {
+        if (file == null) {
+            emit(NetworkResponse.Error("File is null"))
+            return@flow
+        }
+
+        val requestFile = RequestBody.create("multipart/form-data".toMediaTypeOrNull(), file)
+        val requestImage = MultipartBody.Part.createFormData("image", file.name, requestFile)
+        val requestUserId =
+            RequestBody.create("multipart/form-data".toMediaTypeOrNull(), userId.toString())
+
+        emit(NetworkResponse.Loading())
+        emit(NetworkRequest.process {
+            client.apis.updateProfilePicture(requestImage, requestUserId)
+        })
+    }.flowOn(Dispatchers.IO)
 
     suspend fun disconnectAllCalendar(userId: Int) = flow {
         emit(NetworkResponse.Loading())
