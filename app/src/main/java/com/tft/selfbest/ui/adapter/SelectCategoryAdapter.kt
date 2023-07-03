@@ -1,4 +1,5 @@
 package com.tft.selfbest.ui.adapter
+
 import android.content.Context
 import android.graphics.Color
 import android.util.Log
@@ -12,18 +13,14 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.tft.selfbest.R
 import com.tft.selfbest.models.SelectedCategory
-import com.tft.selfbest.ui.dialog.ActivityLogFiltersDialog
-import com.tft.selfbest.ui.fragments.activityLog.ForCategories
-import java.util.*
 
 class SelectCategoryAdapter(
     val context: Context,
     val list: List<SelectedCategory>,
-    val selectedCategory: MutableList<String>,
+    selectedCategory: MutableList<String>,
     val selectionOfcategoriesListener: SelectionOfCategories) :
     RecyclerView.Adapter<SelectCategoryAdapter.SelectCategoryViewHolder>() {
-    var numberOfSelectedCategories = 3
-    val selectedCategories = selectedCategory
+    private val selectedCategories = selectedCategory.toMutableList()
 
 //    init {
 //        for (cat in list.sortedByDescending { it.duration }.take(3)){
@@ -51,6 +48,7 @@ class SelectCategoryAdapter(
                 holder.state.isChecked = false
                 selectionOfcategoriesListener.deSelectCategory(category)
                 selectedCategories.remove(category.category)
+                Log.e("Selected Categories", selectedCategories.toString())
 //                currentCategories.remove(category)
 //                Log.e("Activity Log 0", category.category)
 //                setSelectedCategories(currentCategories)
@@ -63,6 +61,7 @@ class SelectCategoryAdapter(
                     holder.state.isChecked = true
                     selectionOfcategoriesListener.selectCategory(category)
                     selectedCategories.add(category.category)
+                    Log.e("Selected Categories", selectedCategories.toString())
 //                    currentCategories.add(category)
 //                    Log.e("Activity Log 2", category.category)
 //                    setSelectedCategories(currentCategories)

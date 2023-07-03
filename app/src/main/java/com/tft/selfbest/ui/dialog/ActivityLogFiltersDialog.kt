@@ -76,7 +76,7 @@ class ActivityLogFiltersDialog(
 //            selectedCategories.add(cat.category)
 //        }
         val layoutParams = binding.givenCategories.layoutParams
-        layoutParams.height = if(selectedCategories.isEmpty()) 0 else ViewGroup.LayoutParams.WRAP_CONTENT
+        layoutParams.height = if(sortedList.isEmpty()) 0 else ViewGroup.LayoutParams.WRAP_CONTENT
         binding.givenCategories.layoutParams = layoutParams
         binding.givenCategories.requestLayout()
         binding.givenCategories.layoutManager = LinearLayoutManager(binding.root.context)

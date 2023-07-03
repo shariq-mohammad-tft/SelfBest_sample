@@ -11,6 +11,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.Window
+import android.webkit.CookieManager
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -94,6 +95,8 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         viewModel.loginApiObserver.observe(this) { response ->
             when (response) {
                 is NetworkResponse.Error -> {
+                    CookieManager.getInstance().removeAllCookies(null)
+                    CookieManager.getInstance().flush()
                     if (response.msg.equals("Account not active")) {
                         val dialogClickListener =
                             DialogInterface.OnClickListener { dialog, which ->

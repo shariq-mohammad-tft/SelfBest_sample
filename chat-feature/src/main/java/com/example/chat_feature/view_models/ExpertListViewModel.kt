@@ -2,7 +2,9 @@ package com.example.chat_feature.view_models
 
 import android.app.Application
 import android.content.Context
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -19,6 +21,7 @@ import com.example.chat_feature.data.experts.Expert
 import com.example.chat_feature.data.experts.ExpertListRequest
 import com.example.chat_feature.network.Api
 import com.example.chat_feature.network.web_socket.EasyWS
+import com.example.chat_feature.network.web_socket.WebSocketInterface
 import com.example.chat_feature.network.web_socket.easyWebSocket
 import com.example.chat_feature.utils.*
 import com.google.gson.Gson
@@ -38,9 +41,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ExpertListViewModel @Inject constructor(
     private val api: Api,
-    application: Application,
-    private val context: Context
-) : AndroidViewModel(application), SafeApiCall {
+    private val application: Application
+) : AndroidViewModel(application), SafeApiCall, WebSocketInterface {
 
     companion object {
         private const val TAG = "ExpertListViewModel"
@@ -57,9 +59,6 @@ class ExpertListViewModel @Inject constructor(
 
     init {
         userId = application.applicationContext.getUserId(application = application).toString()
-
-
-
     }
 
     /*init {
@@ -70,7 +69,7 @@ class ExpertListViewModel @Inject constructor(
     }*/
 
     private val gson by lazy { Gson() }
-    private var easyWs: EasyWS? = null
+    override var easyWs: EasyWS? = null
 
     val messagess = mutableStateListOf<Resource<ChatData>>()
     var botMessageCount by mutableStateOf(0)
@@ -185,11 +184,18 @@ class ExpertListViewModel @Inject constructor(
 
     /*------------------------------------web socket--------------------------------*/
 
-    fun connectSocket(socketUrl: String = Constants.SELF_BEST_SOCKET_URL) {
+    @RequiresApi(Build.VERSION_CODES.M)
+    override fun connectSocket(socketUrl: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            easyWs = OkHttpClient().easyWebSocket(socketUrl,context)
-            Log.d("expertlistviewmodel", "Connection: CONNECTION established!")
-            listenUpdates()
+            // /chat/676/
+
+            try {
+                easyWs = OkHttpClient().easyWebSocket(socketUrl, application.applicationContext)
+                Log.d(TAG, "Connection: CONNECTION established!")
+                listenUpdates()
+            } catch (e: Exception) {
+                Log.d(TAG, "connectSocket: ${e.message}")
+            }
         }
     }
 
@@ -294,7 +300,7 @@ class ExpertListViewModel @Inject constructor(
             }
         }
     }
-     fun closeConnection() {
+     override fun closeConnection() {
         easyWs?.webSocket?.close(1001, "Closing manually")
         Log.d("expertlistviewmodel", "closeConnection: CONNECTION CLOSED!")
     }
