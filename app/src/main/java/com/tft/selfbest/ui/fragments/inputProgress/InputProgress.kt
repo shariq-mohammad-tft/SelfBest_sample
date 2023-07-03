@@ -75,8 +75,8 @@ class InputProgress : Fragment(),View.OnClickListener, InputProgressAdapter.Chan
                 else if (it.data.activities.isNotEmpty()) {
                     activities = it.data.activities
                     if(it.data.categoryList != null){
-                        for (cat in it.data.categoryList as Map<String, String>)
-                            categories.add(cat.value)
+                        for (cat in it.data.categoryList)
+                            categories.add(cat)
                     }
                     for(activity in activities){
                         observationDetail.add(Observations(activity.category, activity.duration, activity.type, activity.url))

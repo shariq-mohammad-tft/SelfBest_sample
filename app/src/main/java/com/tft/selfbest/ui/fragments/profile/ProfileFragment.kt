@@ -376,6 +376,64 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
         binding.recommendedSkills.adapter =
             RecommendationsAdapter(binding.root.context, rSkills, this)
 
+        //individual integration
+        if(profileData.integratedTools != null){
+            if(profileData.integratedTools!!.keka!!){
+                binding.keka.visibility = View.VISIBLE
+                binding.isKekaConnected.text =
+                    if (profileData.deviceConnected!!.keka!!) "Connected" else "Connect"
+                binding.isKekaConnected.setTextColor(if (profileData.deviceConnected!!.keka!!) Color.parseColor("#1D71D4") else Color.WHITE)
+                binding.isKekaConnected.setBackgroundResource(if (profileData.deviceConnected!!.keka!!) R.drawable.connected_tool_bg else R.drawable.get_started_btn_bg)
+            }
+
+            if(profileData.integratedTools!!.googleCalendar!!){
+                binding.googleCalendar.visibility = View.VISIBLE
+                binding.isGoogleCalConnected.text =
+                    if (profileData.deviceConnected!!.googleCalendar!!) "Connected" else "Connect"
+                binding.isGoogleCalConnected.setTextColor(if (profileData.deviceConnected!!.googleCalendar!!) Color.parseColor("#1D71D4") else Color.WHITE)
+                binding.isGoogleCalConnected.setBackgroundResource(if (profileData.deviceConnected!!.googleCalendar!!) R.drawable.connected_tool_bg else R.drawable.get_started_btn_bg)
+            }
+
+            if(profileData.integratedTools!!.microsoftCalendar!!){
+                binding.microsoftCalendar.visibility = View.VISIBLE
+                binding.isMicrosoftCalConnected.text =
+                    if (profileData.deviceConnected!!.microsoftCalendar!!) "Connected" else "Connect"
+                binding.isMicrosoftCalConnected.setTextColor(if (profileData.deviceConnected!!.microsoftCalendar!!) Color.parseColor("#1D71D4") else Color.WHITE)
+                binding.isMicrosoftCalConnected.setBackgroundResource(if (profileData.deviceConnected!!.microsoftCalendar!!) R.drawable.connected_tool_bg else R.drawable.get_started_btn_bg)
+            }
+
+            if(profileData.integratedTools!!.jira!!){
+                binding.jira.visibility = View.VISIBLE
+                binding.isJiraConnected.text =
+                    if (profileData.deviceConnected!!.jira!!) "Connected" else "Connect"
+                binding.isJiraConnected.setTextColor(if (profileData.deviceConnected!!.jira!!) Color.parseColor("#1D71D4") else Color.WHITE)
+                binding.isJiraConnected.setBackgroundResource(if (profileData.deviceConnected!!.jira!!) R.drawable.connected_tool_bg else R.drawable.get_started_btn_bg)
+            }
+
+            if(profileData.integratedTools!!.freshwork!!){
+                binding.freshwork.visibility = View.VISIBLE
+                binding.isFreshworkConnected.text =
+                    if (profileData.deviceConnected!!.freshwork!!) "Connected" else "Connect"
+                binding.isFreshworkConnected.setTextColor(if (profileData.deviceConnected!!.freshwork!!) Color.parseColor("#1D71D4") else Color.WHITE)
+                binding.isFreshworkConnected.setBackgroundResource(if (profileData.deviceConnected!!.freshwork!!) R.drawable.connected_tool_bg else R.drawable.get_started_btn_bg)
+            }
+
+            if(profileData.integratedTools!!.salesforce!!){
+                binding.salesforce.visibility = View.VISIBLE
+                binding.isSalesforceConnected.text =
+                    if (profileData.deviceConnected!!.salesforce!!) "Connected" else "Connect"
+                binding.isSalesforceConnected.setTextColor(if (profileData.deviceConnected!!.salesforce!!) Color.parseColor("#1D71D4") else Color.WHITE)
+                binding.isSalesforceConnected.setBackgroundResource(if (profileData.deviceConnected!!.salesforce!!) R.drawable.connected_tool_bg else R.drawable.get_started_btn_bg)
+            }
+
+            if(profileData.integratedTools!!.gmail!!){
+                binding.gmail.visibility = View.VISIBLE
+                binding.isGmailConnected.text =
+                    if (profileData.deviceConnected!!.gmail!!) "Connected" else "Connect"
+                binding.isGmailConnected.setTextColor(if (profileData.deviceConnected!!.gmail!!) Color.parseColor("#1D71D4") else Color.WHITE)
+                binding.isGmailConnected.setBackgroundResource(if (profileData.deviceConnected!!.gmail!!) R.drawable.connected_tool_bg else R.drawable.get_started_btn_bg)
+            }
+        }
     }
 
     private fun setBackendTime() {
@@ -616,7 +674,8 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnC
                 if (isIntegrationView)
                     return
                 isIntegrationView = true
-                binding.personalDetailText.text = "Calendar"
+//                binding.personalDetailText.text = "Calendar"
+                binding.personalDetailText.text = "Activation Tools"
                 binding.integrations.setBackgroundResource(R.drawable.right_organisation_round)
                 //ContextCompat.getDrawable(requireContext(),R.drawable.right_organisation_round)
                 binding.integrations.setTextColor(Color.WHITE)

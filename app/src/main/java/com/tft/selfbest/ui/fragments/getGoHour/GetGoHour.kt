@@ -132,9 +132,9 @@ class GetGoHour : Fragment(), View.OnClickListener {
             if (it is NetworkResponse.Success) {
                 if(it.data!!.categoryList != null) {
                     labels.clear()
-                    for (entry in (it.data.categoryList as Map<String, String>)) {
-                        if(entry.value != "")
-                            labels.add(entry.value)
+                    for (entry in (it.data.categoryList)!!) {
+                        if(entry != "")
+                            labels.add(entry)
                     }
                 }
                 Log.e("ActivityLog: ", labels.toString())

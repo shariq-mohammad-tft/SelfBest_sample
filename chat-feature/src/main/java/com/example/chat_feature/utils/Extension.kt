@@ -165,7 +165,7 @@ fun String.extractTime(timeString: String): String? {
 }
 @RequiresApi(Build.VERSION_CODES.O)
 fun String.extractTimeForMainApp(timeString: String): String? {
-    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'")
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss[.SSSSSS][.SSS]'Z'")
     val utcDateTime = LocalDateTime.parse(timeString, formatter)
         .atZone(ZoneId.of("UTC"))
     val istDateTime = utcDateTime.withZoneSameInstant(ZoneId.of("Asia/Kolkata"))
