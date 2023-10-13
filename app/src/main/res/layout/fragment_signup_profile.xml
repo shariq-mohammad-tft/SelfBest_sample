@@ -1,0 +1,569 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp">
+
+        <TextView
+            android:id="@+id/profile_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_medium_new"
+            android:gravity="center"
+            android:text="Profile"
+            android:textColor="#1D71D4"
+            android:textSize="22dp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/job_position"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="15dp"
+            android:drawableStart="@drawable/profile_icon"
+            android:drawablePadding="10dp"
+            android:hint="Job Position"
+            android:inputType="text"
+            android:textAlignment="viewStart"
+            android:textColor="@color/black"
+            android:textColorHint="#3e3e3e"
+            android:textSize="12dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/profile_header" />
+
+        <EditText
+            android:id="@+id/experience"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="28dp"
+            android:drawableStart="@drawable/experience_icon"
+            android:drawablePadding="10dp"
+            android:hint="Experience"
+            android:inputType="text"
+            android:textAlignment="viewStart"
+            android:textColor="@color/black"
+            android:textColorHint="#3e3e3e"
+            android:textSize="12dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/job_position" />
+
+        <EditText
+            android:id="@+id/linkdin_container"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="28dp"
+            android:drawableStart="@drawable/logo_linkdin"
+            android:drawablePadding="10dp"
+            android:hint="Linkedin"
+            android:textColorHint="#3e3e3e"
+            android:textSize="12dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/experience" />
+
+        <!--        <LinearLayout-->
+        <!--            android:id="@+id/account_partner"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_marginTop="28dp"-->
+        <!--            android:gravity="center_vertical"-->
+        <!--            android:paddingHorizontal="10dp"-->
+        <!--            app:layout_constraintEnd_toEndOf="parent"-->
+        <!--            app:layout_constraintStart_toStartOf="parent"-->
+        <!--            app:layout_constraintTop_toBottomOf="@+id/linkdin_container">-->
+
+        <!--            <ImageView-->
+        <!--                android:layout_width="wrap_content"-->
+        <!--                android:layout_height="wrap_content"-->
+        <!--                android:background="@drawable/manager_icon" />-->
+
+        <!--            <TextView-->
+        <!--                android:layout_width="0dp"-->
+        <!--                android:layout_height="wrap_content"-->
+        <!--                android:layout_weight="1"-->
+        <!--                android:paddingStart="16dp"-->
+        <!--                android:text="Part of the accountability partner"-->
+        <!--                android:textColor="@color/black"-->
+        <!--                android:textSize="12dp" />-->
+
+        <!--            <CheckBox-->
+        <!--                android:layout_width="wrap_content"-->
+        <!--                android:layout_height="wrap_content"-->
+        <!--                android:checked="false" />-->
+        <!--        </LinearLayout>-->
+
+        <!--        <View-->
+        <!--            android:id="@+id/account_partner_border"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="1dp"-->
+        <!--            android:background="@color/black"-->
+        <!--            app:layout_constraintEnd_toEndOf="parent"-->
+        <!--            app:layout_constraintStart_toStartOf="parent"-->
+        <!--            app:layout_constraintTop_toBottomOf="@+id/account_partner" />-->
+
+        <TextView
+            android:id="@+id/get_go_days"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            android:text="Work Days"
+            android:textAlignment="textStart"
+            android:textColor="@color/black"
+            android:textSize="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linkdin_container" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recursive_day_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="5dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/get_go_days" />
+
+        <!--        <LinearLayout-->
+        <!--            android:id="@+id/personality_type_container"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_marginTop="28dp"-->
+        <!--            android:paddingHorizontal="10dp"-->
+        <!--            app:layout_constraintEnd_toEndOf="parent"-->
+        <!--            app:layout_constraintStart_toStartOf="parent"-->
+        <!--            app:layout_constraintTop_toBottomOf="@+id/recursive_day_list">-->
+
+        <!--            <ImageView-->
+        <!--                android:layout_width="wrap_content"-->
+        <!--                android:layout_height="wrap_content"-->
+        <!--                android:background="@drawable/user_icon" />-->
+
+        <!--            <TextView-->
+        <!--                android:layout_width="0dp"-->
+        <!--                android:layout_height="wrap_content"-->
+        <!--                android:layout_weight="1"-->
+        <!--                android:paddingStart="16dp"-->
+        <!--                android:text="Personality Type"-->
+        <!--                android:textColor="@color/black" />-->
+
+        <!--            <TextView-->
+        <!--                android:layout_width="12dp"-->
+        <!--                android:layout_height="12dp"-->
+        <!--                android:text="@string/down_arrow_font" />-->
+        <!--        </LinearLayout>-->
+
+        <!--        <View-->
+        <!--            android:id="@+id/personality_type_border"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="1dp"-->
+        <!--            android:layout_marginTop="8dp"-->
+        <!--            android:background="@color/black"-->
+        <!--            app:layout_constraintEnd_toEndOf="parent"-->
+        <!--            app:layout_constraintStart_toStartOf="parent"-->
+        <!--            app:layout_constraintTop_toBottomOf="@+id/personality_type_container" />-->
+
+        <!--        <TextView-->
+        <!--            android:id="@+id/work_days"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_marginTop="28dp"-->
+        <!--            android:text="Work Days"-->
+        <!--            android:textAlignment="textStart"-->
+        <!--            android:textColor="@color/black"-->
+        <!--            android:textSize="10dp"-->
+        <!--            app:layout_constraintEnd_toEndOf="parent"-->
+        <!--            app:layout_constraintStart_toStartOf="parent"-->
+        <!--            app:layout_constraintTop_toBottomOf="@+id/personality_type_border" />-->
+
+        <!--        <LinearLayout-->
+        <!--            android:id="@+id/work_days_container"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:background="@drawable/get_go_days"-->
+        <!--            app:layout_constraintEnd_toEndOf="parent"-->
+        <!--            app:layout_constraintStart_toStartOf="parent"-->
+        <!--            app:layout_constraintTop_toBottomOf="@+id/work_days">-->
+
+        <!--            <TextView-->
+        <!--                android:layout_width="0dp"-->
+        <!--                android:layout_height="wrap_content"-->
+        <!--                android:layout_weight="1"-->
+        <!--                android:gravity="center"-->
+        <!--                android:paddingHorizontal="18dp"-->
+        <!--                android:paddingVertical="6dp"-->
+        <!--                android:text="S" />-->
+
+        <!--            <TextView-->
+        <!--                android:layout_width="0dp"-->
+        <!--                android:layout_height="wrap_content"-->
+        <!--                android:layout_weight="1"-->
+        <!--                android:gravity="center"-->
+        <!--                android:paddingHorizontal="18dp"-->
+        <!--                android:paddingVertical="6dp"-->
+        <!--                android:text="M" />-->
+
+        <!--            <TextView-->
+        <!--                android:layout_width="0dp"-->
+        <!--                android:layout_height="wrap_content"-->
+        <!--                android:layout_weight="1"-->
+        <!--                android:gravity="center"-->
+        <!--                android:paddingHorizontal="18dp"-->
+        <!--                android:paddingVertical="6dp"-->
+        <!--                android:text="T" />-->
+
+        <!--            <TextView-->
+        <!--                android:layout_width="0dp"-->
+        <!--                android:layout_height="wrap_content"-->
+        <!--                android:layout_weight="1"-->
+        <!--                android:gravity="center"-->
+        <!--                android:paddingHorizontal="18dp"-->
+        <!--                android:paddingVertical="6dp"-->
+        <!--                android:text="W" />-->
+
+        <!--            <TextView-->
+        <!--                android:layout_width="0dp"-->
+        <!--                android:layout_height="wrap_content"-->
+        <!--                android:layout_marginStart="0.5dp"-->
+        <!--                android:layout_marginEnd="0.5dp"-->
+        <!--                android:layout_weight="1"-->
+        <!--                android:background="@color/tool_bar_color"-->
+        <!--                android:gravity="center"-->
+        <!--                android:paddingHorizontal="18dp"-->
+        <!--                android:paddingVertical="6dp"-->
+        <!--                android:text="T" />-->
+
+        <!--            <TextView-->
+        <!--                android:layout_width="0dp"-->
+        <!--                android:layout_height="wrap_content"-->
+        <!--                android:layout_marginStart="0.5dp"-->
+        <!--                android:layout_marginEnd="0.5dp"-->
+        <!--                android:layout_weight="1"-->
+        <!--                android:background="@color/tool_bar_color"-->
+        <!--                android:gravity="center"-->
+        <!--                android:paddingHorizontal="18dp"-->
+        <!--                android:paddingVertical="6dp"-->
+        <!--                android:text="F" />-->
+
+        <!--            <TextView-->
+        <!--                android:layout_width="0dp"-->
+        <!--                android:layout_height="wrap_content"-->
+        <!--                android:layout_weight="1"-->
+        <!--                android:gravity="center"-->
+        <!--                android:paddingHorizontal="18dp"-->
+        <!--                android:paddingVertical="6dp"-->
+        <!--                android:text="S" />-->
+        <!--        </LinearLayout>-->
+
+        <TextView
+            android:id="@+id/work_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            android:text="Work Time"
+            android:textAlignment="textStart"
+            android:textColor="@color/black"
+            android:textSize="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/recursive_day_list" />
+
+        <LinearLayout
+            android:id="@+id/work_time_container"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/work_time">
+
+            <LinearLayout
+                android:id="@+id/start_time_container"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/upcoming_event_bg"
+                android:gravity="center_vertical"
+                android:padding="5dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/clock_icon" />
+
+                <TextView
+                    android:id="@+id/start_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="16dp"
+                    android:text="09 : 00 AM"
+                    android:textColor="@color/black"
+                    android:textSize="12dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/end_time_container"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/upcoming_event_bg"
+                android:gravity="center_vertical"
+                android:padding="5dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/clock_icon" />
+
+                <TextView
+                    android:id="@+id/end_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="16dp"
+                    android:text="05 : 00 PM"
+                    android:textColor="@color/black"
+                    android:textSize="12dp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!--        <View-->
+        <!--            android:id="@+id/work_time_border"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="1dp"-->
+        <!--            android:layout_marginTop="8dp"-->
+        <!--            android:background="#c8c8c8"-->
+        <!--            app:layout_constraintEnd_toEndOf="parent"-->
+        <!--            app:layout_constraintStart_toStartOf="parent"-->
+        <!--            app:layout_constraintTop_toBottomOf="@+id/work_time_container" />-->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/work_time_container">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="28dp"
+                android:background="@drawable/upcoming_event_bg"
+                android:padding="5dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/recursive_day_list">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:background="#1D71D4"
+                    android:padding="5dp"
+                    android:src="@drawable/ic_screwdriver_wrench_solid" />
+
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/add_skill"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/skill"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="10dp"
+                        android:background="@color/white"
+                        android:gravity="center_vertical"
+                        android:hint="Search Here"
+                        android:inputType="text"
+                        android:backgroundTint="@color/overview_bg"
+                        android:paddingLeft="10dp"
+                        android:textColor="@color/privacy_bg_colour"
+                        android:textColorHint="#3e3e3e"
+                        android:textSize="12dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"/>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                <!--                <androidx.appcompat.widget.SearchView-->
+                <!--                    android:layout_width="0dp"-->
+                <!--                    android:layout_height="match_parent"-->
+                <!--                    android:layout_weight="1"-->
+                <!--                    app:queryBackground="@android:color/transparent"-->
+                <!--                    app:queryHint="Search Here"-->
+                <!--                    app:iconifiedByDefault="false"-->
+                <!--                    app:searchIcon="@null"-->
+                <!--                    android:paddingStart="5dp"-->
+                <!--                    android:textColor="#3e3e3e" />-->
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="#1D71D4"
+                    android:padding="5dp"
+                    android:text="Add Skill"
+                    android:textColor="@color/white" />
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:id="@+id/skill_list"/>
+
+
+            <!--            <View-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="1dp"-->
+            <!--                android:layout_marginTop="8dp"-->
+            <!--                android:background="@color/black" />-->
+
+            <!--            <LinearLayout-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:layout_marginTop="28dp"-->
+            <!--                android:paddingHorizontal="10dp"-->
+            <!--                app:layout_constraintEnd_toEndOf="parent"-->
+            <!--                app:layout_constraintStart_toStartOf="parent"-->
+            <!--                app:layout_constraintTop_toBottomOf="@+id/recursive_day_list">-->
+
+            <!--                <ImageView-->
+            <!--                    android:layout_width="wrap_content"-->
+            <!--                    android:layout_height="wrap_content"-->
+            <!--                    android:background="@drawable/add_icon" />-->
+
+            <!--                <TextView-->
+            <!--                    android:layout_width="0dp"-->
+            <!--                    android:layout_height="wrap_content"-->
+            <!--                    android:layout_weight="1"-->
+            <!--                    android:paddingStart="16dp"-->
+            <!--                    android:text="Organisation"-->
+            <!--                    android:textColor="@color/black" />-->
+
+            <!--                <TextView-->
+            <!--                    android:layout_width="12dp"-->
+            <!--                    android:layout_height="12dp"-->
+            <!--                    android:text="@string/down_arrow_font" />-->
+            <!--            </LinearLayout>-->
+
+            <!--            <View-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="1dp"-->
+            <!--                android:layout_marginTop="8dp"-->
+            <!--                android:background="@color/black" />-->
+
+            <!--            <LinearLayout-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:layout_marginTop="28dp"-->
+            <!--                android:paddingHorizontal="10dp"-->
+            <!--                app:layout_constraintEnd_toEndOf="parent"-->
+            <!--                app:layout_constraintStart_toStartOf="parent"-->
+            <!--                app:layout_constraintTop_toBottomOf="@+id/recursive_day_list">-->
+
+            <!--                <ImageView-->
+            <!--                    android:layout_width="wrap_content"-->
+            <!--                    android:layout_height="wrap_content"-->
+            <!--                    android:background="@drawable/do_not_disturb_icon" />-->
+
+            <!--                <TextView-->
+            <!--                    android:layout_width="0dp"-->
+            <!--                    android:layout_height="wrap_content"-->
+            <!--                    android:layout_weight="1"-->
+            <!--                    android:paddingStart="16dp"-->
+            <!--                    android:text="Distractions"-->
+            <!--                    android:textColor="@color/black" />-->
+
+            <!--            </LinearLayout>-->
+
+            <!--            <View-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="1dp"-->
+            <!--                android:layout_marginTop="8dp"-->
+            <!--                android:background="@color/black" />-->
+
+            <!--            <LinearLayout-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:layout_marginTop="5dp"-->
+            <!--                android:paddingLeft="25dp">-->
+
+            <!--                <TextView-->
+            <!--                    android:layout_width="wrap_content"-->
+            <!--                    android:layout_height="wrap_content"-->
+            <!--                    android:layout_marginEnd="10dp"-->
+            <!--                    android:background="@drawable/distraction_bg"-->
+            <!--                    android:text="Lorem ipsum"-->
+            <!--                    android:textColor="@color/black"-->
+            <!--                    android:textSize="10dp" />-->
+
+            <!--                <TextView-->
+            <!--                    android:layout_width="wrap_content"-->
+            <!--                    android:layout_height="wrap_content"-->
+            <!--                    android:layout_marginEnd="10dp"-->
+            <!--                    android:background="@drawable/distraction_bg"-->
+            <!--                    android:text="Lorem ipsum"-->
+            <!--                    android:textColor="@color/black"-->
+            <!--                    android:textSize="10dp" />-->
+
+            <!--                <TextView-->
+            <!--                    android:layout_width="wrap_content"-->
+            <!--                    android:layout_height="wrap_content"-->
+            <!--                    android:layout_marginEnd="10dp"-->
+            <!--                    android:background="@drawable/distraction_bg"-->
+            <!--                    android:text="Lorem ipsum"-->
+            <!--                    android:textColor="@color/black"-->
+            <!--                    android:textSize="10dp" />-->
+
+            <!--            </LinearLayout>-->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="14dp"
+                android:layout_marginTop="60dp">
+
+                <TextView
+                    android:id="@+id/cancel_event"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:gravity="start|center_vertical"
+                    android:text="Back"
+                    android:textColor="@color/black"
+                    android:textSize="12dp" />
+
+                <TextView
+                    android:id="@+id/save"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:background="@drawable/done_bg"
+                    android:gravity="center"
+                    android:text="DONE"
+                    android:textColor="@color/white"
+                    android:textSize="12dp" />
+
+            </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="100dp"/>
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
+

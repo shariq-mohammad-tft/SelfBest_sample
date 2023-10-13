@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginVertical="5dp"
+    android:background="@drawable/my_course_bg_drawable"
+    android:paddingLeft="10dp"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp"
+    android:paddingRight="7dp">
+
+    <ImageView
+        android:id="@+id/course_icon"
+        android:layout_width="58dp"
+        android:layout_height="53dp"
+        android:background="@drawable/my_course_bg_drawable"
+        android:scaleType="fitXY"
+        android:src="@drawable/youtube_icon"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/my_course_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:fontFamily="@font/roboto"
+        android:textColor="@color/black"
+        android:textSize="12dp"
+        app:layout_constraintEnd_toStartOf="@id/source_app_logo"
+        app:layout_constraintStart_toEndOf="@id/course_icon"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/source_bg_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/source_app_logo"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="5dp"
+        android:src="@drawable/udemy_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/modules_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/course_icon">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="#1D71D4"
+            android:fontFamily="@font/roboto"
+            android:text="Module"
+            android:textSize="10dp" />
+
+        <TextView
+            android:id="@+id/modules"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="25 of 55"
+            android:textSize="10dp"
+            android:gravity="center"
+            android:fontFamily="@font/roboto"
+            android:textColor="@color/black"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/duration_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="11dp"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toStartOf="@+id/price_container"
+        app:layout_constraintStart_toEndOf="@+id/modules_container"
+        app:layout_constraintTop_toBottomOf="@id/course_icon">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Duration"
+            android:textColor="#1D71D4"
+            android:fontFamily="@font/roboto"
+            android:textSize="10dp" />
+
+        <TextView
+            android:id="@+id/durations"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="1 Week"
+            android:textSize="10dp"
+            android:gravity="center"
+            android:fontFamily="@font/roboto"
+            android:textColor="@color/black"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/price_container"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="11dp"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/course_icon">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Prices"
+            android:textColor="#1D71D4"
+            android:fontFamily="@font/roboto"
+            android:textSize="10dp" />
+
+        <TextView
+            android:id="@+id/price"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:textSize="10dp"
+            android:gravity="center"
+            android:fontFamily="@font/roboto"
+            android:textColor="@color/black"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/add_course"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/add_list_bg"
+        android:gravity="center"
+        android:text="Add to Current Courses"
+        android:textColor="@color/white"
+        android:textSize="12dp"
+        android:fontFamily="@font/roboto_medium_new"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/modules_container" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

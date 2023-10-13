@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/requestContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="1dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/user_management_card_bg"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="4dp"
+        app:cardMaxElevation="12dp"
+        app:cardPreventCornerOverlap="true"
+        android:outlineSpotShadowColor="#CBCBCB"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Request Id: "
+                    android:textSize="13sp"
+                    android:fontFamily="@font/roboto_medium_new"
+                    android:textColor="@color/tool_bar_color"/>
+
+                <TextView
+                    android:id="@+id/request_id"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="001"
+                    android:textSize="13sp"
+                    android:fontFamily="@font/roboto_medium_new"
+                    android:textColor="@color/black"/>
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp"
+                    android:textColor="@color/tool_bar_color"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="15dp"
+                    android:fontFamily="@font/roboto_medium_new"
+                    android:text="Skill Name" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/tool_bar_color"
+                    android:layout_weight="1"
+                    android:textSize="12sp"
+                    android:fontFamily="@font/roboto_medium_new"
+                    android:text="Replace Skill" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp">
+
+                <TextView
+                    android:id="@+id/skill"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="15dp"
+                    android:textColor="#707070"
+                    android:padding="10dp"
+                    android:background="@drawable/upcoming_event_bg"
+                    android:text="Javascript" />
+
+                <AutoCompleteTextView
+                    android:id="@+id/replace_skill"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp"
+                    android:layout_weight="1"
+                    android:textColor="#707070"
+                    android:padding="10dp"
+                    android:inputType="text"
+                    android:background="@drawable/upcoming_event_bg"
+                    android:hint="Replace Skill" />
+
+
+            </LinearLayout>
+
+<!--            <TextView-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="Action"-->
+<!--                android:layout_marginTop="8dp"-->
+<!--                android:textSize="12sp"-->
+<!--                android:textColor="@color/tool_bar_color"-->
+<!--                android:fontFamily="@font/roboto_medium"-->
+<!--                android:layout_weight="1"/>-->
+
+            <!--            </LinearLayout>-->
+
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp">
+                <!--                <FrameLayout-->
+                <!--                    android:id="@+id/spinner_container"-->
+                <!--                    android:layout_width="match_parent"-->
+                <!--                    android:layout_height="30dp"-->
+                <!--                    android:layout_marginTop="2dp"-->
+                <!--                    android:layout_marginEnd="55dp"-->
+                <!--                    android:layout_marginBottom="2dp"-->
+                <!--                    android:background="#CBCBCB"-->
+                <!--                    android:paddingVertical="2dp"-->
+                <!--                    android:paddingStart="50dp"-->
+                <!--                    android:layout_weight="25">-->
+
+
+                <!--                </FrameLayout>-->
+
+                <TextView
+                    android:id="@+id/accept"
+                    android:text="Accept"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginTop="2dp"
+                    android:textSize="12sp"
+                    android:paddingVertical="8dp"
+                    android:textColor="@color/white"
+                    android:gravity="center"
+                    android:fontFamily="@font/roboto"
+                    android:background="@drawable/accept_bt_bg"
+                    android:layout_weight="1"/>
+
+                <TextView
+                    android:id="@+id/reject"
+                    android:text="Reject"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="2dp"
+                    android:textColor="@color/white"
+                    android:textSize="12sp"
+                    android:paddingVertical="8dp"
+                    android:gravity="center"
+                    android:fontFamily="@font/roboto"
+                    android:background="@drawable/reject_btn_bg"
+                    android:layout_weight="1"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

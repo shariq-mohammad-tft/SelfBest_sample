@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp">
+
+        <EditText
+            android:id="@+id/search_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/course_search_bar"
+            android:padding="10dp"
+            android:textSize="14dp"
+            android:singleLine="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:hint="@string/edit_text_hint" />
+
+        <TextView
+            android:id="@+id/heading_suggested_distraction"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Suggested Distractions"
+            app:layout_constraintTop_toBottomOf="@id/search_bar"
+            app:layout_constraintStart_toStartOf="parent"
+            android:textSize="14dp"
+            android:fontFamily="@font/poppins_medium_new"
+            android:layout_marginTop="25dp"
+            android:textColor="#1D71D4"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/suggested_distractions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/heading_suggested_distraction"/>
+
+        <TextView
+            android:id="@+id/heading_current_distractions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="List of current URLs"
+            android:fontFamily="@font/poppins_medium_new"
+            app:layout_constraintTop_toBottomOf="@id/suggested_distractions"
+            app:layout_constraintStart_toStartOf="parent"
+            android:textSize="14dp"
+            android:layout_marginTop="25dp"
+            android:textColor="#1D71D4"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/current_distractions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/heading_current_distractions"/>
+
+
+        <TextView
+            android:id="@+id/load_more_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="+More"
+            android:textColor="@color/tool_bar_color"
+            android:textSize="14dp"
+            android:visibility="gone"
+            android:fontFamily="@font/roboto_medium_new"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/current_distractions"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/load_more_btn"
+            android:layout_marginTop="15dp"/>
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:max="3"
+            android:progress="100"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

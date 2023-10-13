@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/parent_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginVertical="10dp"
+    android:background="@drawable/full_white_with_border"
+    android:paddingRight="18dp"
+    android:paddingBottom="16dp">
+
+    <ImageView
+        android:id="@+id/selection_view"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_marginLeft="3dp"
+        android:layout_marginTop="20dp"
+        android:src="@drawable/un_selected_circle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/observation_type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="3dp"
+        android:layout_marginTop="20dp"
+        android:text="Focus work done!"
+        android:textColor="@color/tool_bar_color"
+        android:textSize="12dp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/selection_view"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/status_container"
+        android:layout_width="wrap_content"
+        android:layout_height="28dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/full_white_with_border"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingLeft="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <Spinner
+            android:id="@+id/spinner"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Neutral"
+            android:textSize="12dp" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/work_hour"
+        android:layout_width="55dp"
+        android:layout_height="28dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@drawable/full_white_with_border"
+        android:gravity="center"
+        android:text="12 Hrs"
+        android:textColor="@color/privacy_bg_colour"
+        android:textSize="12dp"
+        app:layout_constraintEnd_toStartOf="@+id/status_container"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/comment_container"
+        android:layout_width="0dp"
+        android:layout_height="42dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/full_white_with_border"
+        android:hint="Add Comment"
+        android:padding="12dp"
+        android:textColor="@color/privacy_bg_colour"
+        android:textSize="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/selection_view"
+        app:layout_constraintTop_toBottomOf="@+id/work_hour" />
+</androidx.constraintlayout.widget.ConstraintLayout>

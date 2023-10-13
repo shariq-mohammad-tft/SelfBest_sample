@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:layout_marginTop="8dp"
+    android:weightSum="7">
+
+    <ImageView
+        android:id="@+id/al_bullet"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:src="@drawable/bullet_for_pie_chart"
+        android:layout_gravity="center"/>
+
+    <TextView
+        android:id="@+id/al_name"
+        android:layout_width="0dp"
+        android:layout_weight="3"
+        android:layout_height="wrap_content"
+        android:textSize="10dp"
+        android:ellipsize="end"
+        android:text="Adobe Xd"
+        android:maxLines="1"
+        android:textColor="@color/black"/>
+
+    <TextView
+        android:layout_weight="3"
+        android:id="@+id/al_duration"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textSize="10dp"
+        android:text="5 hr 20 mins"
+        android:gravity="center"
+        android:textColor="@color/black"/>
+
+</LinearLayout>

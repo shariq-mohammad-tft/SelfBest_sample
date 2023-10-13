@@ -1,0 +1,387 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_margin="20dp"
+    tools:context=".ui.fragments.profile.companyProfile.IntegrationFragment">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Modules"
+        android:textSize="14sp"
+        android:fontFamily="@font/poppins_medium"
+        android:textColor="#1d71d4"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="15dp"
+        android:background="@drawable/circle">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Work den"
+            android:fontFamily="@font/roboto_medium"
+            android:textSize="12sp"
+            android:textColor="#3E3E3E"
+            android:drawablePadding="10dp"
+            app:drawableStartCompat="@drawable/ic_work_den" />
+
+        <CheckBox
+            android:id="@+id/is_work_den"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:button="@drawable/distraction_checkbox"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="15dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/circle">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Solution Point"
+            android:fontFamily="@font/roboto_medium"
+            android:textSize="12sp"
+            android:textColor="#3E3E3E"
+            android:drawablePadding="10dp"
+            app:drawableStartCompat="@drawable/icon_solution_pt" />
+
+        <CheckBox
+            android:id="@+id/is_solution_point"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:button="@drawable/distraction_checkbox" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/simplify_path_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginHorizontal="2dp"
+        android:layout_marginTop="10dp"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="15dp"
+        android:background="@drawable/circle">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Simplify path"
+            android:fontFamily="@font/roboto_medium"
+            android:textSize="12sp"
+            android:textColor="#3E3E3E"
+            android:drawablePadding="10dp"
+            app:drawableStartCompat="@drawable/ic_simplify_path"
+            app:drawableTint="#1d71d4" />
+
+        <CheckBox
+            android:id="@+id/is_simplify_path"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:button="@drawable/distraction_checkbox" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/integrated_tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="15dp"
+        android:paddingHorizontal="10dp"
+        android:orientation="vertical"
+        android:layout_marginTop="-5dp"
+        android:visibility="gone"
+        android:background="@drawable/integration_bg">
+
+        <LinearLayout
+            android:id="@+id/keka"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp"
+            android:layout_marginBottom="20dp"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_gravity="center"
+                android:src="@drawable/keka"/>
+
+            <TextView
+                android:id="@+id/keka_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_weight="1"
+                android:text="Keka"
+                android:fontFamily="@font/roboto_medium"
+                android:textSize="12sp"
+                android:textColor="@color/black"/>
+
+<!--            <TextView-->
+<!--                android:id="@+id/is_keka_connected"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:textColor="#3E3E3E"-->
+<!--                android:textStyle="italic"-->
+<!--                android:textSize="12sp"-->
+<!--                android:text="Connected"/>-->
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/freshwork"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp"
+            android:visibility="gone"
+            android:layout_marginBottom="20dp">
+
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_gravity="center"
+                android:src="@drawable/freshwork_img"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_weight="1"
+                android:text="Freshwork"
+                android:fontFamily="@font/roboto_medium"
+                android:textSize="12sp"
+                android:textColor="@color/black"/>
+
+<!--            <TextView-->
+<!--                android:id="@+id/is_freshwork_connected"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:textColor="#3E3E3E"-->
+<!--                android:textStyle="italic"-->
+<!--                android:textSize="12sp"-->
+<!--                android:text="Connected"/>-->
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/google_calendar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp"
+            android:visibility="gone"
+            android:layout_marginBottom="20dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/google_cal_ic"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_weight="1"
+                android:text="Google Calendar"
+                android:textSize="12sp"
+                android:fontFamily="@font/roboto_medium"
+                android:textColor="@color/black"/>
+
+<!--            <TextView-->
+<!--                android:id="@+id/is_google_cal_connected"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:textColor="#3E3E3E"-->
+<!--                android:textStyle="italic"-->
+<!--                android:textSize="12sp"-->
+<!--                android:text="Connected"/>-->
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/microsoft_calendar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp"
+            android:visibility="gone"
+            android:layout_marginBottom="20dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_microsoft_cal"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_weight="1"
+                android:text="Microsoft Calendar"
+                android:textSize="12sp"
+                android:fontFamily="@font/roboto_medium"
+                android:textColor="@color/black"/>
+
+<!--            <TextView-->
+<!--                android:id="@+id/is_microsoft_cal_connected"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:textColor="#3E3E3E"-->
+<!--                android:textStyle="italic"-->
+<!--                android:textSize="12sp"-->
+<!--                android:text="Connected"/>-->
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/gmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp"
+            android:visibility="gone"
+            android:layout_marginBottom="20dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_icons8_gmail"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_weight="1"
+                android:text="Gmail"
+                android:textSize="12sp"
+                android:fontFamily="@font/roboto_medium"
+                android:textColor="@color/black"/>
+
+<!--            <TextView-->
+<!--                android:id="@+id/is_gmail_connected"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:textColor="#3E3E3E"-->
+<!--                android:textStyle="italic"-->
+<!--                android:textSize="12sp"-->
+<!--                android:text="Connected"/>-->
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/jira"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp"
+            android:visibility="gone"
+            android:layout_marginBottom="20dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/jira"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_weight="1"
+                android:text="Jira"
+                android:fontFamily="@font/roboto_medium"
+                android:textSize="12sp"
+                android:textColor="@color/black"/>
+
+<!--            <TextView-->
+<!--                android:id="@+id/is_jira_connected"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:textColor="#3E3E3E"-->
+<!--                android:textStyle="italic"-->
+<!--                android:textSize="12sp"-->
+<!--                android:text="Connected"/>-->
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/salesforce"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp"
+            android:visibility="gone"
+            android:layout_marginBottom="20dp">
+
+            <ImageView
+                android:id="@+id/icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/salesforce"/>
+
+            <TextView
+                android:id="@+id/tool_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_weight="1"
+                android:text="Salesforce"
+                android:fontFamily="@font/roboto_medium"
+                android:textSize="12sp"
+                android:textColor="@color/black"/>
+
+<!--            <TextView-->
+<!--                android:id="@+id/is_salesforce_connected"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:textColor="#3E3E3E"-->
+<!--                android:textStyle="italic"-->
+<!--                android:textSize="12sp"-->
+<!--                android:text="Connected"/>-->
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/dbf"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp"
+            android:visibility="gone"
+            android:layout_marginBottom="20dp">
+
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_gravity="center"
+                android:src="@drawable/dbf_logo"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_weight="1"
+                android:text="DBF"
+                android:fontFamily="@font/roboto_medium"
+                android:textSize="12sp"
+                android:textColor="@color/black"/>
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+</LinearLayout>

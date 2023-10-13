@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="66dp">
+
+    <TextView
+        android:id="@+id/event_time"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:text="12:00am"
+        android:textColor="@color/black"
+        android:textSize="14dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/view_bar"
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:layout_marginHorizontal="10dp"
+        android:background="@color/border_color"
+        app:layout_constraintStart_toEndOf="@id/event_time"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/view_circle"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
+        android:layout_marginHorizontal="5dp"
+        android:src="@drawable/circular_event_bg"
+        app:layout_constraintBottom_toBottomOf="@id/view_bar"
+        app:layout_constraintStart_toEndOf="@id/event_time"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/event_container"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginVertical="5dp"
+        android:layout_marginLeft="10dp"
+        android:background="@drawable/upcoming_event_bg"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:paddingHorizontal="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/view_bar"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/event_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Selfbest standup meeting"
+            android:textColor="#3E3E3E"
+            android:textSize="14dp"
+            android:fontFamily="@font/roboto_medium_new" />
+
+        <TextView
+            android:id="@+id/event_time_interval"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:textSize="12dp"
+            android:text="10am to 10:30am"
+            android:textColor="#3e3e3e" />
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
