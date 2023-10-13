@@ -60,7 +60,6 @@ fun ChatScreen(
     expertListViewModel: ExpertListViewModel = hiltViewModel(),
     expertViewModel: ExpertChatViewModel = hiltViewModel()
 ) {
-
     val messages = viewModel.messageList
     val listState = rememberLazyListState()
     val scope = rememberCoroutineScope()
